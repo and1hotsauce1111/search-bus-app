@@ -8,9 +8,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 // import { fab } from '@fortawesome/free-brands-svg-icons'
 dom.watch();
 
-
 library.add(fas)
 
-const app = createApp(App)
-app.component("font-awesome-icon", FontAwesomeIcon);
-app.mount('#app')
+createApp(App)
+  .component("font-awesome-icon", FontAwesomeIcon)
+  .mount("#app");
