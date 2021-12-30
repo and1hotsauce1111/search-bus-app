@@ -17,8 +17,8 @@
 <script setup>
 </script>
 
-<style>
+<style scoped>
 .footer-container {
-  height: 6vh;
+  height: 2.5rem;
 }
 </style>

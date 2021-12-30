@@ -18,11 +18,11 @@ module.exports = {
     },
     extend: {},
     fontSize: {
-      xs: ['10px', '14px'],
-      xm: ['12px', '18px'],
-      sm: ['15px', '20px'],
-      md: ['18px', '28px'],
-      xl: ['32px', '37px'],
+      xs: ['0.625rem', '0.875rem'],
+      xm: ['0.75rem', '1.125rem'],
+      sm: ['0.93rem', '1.25rem'],
+      md: ['1.125rem', '1.75rem'],
+      xl: ['2rem', '2.3rem'],
     }
   },
   plugins: [],

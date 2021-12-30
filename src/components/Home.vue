@@ -1,11 +1,11 @@
 <template>
-  <div class="mobile_container bg-primary-100 px-8 pt-4">
+  <div class="mobile_container bg-primary-100 px-8 pt-1">
     <!-- weather block -->
-    <div class="weather_block flex items-center p-5">
+    <div class="weather_block flex items-center">
       <div class="weather_block--icon text-primary-400 basis-1/4">
-        <i class="fas fa-sun fa-4x"></i>
+        <i class="fas fa-sun fa-4x icon-weather"></i>
       </div>
-      <div class="weather_block--content pl-3 basis-3/4">
+      <div class="weather_block--content pl-3 pt-5 basis-3/4">
         <div
           class="city-block flex justify-between items-center font-bold mb-3.5"
         >
@@ -60,8 +60,14 @@
     </div>
 
     <!-- main block -->
-    <div class="main_block mt-5">
-      <div class="feature_list--wrapper grid grid-cols-2 gap-5">
+    <div class="main_block">
+      <div
+        class="
+          feature_list--wrapper
+          grid grid-cols-2
+          gap-x-[1.1875rem] gap-y-[1.25rem]
+        "
+      >
         <div
           class="
             feature
@@ -95,7 +101,7 @@
             class="feature-content flex flex-col justify-center items-center"
           >
             <i class="fas fa-road fa-4x text-primary-400"></i>
-            <div class="feature-title mt-2 text-grey-500 text-sm" font-bold>
+            <div class="feature-title mt-2 text-grey-500 text-sm font-bold">
               找客運
             </div>
           </div>
@@ -145,9 +151,9 @@
       class="
         geo-location_block
         bg-alert-100
-        mt-6
+        h-11
+        mt-5
         mb-7
-        py-2
         px-5
         flex
         items-center
@@ -186,9 +192,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .mobile_container {
-  height: 87vh;
+  height: calc(100vh - 5.56rem);
+}
+.main_block {
+  margin-top: 2.31rem;
+}
+.icon-weather {
+  font-size: 3.875rem;
 }
 .low::before {
   position: absolute;
@@ -200,21 +212,6 @@ export default {
   background: #408560;
 }
 .feature {
-  min-height: 10.3rem;
-}
-
-/* iphone 5 */
-@media screen and (max-width: 321px) {
-  .mobile_container {
-    padding-top: 1rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  .weather_block {
-    padding: 0.25rem !important;
-  }
-  .feature {
-    min-height: 8rem;
-  }
+  min-height: 10.375rem;
 }
 </style>
