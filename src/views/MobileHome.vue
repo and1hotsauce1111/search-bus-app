@@ -68,7 +68,7 @@
           gap-x-[1.1875rem] gap-y-[1.25rem]
         "
       >
-        <div
+        <router-link
           class="
             feature
             bg-grey-100
@@ -77,6 +77,7 @@
             justify-center
             items-center
           "
+          :to="{ name: 'Search', params: { type: 'bus' } }"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -86,8 +87,8 @@
               找公車
             </div>
           </div>
-        </div>
-        <div
+        </router-link>
+        <router-link
           class="
             feature
             bg-grey-100
@@ -96,6 +97,7 @@
             justify-center
             items-center
           "
+          :to="{ name: 'Search', params: { type: 'transport' } }"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -105,7 +107,7 @@
               找客運
             </div>
           </div>
-        </div>
+        </router-link>
         <div
           class="
             feature
@@ -190,6 +192,7 @@ export default {
 .mobile_container {
   display: none;
   height: calc(100vh - 5.56rem);
+  margin-top: 3.06rem;
 }
 .main_block {
   margin-top: 2.31rem;
