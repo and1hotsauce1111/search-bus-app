@@ -176,16 +176,10 @@
       </button>
     </div>
   </div>
-  <Footer />
 </template>
 
 <script>
-import Footer from "../layout/Footer.vue";
-
 export default {
-  components: {
-    Footer,
-  },
   setup() {
     return {};
   },
@@ -194,6 +188,7 @@ export default {
 
 <style scoped>
 .mobile_container {
+  display: none;
   height: calc(100vh - 5.56rem);
 }
 .main_block {
@@ -213,5 +208,11 @@ export default {
 }
 .feature {
   min-height: 10.375rem;
+}
+
+@media (max-width: 414px) {
+  .mobile_container {
+    display: block;
+  }
 }
 </style>
