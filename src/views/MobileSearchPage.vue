@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile_container bg-primary-100 z-10">
+  <div class="mobile_container bg-primary-100">
     <!-- search bar -->
     <div
       class="
@@ -10,23 +10,44 @@
         pb-4
         w-full
         fixed
-        z-30
+        z-10
       "
     >
       <div class="flex justify-center items-center">
         <input
           type="text"
-          class="w-80 py-1.5 px-4 outline-none"
+          class="w-80 py-1.5 pl-4 pr-8 outline-none relative"
           placeholder="尋找公車路線或站牌..."
         />
-        <i class="fas fa-search absolute right-12 text-grey-500"></i>
+        <button class="absolute right-12" @click="searchRoute">
+          <i class="fas fa-search text-grey-500"></i>
+        </button>
       </div>
     </div>
 
     <!-- bus card -->
-    <div class="card_container--block w-80 my-0 mx-auto">
+    <div
+      class="
+        card_container--block
+        w-80
+        my-0
+        mx-auto
+        overflow-scroll
+        no-scrollbar
+      "
+    >
       <div
-        class="card py-3 px-5 mb-5 h-20 bg-grey-100 rounded-lg relative"
+        class="
+          card
+          py-3
+          px-5
+          mb-5
+          h-20
+          bg-grey-100
+          rounded-lg
+          relative
+          shadow-md
+        "
         v-for="(list, index) in listNum"
         :key="index"
       >
@@ -58,12 +79,13 @@
     </div>
 
     <!-- KeyBoard -->
-    <key-board />
+    <key-board :toggleKeyBoard="toggleKeyBoard" />
   </div>
 </template>
 
 <script>
 import KeyBoard from "@/components/KeyBoard.vue";
+import { ref } from "vue";
 
 export default {
   components: {
@@ -71,8 +93,16 @@ export default {
   },
   setup() {
     const listNum = 30;
+    let toggleKeyBoard = ref(true);
+
+    function searchRoute() {
+      toggleKeyBoard.value = !toggleKeyBoard.value;
+    }
+
     return {
       listNum,
+      toggleKeyBoard,
+      searchRoute,
     };
   },
 };
@@ -81,8 +111,6 @@ export default {
 <style scoped>
 .mobile_container {
   display: none;
-  min-height: calc(100vh - 5.56rem);
-  padding-bottom: 1.5rem;
   margin-top: 3.06rem;
 }
 .search_input--block {
@@ -93,9 +121,7 @@ input {
 }
 .card_container--block {
   padding-top: 4.25rem;
-}
-.card:last-child {
-  margin-bottom: 0;
+  max-height: calc(100vh - 5.56rem);
 }
 .start::after {
   position: absolute;
