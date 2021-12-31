@@ -1,6 +1,31 @@
 <template>
   <div class="keyboard_container h-max-80 w-full fixed bottom-0">
-    <div class="city-select py-3 px-5 bg-primary-200"></div>
+    <div class="city-select py-3 px-5 bg-primary-200">
+      <div
+        class="scroll-wrapper whitespace-nowrap overflow-hidden w-full"
+        ref="scroll"
+      >
+        <div class="scroll-content city-list inline-block">
+          <span
+            class="
+              city
+              text-xm
+              rounded-lg
+              bg-primary-400
+              px-1.5
+              py-0.5
+              mr-3
+              text-grey-100
+              inline-block
+            "
+            v-for="(city, index) in cityData"
+            :key="index"
+          >
+            {{ city.CityName }}
+          </span>
+        </div>
+      </div>
+    </div>
     <!-- nums keys -->
     <div class="nums-key pt-3 px-5 pb-4 bg-grey-100">
       <div class="route-color flex justify-between items-center">
@@ -249,9 +274,32 @@
 </template>
 
 <script>
+import { ref, onMounted, nextTick } from "vue";
+import axios from "axios";
+import BScroll from "@better-scroll/core";
+
 export default {
   setup() {
-    return {};
+    let cityData = ref();
+    // get ref element
+    const scroll = ref(null);
+    axios
+      .get("../../static/CityCountyData.json")
+      .then((res) => (cityData.value = res.data));
+
+    onMounted(() => {
+      nextTick(() => {
+        const bs = new BScroll(scroll.value, {
+          scrollX: true,
+          probeType: 3,
+        });
+        console.log(bs);
+      });
+    });
+    return {
+      cityData,
+      scroll,
+    };
   },
 };
 </script>
@@ -263,5 +311,11 @@ export default {
 }
 .num-btn {
   padding: 0.375rem 2rem;
+}
+.scroll-content {
+  width: 90rem;
+}
+.city:last-child {
+  margin-right: 0;
 }
 </style>
