@@ -1,7 +1,18 @@
 <template>
-  <div class="mobile_container bg-primary-100">
+  <div class="mobile_container bg-primary-100 z-10">
     <!-- search bar -->
-    <div class="search_input--block bg-primary-100 px-5 pt-4 pb-4 w-full">
+    <div
+      class="
+        search_input--block
+        bg-primary-100
+        px-5
+        pt-4
+        pb-4
+        w-full
+        fixed
+        z-30
+      "
+    >
       <div class="flex justify-center items-center">
         <input
           type="text"
@@ -45,11 +56,19 @@
         </div>
       </div>
     </div>
+
+    <!-- KeyBoard -->
+    <key-board />
   </div>
 </template>
 
 <script>
+import KeyBoard from "@/components/KeyBoard.vue";
+
 export default {
+  components: {
+    KeyBoard,
+  },
   setup() {
     const listNum = 30;
     return {
@@ -57,10 +76,6 @@ export default {
     };
   },
 };
-function scrollHandler(e) {
-  console.log(e);
-}
-document.addEventListener("scroll", scrollHandler);
 </script>
 
 <style scoped>
@@ -68,9 +83,16 @@ document.addEventListener("scroll", scrollHandler);
   display: none;
   min-height: calc(100vh - 5.56rem);
   padding-bottom: 1.5rem;
+  margin-top: 3.06rem;
+}
+.search_input--block {
+  left: 0;
 }
 input {
   border-radius: 3.81rem;
+}
+.card_container--block {
+  padding-top: 4.25rem;
 }
 .card:last-child {
   margin-bottom: 0;

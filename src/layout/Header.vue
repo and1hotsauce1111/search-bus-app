@@ -1,6 +1,19 @@
 <template>
   <div
-    class="header-container relative flex justify-center items-center px-6 py-3"
+    class="
+      header-container
+      flex
+      justify-center
+      items-center
+      px-6
+      py-3
+      w-full
+      fixed
+      top-0
+      left-0
+      z-30
+      bg-grey-100
+    "
   >
     <div class="hamberger absolute left-3 text-grey-500">
       <i class="fas fa-bars icon"></i>

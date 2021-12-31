@@ -6,15 +6,22 @@ module.exports = {
   theme: {
     colors: {
       'accent-100': '#F9EBDB',
+      'accent-400': '#DE9848',
+      'accent-500': '#D28226',
       'alert-100': '#FDF4F6',
       'alert-300': '#EB8CA3',
+      'alert-400': '#DD3E64',
       'grey-100': '#FFFFFF',
       'grey-300': '#C5C5C5',
       'grey-500': '#767676',
       'primary-100': '#E9F4EE',
+      'primary-200': '#BFE0CF',
       'primary-300': '#88C6A5',
       'primary-400': '#4EA476',
       'primary-500': '#408560',
+      'blue-100': '#D9F4FF',
+      'blue-200': '#59C3DA',
+      'brown-100': '#FCEFE0',
     },
     extend: {},
     fontSize: {
