@@ -32,6 +32,8 @@
     >
       <i class="fas fa-keyboard text-grey-500"></i>
     </div>
+
+    <!-- keyboard block -->
     <div class="keyboard-block">
       <!-- select city -->
       <div class="city-select py-3 px-5 bg-primary-200">
@@ -63,7 +65,7 @@
       </div>
       <!-- nums keys -->
       <div class="nums-key pt-3 px-5 pb-4 bg-grey-100">
-        <div class="route-color flex justify-between items-center">
+        <div class="route-color grid grid-cols-5 gap-x-3.5">
           <button
             class="
               route-btn
@@ -127,7 +129,7 @@
         </div>
 
         <div class="route-nums">
-          <div class="route-nums-row flex justify-between items-center mt-3">
+          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
             <button
               class="
                 route-type-btn
@@ -173,7 +175,7 @@
               3
             </button>
           </div>
-          <div class="route-nums-row flex justify-between items-center mt-3">
+          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
             <button
               class="
                 route-type-btn
@@ -219,7 +221,7 @@
               6
             </button>
           </div>
-          <div class="route-nums-row flex justify-between items-center mt-3">
+          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
             <button
               class="
                 route-type-btn
@@ -265,9 +267,7 @@
               9
             </button>
           </div>
-          <div
-            class="route-nums-row flex justify-between items-center gap-3 mt-3"
-          >
+          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
             <button
               class="
                 route-type-btn
@@ -298,6 +298,7 @@
                 text-alert-400
                 rounded-lg
                 grow
+                col-span-2
               "
             >
               <i class="fas fa-backspace"></i>

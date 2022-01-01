@@ -173,7 +173,7 @@ input {
   background: #767676;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .mobile_container {
     display: none;
   }
