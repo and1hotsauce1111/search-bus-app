@@ -21,4 +21,10 @@
 .footer-container {
   height: 2.5rem;
 }
+
+@media (min-width: 768px) {
+  .footer-container {
+    height: 3.75rem;
+  }
+}
 </style>

@@ -13,6 +13,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "axios": "^0.24.0",
     "better-scroll": "^2.4.2",
+    "leaflet": "^1.7.1",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },

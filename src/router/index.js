@@ -5,12 +5,7 @@ const routes =[
   {
     path: '/',
     name: 'Home',
-    component: () => import("@/views/MobileHome.vue")
-  },
-  {
-    path: '/search/:type',
-    name: 'Search',
-    component: () => import("@/views/MobileSearchPage.vue")
+    component: () => import("@/views/Home.vue")
   }
 ]
 
