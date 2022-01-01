@@ -27,6 +27,7 @@
 
     <!-- bus card -->
     <div
+      ref="cardContainer"
       class="
         card_container--block
         w-80
@@ -34,6 +35,7 @@
         mx-auto
         overflow-scroll
         no-scrollbar
+        duration-500
       "
     >
       <div
@@ -79,13 +81,16 @@
     </div>
 
     <!-- KeyBoard -->
-    <key-board :toggleKeyBoard="toggleKeyBoard" />
+    <key-board
+      :toggleKeyBoard="toggleKeyBoard"
+      @changeMaxHeight="changeMaxHeight"
+    />
   </div>
 </template>
 
 <script>
 import KeyBoard from "@/components/KeyBoard.vue";
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 export default {
   components: {
@@ -94,15 +99,35 @@ export default {
   setup() {
     const listNum = 30;
     let toggleKeyBoard = ref(true);
+    const cardContainer = ref(null);
 
     function searchRoute() {
+      toggleKeyBoard.value = false;
+      console.log("search", toggleKeyBoard.value);
+    }
+
+    function changeMaxHeight() {
       toggleKeyBoard.value = !toggleKeyBoard.value;
     }
+
+    onMounted(() => {
+      // reset card container max-height
+    });
+
+    watch(toggleKeyBoard, (newVal) => {
+      if (!newVal) {
+        cardContainer.value.style.maxHeight = "calc(100vh - 5.56rem)";
+      } else {
+        cardContainer.value.style.maxHeight = "26rem";
+      }
+    });
 
     return {
       listNum,
       toggleKeyBoard,
+      cardContainer,
       searchRoute,
+      changeMaxHeight,
     };
   },
 };
@@ -121,7 +146,8 @@ input {
 }
 .card_container--block {
   padding-top: 4.25rem;
-  max-height: calc(100vh - 5.56rem);
+  max-height: 26rem;
+  /* max-height: calc(100vh - 5.56rem); */
 }
 .start::after {
   position: absolute;

@@ -321,7 +321,7 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     let cityData = ref();
     // get ref element
     const scroll = ref(null);
@@ -341,11 +341,16 @@ export default {
       });
     });
 
-    watch(toggleKeyBoard, () => {
-      keyboard.value.classList.add("translate-y-80");
+    watch(toggleKeyBoard, (newVal) => {
+      if (newVal) {
+        keyboard.value.classList.remove("translate-y-80");
+      } else {
+        keyboard.value.classList.add("translate-y-80");
+      }
     });
 
     function toggleKeyBoardHandler() {
+      emit("changeMaxHeight");
       keyboard.value.classList.toggle("translate-y-80");
     }
 
