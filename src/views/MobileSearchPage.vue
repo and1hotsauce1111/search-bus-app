@@ -110,15 +110,11 @@ export default {
       toggleKeyBoard.value = !toggleKeyBoard.value;
     }
 
-    onMounted(() => {
-      // reset card container max-height
-    });
-
     watch(toggleKeyBoard, (newVal) => {
       if (!newVal) {
         cardContainer.value.style.maxHeight = "calc(100vh - 5.56rem)";
       } else {
-        cardContainer.value.style.maxHeight = "26rem";
+        cardContainer.value.style.maxHeight = "calc(100vh - 22rem)";
       }
     });
 
@@ -135,7 +131,6 @@ export default {
 
 <style scoped>
 .mobile_container {
-  display: none;
   margin-top: 3.06rem;
 }
 .search_input--block {
@@ -146,8 +141,7 @@ input {
 }
 .card_container--block {
   padding-top: 4.25rem;
-  max-height: 26rem;
-  /* max-height: calc(100vh - 5.56rem); */
+  max-height: calc(100vh - 22rem);
 }
 .start::after {
   position: absolute;
@@ -179,9 +173,9 @@ input {
   background: #767676;
 }
 
-@media (max-width: 414px) {
+@media (min-width: 768px) {
   .mobile_container {
-    display: block;
+    display: none;
   }
 }
 </style>

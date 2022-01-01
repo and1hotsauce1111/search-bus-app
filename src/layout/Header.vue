@@ -34,4 +34,10 @@
 .icon {
   font-size: 1.5rem;
 }
+
+@media (min-width: 768px) {
+  .hamberger {
+    display: none;
+  }
+}
 </style>
