@@ -40,7 +40,15 @@
         <span class="grow text-left ml-3 text-grey-500 text-sm"
           >連城中正路口</span
         >
-        <img src="@/assets/light/grey.png" alt="grey" />
+
+        <Popper arrow placement="left">
+          <button>
+            <img class="light-img" src="@/assets/light/grey.png" alt="grey" />
+          </button>
+          <template #content>
+            <div>{{ msg }}</div>
+          </template>
+        </Popper>
       </div>
       <div class="detail flex justify-between items-center mb-4">
         <span
@@ -59,7 +67,7 @@
         <span class="grow text-left ml-3 text-grey-500 text-sm"
           >連城錦和路口</span
         >
-        <img src="@/assets/light/grey.png" alt="grey" />
+        <img class="light-img" src="@/assets/light/grey.png" alt="grey" />
       </div>
       <div class="detail flex justify-between items-center mb-4">
         <span
@@ -76,7 +84,7 @@
           >10分</span
         >
         <span class="grow text-left ml-3 text-grey-500 text-sm">台貿一村</span>
-        <img src="@/assets/light/green.png" alt="green" />
+        <img class="light-img" src="@/assets/light/green.png" alt="green" />
       </div>
       <div class="detail flex justify-between items-center mb-4">
         <span
@@ -95,7 +103,7 @@
         <span class="grow text-left ml-3 text-grey-500 text-sm"
           >連城景平站</span
         >
-        <img src="@/assets/light/red.png" alt="red" />
+        <img class="light-img" src="@/assets/light/red.png" alt="red" />
       </div>
 
       <div
@@ -116,9 +124,13 @@
 </template>
 
 <script>
+import { ref } from "vue";
+
 export default {
   setup() {
-    return {};
+    let msg = ref("Hello");
+
+    return { msg };
   },
 };
 </script>
@@ -139,9 +151,13 @@ export default {
 .status {
   min-width: 4.5rem;
 }
+
 @media (min-width: 768px) {
   .detail-container {
     max-height: 38.85rem;
+  }
+  .light-img {
+    width: 1rem;
   }
 }
 </style>
