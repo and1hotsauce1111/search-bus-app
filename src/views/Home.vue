@@ -1,20 +1,20 @@
 <template>
   <div>
-    <MobileHome />
-    <main class="main">
+    <main class="main relative">
       <Map />
+      <Search class="absolute top-8 left-8 z-50" />
     </main>
   </div>
 </template>
 
 <script>
-import MobileHome from "@/views/MobileHome.vue";
 import Map from "@/components/Map.vue";
+import Search from "@/components/Search.vue";
 
 export default {
   components: {
-    MobileHome,
     Map,
+    Search,
   },
   setup() {
     return {};
@@ -23,12 +23,4 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  display: none;
-}
-@media (min-width: 768px) {
-  .main {
-    display: block;
-  }
-}
 </style>

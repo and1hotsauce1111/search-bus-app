@@ -11,7 +11,8 @@ class DrawMap {
       center: this.position,
       zoom: 18, // 0 - 18
       attributionControl: true,
-      zoomControl: false
+      zoomControl: false,
+      zoomAnimation: true
     });
     this.customIcon = L.icon({
       iconUrl: userPosIcon

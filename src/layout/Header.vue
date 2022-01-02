@@ -8,7 +8,7 @@
       items-center
       px-6
       py-3
-      md:px md:py-5 md:relative
+      md:px-9 md:py-5 md:relative
       w-full
       fixed
       top-0
@@ -125,6 +125,7 @@
   }
   .desktop-logo {
     display: block;
+    width: 95%;
   }
 }
 </style>

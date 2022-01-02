@@ -1,10 +1,10 @@
 <template>
-  <div id="map"></div>
+  <div id="map" class="z-10"></div>
 </template>
 
 <script>
 import { onMounted } from "vue";
-import DrawMap from "@/utils/getGeoLocation";
+import DrawMap from "@/utils/drawMap";
 
 export default {
   setup() {
@@ -20,7 +20,14 @@ export default {
 
 <style scoped>
 #map {
-  width: 100%;
-  height: calc(100vh - 8.125rem);
+  height: calc(100vh - 5.56rem);
+  margin-top: 3.06rem;
+}
+
+@media (min-width: 768px) {
+  #map {
+    height: calc(100vh - 8.125rem);
+    margin-top: 0;
+  }
 }
 </style>
