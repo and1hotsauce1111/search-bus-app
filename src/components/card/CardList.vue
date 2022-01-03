@@ -4,14 +4,13 @@
     ref="cardContainer"
     class="
       card_container--block
-      w-80
-      my-0
-      mx-auto
+      w-full
+      px-5
       overflow-scroll
       no-scrollbar
-      duration-500
+      duration-300
       rounded-lg
-      md:px-8 md:mx-0 md:w-full
+      md:px-8 md:mx-0
     "
   >
     <div
@@ -65,10 +64,37 @@
 </template>
 
 <script>
+import { onUnmounted, ref, toRefs } from "vue";
+
 export default {
-  setup() {
-    const listNum = 30;
-    return { listNum };
+  props: {
+    toggleKeyBoard: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    const listNum = 50;
+    const cardContainer = ref(null);
+    const { toggleKeyBoard } = toRefs(props);
+
+    function adjustMaxHeight() {
+      if (!cardContainer.value) return;
+      if (cardContainer.value && window.innerWidth >= 768) {
+        cardContainer.value.style.maxHeight = "38.85rem";
+      } else if (toggleKeyBoard && window.innerWidth < 768) {
+        cardContainer.value.style.maxHeight = "calc(100vh - 22rem)";
+      } else {
+        cardContainer.value.style.maxHeight = "calc(100vh - 5.56rem)";
+      }
+    }
+
+    window.addEventListener("resize", adjustMaxHeight);
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", adjustMaxHeight);
+    });
+    return { listNum, toggleKeyBoard, cardContainer };
   },
 };
 </script>

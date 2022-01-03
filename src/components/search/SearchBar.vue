@@ -6,20 +6,23 @@
       bg-primary-100
       md:bg-primary-300 md:relative md:rounded-t-lg
       px-5
-      pt-4
-      pb-4
-      w-full
-      fixed
+      w-screen
       z-10
-      md:py-6 md:px-8
+      md:py-6 md:px-8 md:w-full
     "
+    :class="searchingClassObject"
   >
-    <div v-if="searching" class="show-search flex justify-center items-center">
-      <div class="flex justify-center items-center">
+    <div
+      v-if="isSearching"
+      class="show-search flex justify-center items-center"
+    >
+      <div
+        class="input-area w-full flex justify-center items-center md:basis-9/12"
+      >
         <input
           type="text"
           class="
-            w-80
+            w-full
             py-1.5
             pl-4
             pr-8
@@ -33,7 +36,7 @@
           "
           placeholder="尋找公車路線或站牌..."
         />
-        <button class="absolute right-12 md:right-36">
+        <button class="absolute right-9 md:right-36">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
         </button>
       </div>
@@ -43,6 +46,7 @@
           px-3
           ml-2.5
           bg-grey-100
+          md:basis-3/12
           justify-center
           items-center
           hidden
@@ -55,6 +59,9 @@
         <span class="text-sm">篩選</span>
       </button>
     </div>
+
+    <!-- show current bus title -->
+
     <div
       v-else
       class="
@@ -63,16 +70,17 @@
         flex
         justify-between
         items-center
+        md:rounded-t-lg
         text-lg text-grey-100
       "
     >
-      <button @click="searching = true">
+      <button @click="isSearching = true">
         <i class="fas fa-angle-left cursor-pointer hidden md:block"></i>
       </button>
-      <button v-if="isSlideUp" class="md:hidden">
-        <i class="fas fa-angle-downcursor-pointer md:hidden"></i>
+      <button v-if="isSlideUp" class="md:hidden" @click="toggleSlideMenu">
+        <i class="fas fa-angle-down cursor-pointer md:hidden"></i>
       </button>
-      <button v-else class="md:hidden">
+      <button v-else class="md:hidden" @click="toggleSlideMenu">
         <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
       </button>
       <span class="bus-num grow text-center">306</span>
@@ -84,16 +92,37 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, toRefs } from "vue";
 
 export default {
-  setup() {
-    let searching = ref(true);
+  props: {
+    isSearching: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props, { emit }) {
+    const { isSearching } = toRefs(props);
     let isSlideUp = ref(false);
 
+    const searchingClassObject = {
+      fixed: isSearching.value,
+      "py-4": isSearching.value,
+      "py-2": !isSearching.value,
+      "bg-primary-300": !isSearching.value,
+      "rounded-t-2xl": !isSearching.value,
+    };
+
+    function toggleSlideMenu() {
+      isSlideUp.value = !isSlideUp.value;
+      emit("toggleSlideMenu", isSlideUp.value);
+    }
+
     return {
-      searching,
+      isSearching,
       isSlideUp,
+      searchingClassObject,
+      toggleSlideMenu,
     };
   },
 };
@@ -118,7 +147,6 @@ input {
   }
   input {
     border-radius: 0.5rem;
-    width: 17rem;
   }
 }
 </style>

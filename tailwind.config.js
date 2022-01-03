@@ -27,7 +27,6 @@ module.exports = {
       'blue-200': '#59C3DA',
       'brown-100': '#FCEFE0',
     },
-    extend: {},
     fontSize: {
       xs: ['0.625rem', '0.875rem'],
       xm: ['0.75rem', '1.125rem'],
@@ -35,7 +34,9 @@ module.exports = {
       md: ['1.125rem', '1.75rem'],
       lg: ['1.375rem', '1.625rem'],
       xl: ['2rem', '2.3rem'],
-    }
+    },
+    extend: {
+    },
   },
   plugins: [
     plugin(function({ addUtilities }) {

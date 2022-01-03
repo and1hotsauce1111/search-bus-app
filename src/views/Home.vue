@@ -2,7 +2,7 @@
   <div>
     <main class="main relative">
       <Map />
-      <SideMenu class="absolute top-8 left-8 z-50" />
+      <SideMenu />
     </main>
   </div>
 </template>
