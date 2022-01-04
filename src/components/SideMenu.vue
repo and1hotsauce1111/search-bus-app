@@ -13,33 +13,36 @@
     :class="sideMenuClassObject"
   >
     <SearchBar :isSearching="isSearching" @toggleSlideMenu="toggleSlideMenu" />
-    <div v-if="isSearching" class="show-cardlist">
-      <CardList ref="cardListContainer" :toggleKeyBoard="toggleKeyBoard" />
+    <!-- <div v-if="isSearching" class="show-bus-cardlist">
+      <BusCardList ref="cardListContainer" :toggleKeyBoard="toggleKeyBoard" />
       <KeyBoard
         class="md:hidden"
         :toggleKeyBoard="toggleKeyBoard"
         @changeMaxHeight="changeMaxHeight"
       />
     </div>
-    <div v-else class="show-carddetail">
-      <CardDetails />
-    </div>
+    <div v-else class="show-bus-carddetail">
+      <BusCardDetails />
+    </div> -->
+    <BicycleCard />
   </div>
 </template>
 
 <script>
 import KeyBoard from "@/components/KeyBoard.vue";
-import CardList from "@/components/card/CardList.vue";
+import BusCardList from "@/components/card/BusCardList.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
-import CardDetails from "@/components/card/CardDetails.vue";
+import BusCardDetails from "@/components/card/BusCardDetails.vue";
+import BicycleCard from "@/components/card/BicycleCard.vue";
 import { onUnmounted, ref, watch } from "vue";
 
 export default {
   components: {
     KeyBoard,
-    CardList,
+    BusCardList,
     SearchBar,
-    CardDetails,
+    BusCardDetails,
+    BicycleCard,
   },
   setup() {
     let isSearching = ref(false);

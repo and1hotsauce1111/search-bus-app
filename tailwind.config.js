@@ -11,8 +11,10 @@ module.exports = {
       'accent-400': '#DE9848',
       'accent-500': '#D28226',
       'alert-100': '#FDF4F6',
+      'alert-200': '#F7D2DB',
       'alert-300': '#EB8CA3',
       'alert-400': '#DD3E64',
+      'alert-600': '#A31C3D',
       'grey-100': '#FFFFFF',
       'grey-300': '#C5C5C5',
       'grey-400': '#9A9A9A',
@@ -26,6 +28,7 @@ module.exports = {
       'blue-100': '#D9F4FF',
       'blue-200': '#59C3DA',
       'brown-100': '#FCEFE0',
+      'brown-200': '#ECC496',
     },
     fontSize: {
       xs: ['0.625rem', '0.875rem'],
