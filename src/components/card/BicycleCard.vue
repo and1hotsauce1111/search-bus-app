@@ -1,5 +1,14 @@
 <template>
-  <div class="bicyclecard-container px-6 pt-4 overflow-scroll no-scrollbar">
+  <div
+    class="
+      bicyclecard-container
+      px-6
+      pt-16
+      md:pt-4
+      overflow-scroll
+      no-scrollbar
+    "
+  >
     <div class="bicyclecard-list-wrapper">
       <div
         class="item py-5 border-b border-grey-300"

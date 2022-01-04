@@ -5,15 +5,16 @@
       search_input--block
       bg-primary-100
       md:bg-primary-300 md:relative md:rounded-t-lg
-      px-5
+      px-6
       w-screen
       z-10
       md:py-6 md:px-8 md:w-full
     "
     :class="searchingClassObject"
   >
+    <!-- search bus -->
     <div
-      v-if="isSearching"
+      v-if="isSearching && searchType === 'bus'"
       class="show-search flex justify-center items-center"
     >
       <div
@@ -22,6 +23,7 @@
         <input
           type="text"
           class="
+            search-bus
             w-full
             py-1.5
             pl-4
@@ -60,10 +62,63 @@
       </button>
     </div>
 
-    <!-- show current bus title -->
-
+    <!-- search bicycle -->
     <div
-      v-else
+      v-if="isSearching && searchType === 'bicycle'"
+      class="search-bicycle-block flex justify-between items-center"
+    >
+      <div class="toggle-btn text-lg text-grey-100 md:hidden basis-8">
+        <button v-if="isSlideUp" @click="toggleSlideMenu">
+          <i class="fas fa-angle-down cursor-pointer md:hidden"></i>
+        </button>
+        <button v-else @click="toggleSlideMenu">
+          <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
+        </button>
+      </div>
+      <div class="search flex justify-center items-center grow">
+        <input
+          type="text"
+          class="
+            w-full
+            py-1.5
+            pl-4
+            pr-8
+            outline-none
+            relative
+            text-xm
+            rounded-lg
+            bg-primary-100
+            placeholder:text-primary-500
+            md:py-2 md:px-5 md:text-sm md:bg-primary-100
+          "
+          placeholder="搜尋站點或鄰近地點"
+        />
+        <button class="absolute right-28 md:right-36">
+          <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
+        </button>
+      </div>
+      <button
+        class="
+          py-1.5
+          px-3
+          md:py-2 md:px-3
+          ml-2.5
+          bg-grey-100
+          flex
+          justify-center
+          items-center
+          rounded-lg
+          text-primary-400
+        "
+      >
+        <i class="fas fa-sort-amount-down text-xm mr-1 md:mr-2.5"></i>
+        <span class="text-xm md:text-sm">排序</span>
+      </button>
+    </div>
+
+    <!-- show current bus title -->
+    <div
+      v-if="!isSearching"
       class="
         show-current-bus
         w-100
@@ -100,17 +155,22 @@ export default {
       type: Boolean,
       required: true,
     },
+    searchType: {
+      type: String,
+      required: true,
+      default: "bus",
+    },
   },
   setup(props, { emit }) {
-    const { isSearching } = toRefs(props);
+    const { isSearching, searchType } = toRefs(props);
     let isSlideUp = ref(false);
 
     const searchingClassObject = {
       fixed: isSearching.value,
       "py-4": isSearching.value,
-      "py-2": !isSearching.value,
-      "bg-primary-300": !isSearching.value,
-      "rounded-t-2xl": !isSearching.value,
+      "py-2": !isSearching.value || searchType.value === "bicycle",
+      "bg-primary-300": !isSearching.value || searchType.value === "bicycle",
+      "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
     };
 
     function toggleSlideMenu() {
@@ -120,6 +180,7 @@ export default {
 
     return {
       isSearching,
+      searchType,
       isSlideUp,
       searchingClassObject,
       toggleSlideMenu,
@@ -136,7 +197,7 @@ export default {
 .search_input--block {
   left: 0;
 }
-input {
+input.search-bus {
   border-radius: 3.81rem;
 }
 
@@ -145,7 +206,7 @@ input {
     margin-top: 0;
     min-height: 45.85rem;
   }
-  input {
+  input.search-bus {
     border-radius: 0.5rem;
   }
 }

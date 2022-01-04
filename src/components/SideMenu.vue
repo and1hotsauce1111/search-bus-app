@@ -12,8 +12,12 @@
     "
     :class="sideMenuClassObject"
   >
-    <SearchBar :isSearching="isSearching" @toggleSlideMenu="toggleSlideMenu" />
-    <!-- <div v-if="isSearching" class="show-bus-cardlist">
+    <SearchBar
+      :isSearching="isSearching"
+      :searchType="searchType"
+      @toggleSlideMenu="toggleSlideMenu"
+    />
+    <div v-if="isSearching && searchType === 'bus'" class="show-bus-cardlist">
       <BusCardList ref="cardListContainer" :toggleKeyBoard="toggleKeyBoard" />
       <KeyBoard
         class="md:hidden"
@@ -21,10 +25,13 @@
         @changeMaxHeight="changeMaxHeight"
       />
     </div>
-    <div v-else class="show-bus-carddetail">
+    <div
+      v-if="!isSearching && searchType === 'bus'"
+      class="show-bus-carddetail"
+    >
       <BusCardDetails />
-    </div> -->
-    <BicycleCard />
+    </div>
+    <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
   </div>
 </template>
 
@@ -45,17 +52,19 @@ export default {
     BicycleCard,
   },
   setup() {
-    let isSearching = ref(false);
+    let isSearching = ref(true);
+    let searchType = ref("bicycle");
     let toggleKeyBoard = ref(true);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
 
     const sideMenuClassObject = {
-      "bg-primary-100": isSearching.value,
-      "bg-grey-100": !isSearching.value,
-      "rounded-t-2xl": !isSearching.value,
-      "top-3/4": !isSearching.value,
-      "is-search": isSearching.value,
+      "bg-primary-100": isSearching.value && searchType.value === "bus",
+      "search-bicycle": isSearching.value && searchType.value === "bicycle",
+      "search-bus": isSearching.value && searchType.value === "bus",
+      "bg-grey-100": !isSearching.value || searchType.value === "bicycle",
+      "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
+      "top-3/4": !isSearching.value || searchType.value === "bicycle",
       "not-search": !isSearching.value,
     };
 
@@ -79,8 +88,15 @@ export default {
     function resizeSideMenu() {
       const container = sideMenuContainer.value;
       const isNotSearch = container.classList.contains("not-search");
-      if (!container || !isNotSearch) return;
-      if (container && isNotSearch && window.innerWidth >= 768) {
+      const isSearchBus = container.classList.contains("search-bus");
+      const isSearchBicycle = container.classList.contains("search-bicycle");
+
+      if (!container || isSearchBus) return;
+      if (
+        container &&
+        (isNotSearch || isSearchBicycle) &&
+        window.innerWidth >= 768
+      ) {
         container.style.top = "7rem";
       } else {
         container.style.top = "70%";
@@ -109,6 +125,7 @@ export default {
       cardListContainer,
       sideMenuContainer,
       isSearching,
+      searchType,
       sideMenuClassObject,
       toggleSlideMenu,
     };
@@ -117,11 +134,12 @@ export default {
 </script>
 
 <style scoped>
-.sideMenu-container.is-search {
+.sideMenu-container.search-bus {
   height: calc(100vh - 3.06rem);
   top: 3.06rem;
 }
-.sideMenu-container.not-search {
+.sideMenu-container.not-search,
+.sideMenu-container.search-bicycle {
   height: calc(100vh - 3.06rem);
   top: 70%;
 }
@@ -133,8 +151,9 @@ input {
 }
 
 @media (min-width: 768px) {
-  .sideMenu-container.is-search,
-  .sideMenu-container.not-search {
+  .sideMenu-container.search-bus,
+  .sideMenu-container.not-search,
+  .sideMenu-container.search-bicycle {
     margin-top: 0;
     max-width: 26.7rem;
     max-height: 45.85rem;
