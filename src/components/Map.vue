@@ -3,14 +3,36 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { onMounted, toRefs } from "vue";
 import DrawMap from "@/utils/drawMap";
 
 export default {
-  setup() {
+  name: "Map",
+  props: {
+    mapLocation: {
+      type: Object,
+      required: true,
+      default: {},
+    },
+  },
+  setup(props, { emit }) {
     onMounted(() => {
+      const { mapLocation } = toRefs(props);
       const map = new DrawMap();
       map.init();
+      if (!mapLocation.value.coords) {
+        map
+          .getGeoInfo()
+          .then((position) => {
+            map.update(position);
+            emit("agreeGeo");
+          })
+          .catch(({ errMsg, defaultPosition }) => {
+            map.map.setView(defaultPosition, 18);
+          });
+      } else {
+        map.update(mapLocation.value);
+      }
     });
 
     return {};

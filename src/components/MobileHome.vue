@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile_container bg-primary-100 px-8 pt-1">
+  <div class="mobile_container bg-primary-100 px-8 pt-1 md:hidden">
     <!-- weather block -->
     <div class="weather_block flex items-center">
       <div class="weather_block--icon text-primary-400 basis-1/4">
@@ -46,7 +46,7 @@
             ></span>
           </div>
         </div>
-        <div class="temperature-block flex items-center">
+        <div class="temperature-block flex items-center justify-between">
           <div class="temperature flex items-center text-primary-500 font-bold">
             <span class="high mr-4 text-xl">30&deg;C</span>
             <span class="low relative text-md">22&deg;C</span>
@@ -61,6 +61,7 @@
 
     <!-- main block -->
     <div class="main_block">
+      <!-- find bus -->
       <div
         class="
           feature_list--wrapper
@@ -68,7 +69,7 @@
           gap-x-[1.1875rem] gap-y-[1.25rem]
         "
       >
-        <div
+        <button
           class="
             feature
             bg-grey-100
@@ -77,6 +78,7 @@
             justify-center
             items-center
           "
+          @click="searchLocation('bus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -86,8 +88,9 @@
               找公車
             </div>
           </div>
-        </div>
-        <div
+        </button>
+        <!-- find transport -->
+        <button
           class="
             feature
             bg-grey-100
@@ -96,6 +99,7 @@
             justify-center
             items-center
           "
+          @click="searchLocation('transport')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -105,8 +109,9 @@
               找客運
             </div>
           </div>
-        </div>
-        <div
+        </button>
+        <!-- find bicycle -->
+        <button
           class="
             feature
             bg-grey-100
@@ -115,6 +120,7 @@
             justify-center
             items-center
           "
+          @click="searchLocation('bicycle')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -124,8 +130,8 @@
               找單車
             </div>
           </div>
-        </div>
-        <div
+        </button>
+        <button
           class="
             feature
             bg-grey-100
@@ -133,6 +139,7 @@
             flex
             justify-center
             items-center
+            cursor-not-allowed
           "
         >
           <div
@@ -143,11 +150,12 @@
               轉乘資訊
             </div>
           </div>
-        </div>
+        </button>
       </div>
     </div>
     <!-- geo location block -->
     <div
+      v-if="!isArgreeGeoLocation"
       class="
         geo-location_block
         bg-alert-100
@@ -157,6 +165,7 @@
         px-5
         flex
         items-center
+        justify-between
         rounded-lg
       "
     >
@@ -164,24 +173,70 @@
       <p class="text-xs ml-2">
         建議允許定位功能取用您的位置<br />以獲得更完整的服務
       </p>
-      <button
-        class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
-      >
-        同意
-      </button>
-      <button
-        class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
-      >
-        拒絕
-      </button>
+      <div class="btn-block">
+        <button
+          class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
+          @click="getMapLocation"
+        >
+          同意
+        </button>
+        <button
+          class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
+        >
+          拒絕
+        </button>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="
+        geo-location_block
+        bg-accent-100
+        h-11
+        mt-5
+        mb-7
+        px-5
+        flex
+        items-center
+        justify-center
+        rounded-lg
+      "
+    >
+      <i class="fas fa-crosshairs fa-xl text-accent-500"></i>
+      <p class="text-xs ml-2">您已同意開啟定位服務</p>
     </div>
   </div>
 </template>
 
 <script>
+import { ref, toRefs } from "vue";
+
 export default {
-  setup() {
-    return {};
+  setup(props, { emit }) {
+    let isArgreeGeoLocation = ref(false);
+
+    function searchLocation(type) {
+      emit("searchLocation", type);
+    }
+
+    function getMapLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            emit("getMapLocation", position);
+          },
+          () => {
+            alert("無法判斷當前位置，將導向預設地點");
+            emit("agreeGeo");
+          }
+        );
+      } else {
+        alert("不支援GPS定位");
+      }
+    }
+
+    return { searchLocation, getMapLocation, isArgreeGeoLocation };
   },
 };
 </script>
@@ -208,11 +263,5 @@ export default {
 }
 .feature {
   min-height: 10.375rem;
-}
-
-@media (min-width: 768px) {
-  .mobile_container {
-    display: none;
-  }
 }
 </style>

@@ -24,20 +24,36 @@ class DrawMap {
 
   init() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
-    this.getGeoInfo()
+    // this.getGeoInfo()
   }
 
+  // getGeoInfo() {
+  //   if ("geolocation" in navigator) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       this.update(position)
+  //     }, (err) => {
+  //       alert('無法判斷當前位置或使用者拒絕定位，將導向預設地點');
+  //       this.map.setView(defaultPosition, 18);
+  //       throw Error(err)
+  //     });
+  //   } else {
+  //     alert("不支援GPS定位");
+  //   }
+  // }
+
   getGeoInfo() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.update(position)
-      }, () => {
-        alert('無法判斷當前位置，將導向預設地點');
-        this.map.setView(defaultPosition, 18);
-      });
-    } else {
-      alert("不支援GPS定位");
-    }
+    return new Promise((resolve, reject) => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          resolve(position);
+        }, (err) => {
+          alert('無法判斷當前位置或使用者拒絕定位，將導向預設地點');
+          reject({errMsg: err.message, defaultPosition});
+        });
+      } else {
+        alert("不支援GPS定位");
+      }
+    })
   }
 
   update(position) {

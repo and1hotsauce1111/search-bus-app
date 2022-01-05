@@ -17,6 +17,7 @@
       :searchType="searchType"
       @toggleSlideMenu="toggleSlideMenu"
     />
+    <!-- show search bus result -->
     <div v-if="isSearching && searchType === 'bus'" class="show-bus-cardlist">
       <BusCardList ref="cardListContainer" :toggleKeyBoard="toggleKeyBoard" />
       <KeyBoard
@@ -25,12 +26,14 @@
         @changeMaxHeight="changeMaxHeight"
       />
     </div>
+    <!-- show search bus details -->
     <div
       v-if="!isSearching && searchType === 'bus'"
       class="show-bus-carddetail"
     >
       <BusCardDetails />
     </div>
+    <!-- search bicycle -->
     <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
   </div>
 </template>
@@ -41,7 +44,7 @@ import BusCardList from "@/components/card/BusCardList.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import BusCardDetails from "@/components/card/BusCardDetails.vue";
 import BicycleCard from "@/components/card/BicycleCard.vue";
-import { onUnmounted, ref, watch } from "vue";
+import { onUnmounted, ref, toRefs, watch } from "vue";
 
 export default {
   components: {
@@ -53,7 +56,7 @@ export default {
   },
   setup() {
     let isSearching = ref(true);
-    let searchType = ref("bicycle");
+    let searchType = ref("bus");
     let toggleKeyBoard = ref(true);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
