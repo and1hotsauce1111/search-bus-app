@@ -1,98 +1,90 @@
 [
   {
     "CityName": "臺北市",
-    "CityEngName": "Taipei City"
+    "CityEngName": "Taipei"
   },
   {
     "CityName": "基隆市",
-    "CityEngName": "Keelung City"
+    "CityEngName": "Keelung"
   },
   {
     "CityName": "新北市",
-    "CityEngName": "New Taipei City"
+    "CityEngName": "NewTaipei"
   },
   {
     "CityName": "連江縣",
-    "CityEngName": "Lienchiang County"
+    "CityEngName": "LienchiangCounty"
   },
   {
     "CityName": "宜蘭縣",
-    "CityEngName": "Yilan County"
-  },
-  {
-    "CityName": "釣魚臺",
-    "CityEngName": "Diauyutai"
+    "CityEngName": "YilanCounty"
   },
   {
     "CityName": "新竹市",
-    "CityEngName": "Hsinchu City"
+    "CityEngName": "Hsinchu"
   },
   {
     "CityName": "新竹縣",
-    "CityEngName": "Hsinchu County"
+    "CityEngName": "HsinchuCounty"
   },
   {
     "CityName": "桃園市",
-    "CityEngName": "Taoyuan City"
+    "CityEngName": "Taoyuan"
   },
   {
     "CityName": "苗栗縣",
-    "CityEngName": "Miaoli County"
+    "CityEngName": "MiaoliCounty"
   },
   {
     "CityName": "臺中市",
-    "CityEngName": "Taichung City"
+    "CityEngName": "Taichung"
   },
   {
     "CityName": "彰化縣",
-    "CityEngName": "Changhua County"
+    "CityEngName": "ChanghuaCounty"
   },
   {
     "CityName": "南投縣",
-    "CityEngName": "Nantou County"
+    "CityEngName": "NantouCounty"
   },
   {
     "CityName": "嘉義市",
-    "CityEngName": "Chiayi City"
+    "CityEngName": "Chiayi"
   },
   {
     "CityName": "嘉義縣",
-    "CityEngName": "Chiayi County"
+    "CityEngName": "ChiayiCounty"
   },
   {
     "CityName": "雲林縣",
-    "CityEngName": "Yunlin County"
+    "CityEngName": "YunlinCounty"
   },
   {
     "CityName": "臺南市",
-    "CityEngName": "Tainan City"
+    "CityEngName": "Tainan"
   },
   {
     "CityName": "高雄市",
-    "CityEngName": "Kaohsiung City"
-  },
-  {
-    "CityName": "南海島",
-    "CityEngName": "Nanhai"
+    "CityEngName": "Kaohsiung"
   },
   {
     "CityName": "澎湖縣",
-    "CityEngName": "Penghu County"
+    "CityEngName": "PenghuCounty"
   },
   {
     "CityName": "金門縣",
-    "CityEngName": "Kinmen County"
+    "CityEngName": "KinmenCounty"
   },
   {
     "CityName": "屏東縣",
-    "CityEngName": "Pingtung County"
+    "CityEngName": "PingtungCounty"
   },
   {
     "CityName": "臺東縣",
-    "CityEngName": "Taitung County"
+    "CityEngName": "TaitungCounty"
   },
   {
     "CityName": "花蓮縣",
-    "CityEngName": "Hualien County"
+    "CityEngName": "HualienCounty"
   }
 ]

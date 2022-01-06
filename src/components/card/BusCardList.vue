@@ -13,7 +13,7 @@
       md:px-8 md:mx-0
     "
   >
-    <div
+    <!-- <div
       class="
         card
         py-3
@@ -59,6 +59,22 @@
           <span class="end text-sm text-grey-500">板橋</span>
         </div>
       </div>
+    </div> -->
+
+    <div
+      class="no-search-result flex justify-center items-center flex-wrap pt-8"
+    >
+      <img
+        src="../../assets/search/no-result.png"
+        alt="no-result"
+        class="w-3/4 flex-full"
+      />
+      <p class="flex-full mt-3 text-grey-500 text-md hidden md:block">
+        輸入公車路線或站牌找看看吧！
+      </p>
+      <p class="flex-full mt-3 text-grey-500 text-xm md:hidden">
+        點選下面鍵盤搜尋客運路線吧！
+      </p>
     </div>
   </div>
 </template>

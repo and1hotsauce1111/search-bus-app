@@ -25,6 +25,7 @@ import {
   computed,
 } from "vue";
 import SideMenu from "@/components/SideMenu.vue";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -35,6 +36,8 @@ export default {
     SideMenu,
   },
   setup() {
+    const store = useStore();
+
     let isMobileHome = ref(true);
     let toggleMobileHome = ref(true);
     let isArgreeGeoLocation = ref(false);
