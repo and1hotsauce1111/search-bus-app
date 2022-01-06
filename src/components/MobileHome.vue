@@ -213,8 +213,15 @@
 import { ref, toRefs } from "vue";
 
 export default {
+  props: {
+    isArgreeGeoLocation: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
   setup(props, { emit }) {
-    let isArgreeGeoLocation = ref(false);
+    const { isArgreeGeoLocation } = toRefs(props);
 
     function searchLocation(type) {
       emit("searchLocation", type);
@@ -225,10 +232,10 @@ export default {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             emit("getMapLocation", position);
+            emit("toggleAgreeLocation");
           },
           () => {
             alert("無法判斷當前位置，將導向預設地點");
-            emit("agreeGeo");
           }
         );
       } else {

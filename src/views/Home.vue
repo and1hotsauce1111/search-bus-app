@@ -6,6 +6,8 @@
           :is="activeComponent"
           @search-location="searchLocation"
           @get-map-location="getMapLocation"
+          @toggle-agree-location="toggleAgreeLocation"
+          :isArgreeGeoLocation="isArgreeGeoLocation"
           :mapLocation="mapLocation"
         ></component>
       </keep-alive>
@@ -35,6 +37,7 @@ export default {
   setup() {
     let isMobileHome = ref(true);
     let toggleMobileHome = ref(true);
+    let isArgreeGeoLocation = ref(false);
     let mapLocation = shallowRef({});
     const currentInnerWidth = window.innerWidth;
     if (currentInnerWidth >= 768) {
@@ -58,6 +61,10 @@ export default {
       mapLocation.value = position;
     }
 
+    function toggleAgreeLocation() {
+      isArgreeGeoLocation.value = !isArgreeGeoLocation.value;
+    }
+
     const activeComponent = computed(() => {
       if (isMobileHome.value && toggleMobileHome.value) return "MobileHome";
       return "Map";
@@ -71,6 +78,8 @@ export default {
     return {
       activeComponent,
       isMobileHome,
+      isArgreeGeoLocation,
+      toggleAgreeLocation,
       searchLocation,
       toggleMobileHome,
       getMapLocation,

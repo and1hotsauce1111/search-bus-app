@@ -25,7 +25,7 @@ export default {
           .getGeoInfo()
           .then((position) => {
             map.update(position);
-            emit("agreeGeo");
+            emit("toggleAgreeLocation");
           })
           .catch(({ errMsg, defaultPosition }) => {
             map.map.setView(defaultPosition, 18);
