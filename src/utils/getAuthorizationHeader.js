@@ -2,7 +2,9 @@ import jsSHA from "jssha";
 
 const getAuthorizationHeader = function() {
 	let AppID = import.meta.env.VITE_APP_ID;
-	let AppKey = import.meta.env.VITE_APP_Key;
+	let AppKey = import.meta.env.VITE_APP_KEY;
+
+	console.log(import.meta.env);
 
 	let GMTString = new Date().toGMTString();
   const ShaObj = new jsSHA("SHA-1", "TEXT", { hmacKey: { value: AppKey, format: "TEXT" } });

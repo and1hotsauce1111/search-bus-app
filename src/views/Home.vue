@@ -38,6 +38,8 @@ export default {
   setup() {
     const store = useStore();
 
+    store.dispatch("getAllCityBus", "Taipei");
+
     let isMobileHome = ref(true);
     let toggleMobileHome = ref(true);
     let isArgreeGeoLocation = ref(false);

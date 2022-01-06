@@ -89,7 +89,7 @@
             </div>
           </div>
         </button>
-        <!-- find transport -->
+        <!-- find intercity bus -->
         <button
           class="
             feature
@@ -99,7 +99,7 @@
             justify-center
             items-center
           "
-          @click="searchLocation('transport')"
+          @click="searchLocation('intercityBus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"

@@ -1,0 +1,1 @@
+export const GET_ALL_CITY_BUS = 'GET_ALL_CITY_BUS';
