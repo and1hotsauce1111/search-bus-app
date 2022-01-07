@@ -57,6 +57,7 @@
               "
               v-for="(city, index) in cityData"
               :key="index"
+              @click="searchCurrentCityBus"
             >
               {{ city.CityName }}
             </span>
@@ -355,12 +356,17 @@ export default {
       keyboard.value.classList.toggle("translate-y-80");
     }
 
+    function searchCurrentCityBus() {
+      // search current city bus
+    }
+
     return {
       cityData,
       scroll,
       toggleBtn,
       keyboard,
       toggleKeyBoardHandler,
+      searchCurrentCityBus,
     };
   },
 };

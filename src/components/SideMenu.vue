@@ -61,6 +61,14 @@ export default {
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
 
+    // key functions
+
+    function searchRoute() {
+      toggleKeyBoard.value = false;
+    }
+
+    // custom styles
+    window.addEventListener("resize", resizeSideMenu);
     const sideMenuClassObject = {
       "bg-primary-100": isSearching.value && searchType.value === "bus",
       "search-bicycle": isSearching.value && searchType.value === "bicycle",
@@ -70,10 +78,6 @@ export default {
       "top-3/4": !isSearching.value || searchType.value === "bicycle",
       "not-search": !isSearching.value,
     };
-
-    function searchRoute() {
-      toggleKeyBoard.value = false;
-    }
 
     function changeMaxHeight() {
       toggleKeyBoard.value = !toggleKeyBoard.value;
@@ -106,6 +110,8 @@ export default {
       }
     }
 
+    // watch and computed
+
     watch(toggleKeyBoard, (newVal) => {
       // change cardlist maxheight when toggle keyboard
       const container = cardListContainer.value.$refs.cardContainer;
@@ -115,8 +121,6 @@ export default {
         container.style.maxHeight = "calc(100vh - 22rem)";
       }
     });
-
-    window.addEventListener("resize", resizeSideMenu);
 
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);

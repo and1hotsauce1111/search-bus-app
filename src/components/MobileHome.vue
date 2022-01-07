@@ -182,6 +182,7 @@
         </button>
         <button
           class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
+          @click="rejectLocation"
         >
           拒絕
         </button>
@@ -211,6 +212,7 @@
 
 <script>
 import { ref, toRefs } from "vue";
+import { useStore } from "vuex";
 
 export default {
   props: {
@@ -222,20 +224,33 @@ export default {
   },
   setup(props, { emit }) {
     const { isArgreeGeoLocation } = toRefs(props);
+    const store = useStore();
 
     function searchLocation(type) {
       emit("searchLocation", type);
+    }
+
+    function rejectLocation() {
+      // get all Taichung city bus
+      store.dispatch("getAllCityBus", "Taichung");
+      // jump to search page
+      emit("searchLocation", "bus");
     }
 
     function getMapLocation() {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            console.log("pos", position.coords);
+            // search nearby bus
+            store.dispatch("getCurrentDistrictBus", position.coords);
+            store.dispatch("getNearByBus", position.coords);
             emit("getMapLocation", position);
             emit("toggleAgreeLocation");
           },
           () => {
-            alert("無法判斷當前位置，將導向預設地點");
+            alert("無法判斷當前位置，將導向預設地點台中車站");
+            rejectLocation();
           }
         );
       } else {
@@ -243,7 +258,12 @@ export default {
       }
     }
 
-    return { searchLocation, getMapLocation, isArgreeGeoLocation };
+    return {
+      searchLocation,
+      getMapLocation,
+      isArgreeGeoLocation,
+      rejectLocation,
+    };
   },
 };
 </script>

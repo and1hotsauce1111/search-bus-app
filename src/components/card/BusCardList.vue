@@ -13,59 +13,80 @@
       md:px-8 md:mx-0
     "
   >
-    <!-- <div
-      class="
-        card
-        py-3
-        px-5
-        mb-5
-        h-20
-        bg-grey-100
-        rounded-lg
-        relative
-        shadow-md
-        md:shadow-none
-        md:py-0
-        md:px-0
-        md:border-b
-        md:border-grey-300
-        md:rounded-none
-        md:last:border-0
-      "
-      v-for="(list, index) in listNum"
-      :key="index"
-    >
-      <div class="bus-info">
-        <div class="bus-num flex items-center justify-between mb-2">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-lg pr-2">307</span>
+    <div v-if="renderBusList.length" class="card-wrapper">
+      <div
+        class="
+          card
+          py-3
+          px-5
+          mb-5
+          h-20
+          bg-grey-100
+          rounded-lg
+          relative
+          shadow-md
+          md:shadow-none
+          md:py-0
+          md:px-0
+          md:border-b
+          md:border-grey-300
+          md:rounded-none
+          md:last:border-0
+        "
+        v-for="bus in renderBusList"
+        :key="bus.RouteUID"
+      >
+        <div class="bus-info">
+          <div class="bus-num flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-lg pr-2">{{
+                bus.RouteName.Zh_tw
+              }}</span>
+              <span
+                class="
+                  rounded-lg
+                  bg-primary-400
+                  text-xs
+                  px-1.5
+                  py-0.5
+                  text-grey-100
+                  inline-block
+                "
+                >{{ cityNameZh(bus.City) }}</span
+              >
+            </div>
+            <i class="fas fa-angle-right text-grey-500"></i>
+          </div>
+          <div class="bus-station flex justify-between items-center">
+            <span class="start text-sm text-grey-500">{{
+              bus.DepartureStopNameZh
+            }}</span>
             <span
               class="
-                rounded-lg
-                bg-primary-400
-                text-xs
-                px-1.5
-                py-0.5
-                text-grey-100
+                separate-line
+                h-px
                 inline-block
+                grow
+                bg-grey-500
+                mx-3.5
+                relative
               "
-              >台北市</span
-            >
+            ></span>
+            <span class="end text-sm text-grey-500">{{
+              bus.DestinationStopNameZh
+            }}</span>
           </div>
-          <i class="fas fa-angle-right text-grey-500"></i>
-        </div>
-        <div class="bus-station flex justify-between items-center">
-          <span class="start text-sm text-grey-500">撫遠街</span>
-          <span class="end text-sm text-grey-500">板橋</span>
         </div>
       </div>
-    </div> -->
+    </div>
 
+    <!-- no result -->
     <div
-      class="no-search-result flex justify-center items-center flex-wrap pt-8"
+      v-else
+      class="no-search-result flex justify-center items-center flex-wrap"
     >
       <img
-        src="../../assets/search/no-result.png"
+        src="@/assets/search/no-result.png"
         alt="no-result"
         class="w-3/4 flex-full"
       />
@@ -80,7 +101,9 @@
 </template>
 
 <script>
-import { onUnmounted, ref, toRefs } from "vue";
+import { computed, onUnmounted, reactive, ref, toRefs } from "vue";
+import { useStore } from "vuex";
+import getCityNameZh from "@/utils/getCityNameZh";
 
 export default {
   props: {
@@ -90,9 +113,20 @@ export default {
     },
   },
   setup(props) {
-    const listNum = 50;
     const cardContainer = ref(null);
     const { toggleKeyBoard } = toRefs(props);
+    const store = useStore();
+
+    const allCityBus = computed(() => store.getters.allCityBus);
+    const nearbyBus = computed(() => store.getters.nearbyBus);
+    const renderBusList = computed(() => {
+      return store.getters.allCityBus || [];
+    });
+
+    // filter city name
+    function cityNameZh(city) {
+      return getCityNameZh(city);
+    }
 
     function adjustMaxHeight() {
       if (!cardContainer.value) return;
@@ -110,7 +144,8 @@ export default {
     onUnmounted(() => {
       window.removeEventListener("resize", adjustMaxHeight);
     });
-    return { listNum, toggleKeyBoard, cardContainer };
+
+    return { renderBusList, toggleKeyBoard, cardContainer, cityNameZh };
   },
 };
 </script>
@@ -120,30 +155,21 @@ export default {
   padding-top: 4.25rem;
   max-height: calc(100vh - 22rem);
 }
-.start::after {
-  position: absolute;
-  top: 3.43rem;
-  left: 4.875rem;
-  content: "";
-  height: 1px;
-  width: 55.8%;
-  background: #767676;
-}
-.start::before {
+.separate-line::before {
   content: "";
   position: absolute;
-  left: 4.85rem;
-  top: 3.375rem;
+  left: 0;
+  top: -1px;
   height: 3px;
   width: 3px;
   border-radius: 50%;
   background: #767676;
 }
-.end::before {
+.separate-line::after {
   content: "";
   position: absolute;
-  right: 3.85rem;
-  top: 3.375rem;
+  right: 0;
+  top: -1px;
   height: 3px;
   width: 3px;
   border-radius: 50%;
@@ -153,9 +179,6 @@ export default {
   .card_container--block {
     padding-top: 2rem;
     max-height: 38.85rem;
-  }
-  .start::after {
-    width: 60.8%;
   }
 }
 </style>

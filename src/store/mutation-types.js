@@ -1,1 +1,2 @@
 export const GET_ALL_CITY_BUS = 'GET_ALL_CITY_BUS';
+export const GET_NEARBY_CITY_BUS = 'GET_NEARBY_CITY_BUS';

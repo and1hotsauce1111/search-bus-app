@@ -20,16 +20,19 @@ export default {
       const { mapLocation } = toRefs(props);
       const map = new DrawMap();
       map.init();
+      const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
-        map
-          .getGeoInfo()
-          .then((position) => {
-            map.update(position);
-            emit("toggleAgreeLocation");
-          })
-          .catch(({ errMsg, defaultPosition }) => {
-            map.map.setView(defaultPosition, 18);
-          });
+        if (innerWidth >= 640) {
+          map
+            .getGeoInfo()
+            .then((position) => {
+              map.update(position);
+              emit("toggleAgreeLocation");
+            })
+            .catch(({ errMsg, defaultPosition }) => {
+              map.map.setView(defaultPosition, 18);
+            });
+        }
       } else {
         map.update(mapLocation.value);
       }
