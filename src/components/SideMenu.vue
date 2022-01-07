@@ -13,28 +13,37 @@
     :class="sideMenuClassObject"
   >
     <SearchBar
-      :isSearching="isSearching"
-      :searchType="searchType"
-      @toggleSlideMenu="toggleSlideMenu"
+      :isSearching="sideMenuState.isSearching"
+      :searchType="sideMenuState.searchType"
+      @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
-    <div v-if="isSearching && searchType === 'bus'" class="show-bus-cardlist">
-      <BusCardList ref="cardListContainer" :toggleKeyBoard="toggleKeyBoard" />
+    <div
+      v-if="sideMenuState.isSearching && sideMenuState.searchType === 'bus'"
+      class="show-bus-cardlist"
+    >
+      <BusCardList
+        ref="cardListContainer"
+        :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+      />
       <KeyBoard
         class="md:hidden"
-        :toggleKeyBoard="toggleKeyBoard"
-        @changeMaxHeight="changeMaxHeight"
+        :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+        @change-max-height="changeMaxHeight"
+        @input-value="keyboardInput"
       />
     </div>
     <!-- show search bus details -->
     <div
-      v-if="!isSearching && searchType === 'bus'"
+      v-if="!sideMenuState.isSearching && sideMenuState.searchType === 'bus'"
       class="show-bus-carddetail"
     >
       <BusCardDetails />
     </div>
     <!-- search bicycle -->
-    <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
+    <BicycleCard
+      v-if="sideMenuState.isSearching && sideMenuState.searchType === 'bicycle'"
+    />
   </div>
 </template>
 
@@ -44,7 +53,7 @@ import BusCardList from "@/components/card/BusCardList.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import BusCardDetails from "@/components/card/BusCardDetails.vue";
 import BicycleCard from "@/components/card/BicycleCard.vue";
-import { onUnmounted, ref, toRefs, watch } from "vue";
+import { onUnmounted, reactive, ref, toRefs, watch } from "vue";
 
 export default {
   components: {
@@ -55,32 +64,46 @@ export default {
     BicycleCard,
   },
   setup() {
-    let isSearching = ref(true);
-    let searchType = ref("bus");
-    let toggleKeyBoard = ref(true);
+    const sideMenuState = reactive({
+      isSearching: true,
+      searchType: "bus",
+      toggleKeyBoard: true,
+      inputValue: "",
+    });
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
 
     // key functions
 
     function searchRoute() {
-      toggleKeyBoard.value = false;
+      sideMenuState.toggleKeyBoard = false;
+    }
+
+    function keyboardInput(inputValue) {
+      console.log(inputValue);
+      sideMenuState.inputValue = inputValue;
     }
 
     // custom styles
     window.addEventListener("resize", resizeSideMenu);
     const sideMenuClassObject = {
-      "bg-primary-100": isSearching.value && searchType.value === "bus",
-      "search-bicycle": isSearching.value && searchType.value === "bicycle",
-      "search-bus": isSearching.value && searchType.value === "bus",
-      "bg-grey-100": !isSearching.value || searchType.value === "bicycle",
-      "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
-      "top-3/4": !isSearching.value || searchType.value === "bicycle",
-      "not-search": !isSearching.value,
+      "bg-primary-100":
+        sideMenuState.isSearching && sideMenuState.searchType === "bus",
+      "search-bicycle":
+        sideMenuState.isSearching && sideMenuState.searchType === "bicycle",
+      "search-bus":
+        sideMenuState.isSearching && sideMenuState.searchType === "bus",
+      "bg-grey-100":
+        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
+      "rounded-t-2xl":
+        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
+      "top-3/4":
+        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
+      "not-search": !sideMenuState.isSearching,
     };
 
     function changeMaxHeight() {
-      toggleKeyBoard.value = !toggleKeyBoard.value;
+      sideMenuState.toggleKeyBoard = !sideMenuState.toggleKeyBoard;
     }
 
     function toggleSlideMenu(isSlide) {
@@ -112,10 +135,10 @@ export default {
 
     // watch and computed
 
-    watch(toggleKeyBoard, (newVal) => {
+    watch(sideMenuState, (newVal) => {
       // change cardlist maxheight when toggle keyboard
       const container = cardListContainer.value.$refs.cardContainer;
-      if (!newVal) {
+      if (!newVal.toggleKeyBoard) {
         container.style.maxHeight = "calc(100vh - 5.56rem)";
       } else {
         container.style.maxHeight = "calc(100vh - 22rem)";
@@ -127,14 +150,13 @@ export default {
     });
 
     return {
-      toggleKeyBoard,
+      sideMenuState,
       changeMaxHeight,
       cardListContainer,
       sideMenuContainer,
-      isSearching,
-      searchType,
       sideMenuClassObject,
       toggleSlideMenu,
+      keyboardInput,
     };
   },
 };

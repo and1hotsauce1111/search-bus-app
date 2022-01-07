@@ -21,6 +21,7 @@
         class="input-area w-full flex justify-center items-center md:basis-9/12"
       >
         <input
+          v-model="searchInputValue"
           type="text"
           class="
             search-bus
@@ -37,6 +38,7 @@
             md:placeholder:text-primary-500
           "
           placeholder="尋找公車路線或站牌..."
+          readonly
         />
         <button class="absolute right-9 md:right-36">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
@@ -77,6 +79,7 @@
       </div>
       <div class="search flex justify-center items-center grow">
         <input
+          v-model="searchInputValue"
           type="text"
           class="
             w-full
@@ -92,6 +95,7 @@
             md:py-2 md:px-5 md:text-sm md:bg-primary-100
           "
           placeholder="搜尋站點或鄰近地點"
+          readonly
         />
         <button class="absolute right-28 md:right-36">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
@@ -164,6 +168,7 @@ export default {
   setup(props, { emit }) {
     const { isSearching, searchType } = toRefs(props);
     let isSlideUp = ref(false);
+    let searchInputValue = ref("");
 
     const searchingClassObject = {
       fixed: isSearching.value,
@@ -179,6 +184,7 @@ export default {
     }
 
     return {
+      searchInputValue,
       isSearching,
       searchType,
       isSlideUp,

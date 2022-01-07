@@ -76,6 +76,7 @@
               text-alert-300
               rounded-lg
             "
+            @click="getInputValue('紅')"
           >
             紅
           </button>
@@ -88,6 +89,7 @@
               text-primary-500
               rounded-lg
             "
+            @click="getInputValue('綠')"
           >
             綠
           </button>
@@ -100,6 +102,7 @@
               text-accent-400
               rounded-lg
             "
+            @click="getInputValue('橘')"
           >
             橘
           </button>
@@ -112,6 +115,7 @@
               text-blue-200
               rounded-lg
             "
+            @click="getInputValue('藍')"
           >
             藍
           </button>
@@ -124,6 +128,7 @@
               text-accent-500
               rounded-lg
             "
+            @click="getInputValue('棕')"
           >
             棕
           </button>
@@ -150,6 +155,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('1')"
             >
               1
             </button>
@@ -161,6 +167,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('2')"
             >
               2
             </button>
@@ -172,6 +179,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('3')"
             >
               3
             </button>
@@ -196,6 +204,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('4')"
             >
               4
             </button>
@@ -207,6 +216,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('5')"
             >
               5
             </button>
@@ -218,6 +228,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('6')"
             >
               6
             </button>
@@ -242,6 +253,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('7')"
             >
               7
             </button>
@@ -253,6 +265,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('8')"
             >
               8
             </button>
@@ -264,6 +277,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('9')"
             >
               9
             </button>
@@ -288,6 +302,7 @@
                 text-primary-400
                 rounded-lg
               "
+              @click="getInputValue('0')"
             >
               0
             </button>
@@ -301,6 +316,7 @@
                 grow
                 col-span-2
               "
+              @click="deleteInputValue"
             >
               <i class="fas fa-backspace"></i>
             </button>
@@ -331,7 +347,28 @@ export default {
     const keyboard = ref(null);
 
     const { toggleKeyBoard } = toRefs(props);
+    let inputValue = "";
 
+    // key functions
+    function toggleKeyBoardHandler() {
+      emit("changeMaxHeight");
+      keyboard.value.classList.toggle("translate-y-80");
+    }
+
+    function searchCurrentCityBus() {
+      // search current city bus
+    }
+
+    function getInputValue(value) {
+      inputValue += value;
+      emit("inputValue", inputValue);
+    }
+    function deleteInputValue() {
+      inputValue = inputValue.slice(0, -1);
+      emit("inputValue", inputValue);
+    }
+
+    // render cityt list
     axios
       .get("../../static/CityCountyData.json")
       .then((res) => (cityData.value = res.data));
@@ -343,6 +380,8 @@ export default {
       });
     });
 
+    // watch and computed
+
     watch(toggleKeyBoard, (newVal) => {
       if (newVal) {
         keyboard.value.classList.remove("translate-y-80");
@@ -351,15 +390,6 @@ export default {
       }
     });
 
-    function toggleKeyBoardHandler() {
-      emit("changeMaxHeight");
-      keyboard.value.classList.toggle("translate-y-80");
-    }
-
-    function searchCurrentCityBus() {
-      // search current city bus
-    }
-
     return {
       cityData,
       scroll,
@@ -367,6 +397,8 @@ export default {
       keyboard,
       toggleKeyBoardHandler,
       searchCurrentCityBus,
+      getInputValue,
+      deleteInputValue,
     };
   },
 };

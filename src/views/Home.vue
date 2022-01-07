@@ -7,7 +7,7 @@
           @search-location="searchLocation"
           @get-map-location="getMapLocation"
           @toggle-agree-location="toggleAgreeLocation"
-          :isArgreeGeoLocation="isArgreeGeoLocation"
+          :isArgreeGeoLocation="homeState.isArgreeGeoLocation"
           :mapLocation="mapLocation"
         ></component>
       </keep-alive>
@@ -23,6 +23,7 @@ import {
   shallowRef,
   defineAsyncComponent,
   computed,
+  reactive,
 } from "vue";
 import SideMenu from "@/components/SideMenu.vue";
 
@@ -35,25 +36,28 @@ export default {
     SideMenu,
   },
   setup() {
-    let isMobileHome = ref(true);
-    let toggleMobileHome = ref(true);
-    let isArgreeGeoLocation = ref(false);
+    const homeState = reactive({
+      isMobileHome: true,
+      toggleMobileHome: true,
+      isArgreeGeoLocation: false,
+    });
+
     let mapLocation = shallowRef({});
     const currentInnerWidth = window.innerWidth;
     if (currentInnerWidth >= 768) {
-      toggleMobileHome.value = false;
+      homeState.toggleMobileHome = false;
     }
 
     function searchLocation(type) {
-      isMobileHome.value = false;
+      homeState.isMobileHome = false;
     }
 
     function toggleMobileHomeWidth() {
-      if (!isMobileHome.value) return;
+      if (!homeState.isMobileHome) return;
       if (window.innerWidth >= 768) {
-        toggleMobileHome.value = false;
+        homeState.toggleMobileHome = false;
       } else {
-        toggleMobileHome.value = true;
+        homeState.toggleMobileHome = true;
       }
     }
 
@@ -62,11 +66,12 @@ export default {
     }
 
     function toggleAgreeLocation() {
-      isArgreeGeoLocation.value = !isArgreeGeoLocation.value;
+      homeState.isArgreeGeoLocation = !homeState.isArgreeGeoLocation;
     }
 
     const activeComponent = computed(() => {
-      if (isMobileHome.value && toggleMobileHome.value) return "MobileHome";
+      if (homeState.isMobileHome && homeState.toggleMobileHome)
+        return "MobileHome";
       return "Map";
     });
 
@@ -76,12 +81,10 @@ export default {
       window.removeEventListener("resize", toggleMobileHomeWidth)
     );
     return {
+      homeState,
       activeComponent,
-      isMobileHome,
-      isArgreeGeoLocation,
       toggleAgreeLocation,
       searchLocation,
-      toggleMobileHome,
       getMapLocation,
       mapLocation,
     };
