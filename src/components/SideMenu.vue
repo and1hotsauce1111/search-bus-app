@@ -18,10 +18,7 @@
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
-    <div
-      v-if="sideMenuState.isSearching && searchType === 'bus'"
-      class="show-bus-cardlist"
-    >
+    <div v-if="showSearchBusList" class="show-bus-cardlist">
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
@@ -29,15 +26,13 @@
       <KeyBoard
         class="md:hidden"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+        :searchType="searchType"
         @change-max-height="changeMaxHeight"
         @input-value="keyboardInput"
       />
     </div>
     <!-- show search bus details -->
-    <div
-      v-if="!sideMenuState.isSearching && searchType === 'bus'"
-      class="show-bus-carddetail"
-    >
+    <div v-if="showSearchBusDetails" class="show-bus-carddetail">
       <BusCardDetails />
     </div>
     <!-- search bicycle -->
@@ -51,7 +46,7 @@ import BusCardList from "@/components/card/BusCardList.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import BusCardDetails from "@/components/card/BusCardDetails.vue";
 import BicycleCard from "@/components/card/BicycleCard.vue";
-import { onUnmounted, reactive, ref, toRefs, watch } from "vue";
+import { onUnmounted, reactive, ref, toRefs, watch, computed } from "vue";
 
 export default {
   props: {
@@ -92,10 +87,14 @@ export default {
     // custom styles
     window.addEventListener("resize", resizeSideMenu);
     const sideMenuClassObject = {
-      "bg-primary-100": sideMenuState.isSearching && searchType.value === "bus",
+      "bg-primary-100":
+        sideMenuState.isSearching &&
+        (searchType.value === "bus" || searchType.value === "intercityBus"),
       "search-bicycle":
         sideMenuState.isSearching && searchType.value === "bicycle",
-      "search-bus": sideMenuState.isSearching && searchType.value === "bus",
+      "search-bus":
+        sideMenuState.isSearching &&
+        (searchType.value === "bus" || searchType.value === "intercityBus"),
       "bg-grey-100":
         !sideMenuState.isSearching || searchType.value === "bicycle",
       "rounded-t-2xl":
@@ -149,6 +148,18 @@ export default {
       }
     );
 
+    const showSearchBusList = computed(
+      () =>
+        sideMenuState.isSearching &&
+        (searchType.value === "bus" || searchType.value === "intercityBus")
+    );
+
+    const showSearchBusDetails = computed(
+      () =>
+        !sideMenuState.isSearching &&
+        (searchType.value === "bus" || searchType.value === "intercityBus")
+    );
+
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);
     });
@@ -162,6 +173,8 @@ export default {
       sideMenuClassObject,
       toggleSlideMenu,
       keyboardInput,
+      showSearchBusList,
+      showSearchBusDetails,
     };
   },
 };

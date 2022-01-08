@@ -66,8 +66,11 @@
       </div>
       <!-- nums keys -->
       <div class="nums-key pt-3 px-5 pb-4 bg-grey-100">
-        <div class="route-color grid grid-cols-5 gap-x-3.5">
-          <template v-for="(route, key) in busKey.routes" :key="key">
+        <div
+          v-if="searchType === 'bus'"
+          class="route-color grid grid-cols-5 gap-x-3.5"
+        >
+          <template v-for="(route, key) in keyboardType.routes" :key="key">
             <button
               class="route-btn red border border-solid rounded-lg"
               :class="keyClassObject[key]"
@@ -80,7 +83,7 @@
 
         <div class="route-nums">
           <div class="route-nums-row grid grid-cols-4 gap-x-3.5 gap-y-3 mt-3">
-            <template v-for="(key, index) in busKey.nums" :key="index">
+            <template v-for="(key, index) in keyboardType.nums" :key="index">
               <button
                 class="
                   route-type-btn
@@ -129,7 +132,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, toRefs } from "vue";
+import { ref, onMounted, watch, toRefs, computed } from "vue";
 import axios from "axios";
 import BScroll from "@better-scroll/core";
 import { busKey, intercityBusKey } from "@/utils/keyboard.js";
@@ -140,6 +143,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    searchType: {
+      type: String,
+      required: true,
+      default: "bus",
+    },
   },
   setup(props, { emit }) {
     let cityData = ref();
@@ -148,7 +156,7 @@ export default {
     const toggleBtn = ref(null);
     const keyboard = ref(null);
 
-    const { toggleKeyBoard } = toRefs(props);
+    const { toggleKeyBoard, searchType } = toRefs(props);
 
     const keyClassObject = {
       red: "bg-alert-100 border-alert-300 text-alert-300",
@@ -200,8 +208,13 @@ export default {
       }
     });
 
+    const keyboardType = computed(() => {
+      return searchType.value === "bus" ? busKey : intercityBusKey;
+    });
+
     return {
-      busKey,
+      searchType,
+      keyboardType,
       keyClassObject,
       cityData,
       scroll,

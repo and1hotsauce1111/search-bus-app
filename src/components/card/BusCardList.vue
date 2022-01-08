@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { computed, onUnmounted, reactive, ref, toRefs } from "vue";
+import { computed, onUnmounted, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 import getCityNameZh from "@/utils/getCityNameZh";
 

@@ -14,7 +14,7 @@
   >
     <!-- search bus -->
     <div
-      v-if="isSearching && searchType === 'bus'"
+      v-if="showBusInputSearch"
       class="show-search flex justify-center items-center"
     >
       <div
@@ -37,7 +37,7 @@
             md:bg-primary-100
             md:placeholder:text-primary-500
           "
-          placeholder="尋找公車路線或站牌..."
+          :placeholder="searchBusInputPlaceholder"
           readonly
         />
         <button class="absolute right-9 md:right-36">
@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { ref, toRefs } from "vue";
+import { ref, toRefs, computed } from "vue";
 
 export default {
   props: {
@@ -183,13 +183,25 @@ export default {
       emit("toggleSlideMenu", isSlideUp.value);
     }
 
+    const showBusInputSearch = computed(
+      () =>
+        isSearching.value &&
+        (searchType.value === "bus" || searchType.value === "intercityBus")
+    );
+
+    const searchBusInputPlaceholder = computed(() =>
+      searchType.value === "bus"
+        ? "尋找公車路線或站牌..."
+        : "尋找公路或國道路線或目的地..."
+    );
+
     return {
       searchInputValue,
-      isSearching,
-      searchType,
+      showBusInputSearch,
       isSlideUp,
       searchingClassObject,
       toggleSlideMenu,
+      searchBusInputPlaceholder,
     };
   },
 };
