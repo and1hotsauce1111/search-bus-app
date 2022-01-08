@@ -14,12 +14,12 @@
   >
     <SearchBar
       :isSearching="sideMenuState.isSearching"
-      :searchType="sideMenuState.searchType"
+      :searchType="searchType"
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
     <div
-      v-if="sideMenuState.isSearching && sideMenuState.searchType === 'bus'"
+      v-if="sideMenuState.isSearching && searchType === 'bus'"
       class="show-bus-cardlist"
     >
       <BusCardList
@@ -35,15 +35,13 @@
     </div>
     <!-- show search bus details -->
     <div
-      v-if="!sideMenuState.isSearching && sideMenuState.searchType === 'bus'"
+      v-if="!sideMenuState.isSearching && searchType === 'bus'"
       class="show-bus-carddetail"
     >
       <BusCardDetails />
     </div>
     <!-- search bicycle -->
-    <BicycleCard
-      v-if="sideMenuState.isSearching && sideMenuState.searchType === 'bicycle'"
-    />
+    <BicycleCard v-if="sideMenuState.isSearching && searchType === 'bicycle'" />
   </div>
 </template>
 
@@ -56,6 +54,13 @@ import BicycleCard from "@/components/card/BicycleCard.vue";
 import { onUnmounted, reactive, ref, toRefs, watch } from "vue";
 
 export default {
+  props: {
+    searchType: {
+      type: String,
+      required: true,
+      default: "bus",
+    },
+  },
   components: {
     KeyBoard,
     BusCardList,
@@ -63,13 +68,13 @@ export default {
     BusCardDetails,
     BicycleCard,
   },
-  setup() {
+  setup(props) {
     const sideMenuState = reactive({
       isSearching: true,
-      searchType: "bus",
       toggleKeyBoard: true,
       inputValue: "",
     });
+    const { searchType } = toRefs(props);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
 
@@ -87,18 +92,15 @@ export default {
     // custom styles
     window.addEventListener("resize", resizeSideMenu);
     const sideMenuClassObject = {
-      "bg-primary-100":
-        sideMenuState.isSearching && sideMenuState.searchType === "bus",
+      "bg-primary-100": sideMenuState.isSearching && searchType.value === "bus",
       "search-bicycle":
-        sideMenuState.isSearching && sideMenuState.searchType === "bicycle",
-      "search-bus":
-        sideMenuState.isSearching && sideMenuState.searchType === "bus",
+        sideMenuState.isSearching && searchType.value === "bicycle",
+      "search-bus": sideMenuState.isSearching && searchType.value === "bus",
       "bg-grey-100":
-        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
+        !sideMenuState.isSearching || searchType.value === "bicycle",
       "rounded-t-2xl":
-        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
-      "top-3/4":
-        !sideMenuState.isSearching || sideMenuState.searchType === "bicycle",
+        !sideMenuState.isSearching || searchType.value === "bicycle",
+      "top-3/4": !sideMenuState.isSearching || searchType.value === "bicycle",
       "not-search": !sideMenuState.isSearching,
     };
 
@@ -134,22 +136,25 @@ export default {
     }
 
     // watch and computed
-
-    watch(sideMenuState, (newVal) => {
-      // change cardlist maxheight when toggle keyboard
-      const container = cardListContainer.value.$refs.cardContainer;
-      if (!newVal.toggleKeyBoard) {
-        container.style.maxHeight = "calc(100vh - 5.56rem)";
-      } else {
-        container.style.maxHeight = "calc(100vh - 22rem)";
+    watch(
+      () => sideMenuState.toggleKeyBoard,
+      (newVal) => {
+        // change cardlist maxheight when toggle keyboard
+        const container = cardListContainer.value.$refs.cardContainer;
+        if (!newVal) {
+          container.style.maxHeight = "calc(100vh - 5.56rem)";
+        } else {
+          container.style.maxHeight = "calc(100vh - 22rem)";
+        }
       }
-    });
+    );
 
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);
     });
 
     return {
+      searchType,
       sideMenuState,
       changeMaxHeight,
       cardListContainer,

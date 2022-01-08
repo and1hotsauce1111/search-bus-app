@@ -67,245 +67,46 @@
       <!-- nums keys -->
       <div class="nums-key pt-3 px-5 pb-4 bg-grey-100">
         <div class="route-color grid grid-cols-5 gap-x-3.5">
-          <button
-            class="
-              route-btn
-              red
-              bg-alert-100
-              border border-alert-300 border-solid
-              text-alert-300
-              rounded-lg
-            "
-            @click="getInputValue('紅')"
-          >
-            紅
-          </button>
-          <button
-            class="
-              route-btn
-              green
-              bg-primary-100
-              border border-primary-400 border-solid
-              text-primary-500
-              rounded-lg
-            "
-            @click="getInputValue('綠')"
-          >
-            綠
-          </button>
-          <button
-            class="
-              route-btn
-              orange
-              bg-accent-100
-              border border-accent-400 border-solid
-              text-accent-400
-              rounded-lg
-            "
-            @click="getInputValue('橘')"
-          >
-            橘
-          </button>
-          <button
-            class="
-              route-btn
-              blue
-              bg-blue-100
-              border border-blue-200 border-solid
-              text-blue-200
-              rounded-lg
-            "
-            @click="getInputValue('藍')"
-          >
-            藍
-          </button>
-          <button
-            class="
-              route-btn
-              brown
-              bg-brown-100
-              border border-accent-500 border-solid
-              text-accent-500
-              rounded-lg
-            "
-            @click="getInputValue('棕')"
-          >
-            棕
-          </button>
+          <template v-for="(route, key) in busKey.routes" :key="key">
+            <button
+              class="route-btn red border border-solid rounded-lg"
+              :class="keyClassObject[key]"
+              @click="getInputValue(route)"
+            >
+              {{ route }}
+            </button>
+          </template>
         </div>
 
         <div class="route-nums">
-          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
-            <button
-              class="
-                route-type-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-            >
-              幹線
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('1')"
-            >
-              1
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('2')"
-            >
-              2
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('3')"
-            >
-              3
-            </button>
-          </div>
-          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
-            <button
-              class="
-                route-type-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-            >
-              通勤
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('4')"
-            >
-              4
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('5')"
-            >
-              5
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('6')"
-            >
-              6
-            </button>
-          </div>
-          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
-            <button
-              class="
-                route-type-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-            >
-              小巴
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('7')"
-            >
-              7
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('8')"
-            >
-              8
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('9')"
-            >
-              9
-            </button>
-          </div>
-          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 mt-3">
-            <button
-              class="
-                route-type-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-            >
-              接駁
-            </button>
-            <button
-              class="
-                num-btn
-                bg-grey-100
-                border border-solid border-primary-400
-                text-primary-400
-                rounded-lg
-              "
-              @click="getInputValue('0')"
-            >
-              0
-            </button>
+          <div class="route-nums-row grid grid-cols-4 gap-x-3.5 gap-y-3 mt-3">
+            <template v-for="(key, index) in busKey.nums" :key="index">
+              <button
+                class="
+                  route-type-btn
+                  bg-grey-100
+                  border border-solid border-primary-400
+                  text-primary-400
+                  rounded-lg
+                "
+              >
+                {{ key.title }}
+              </button>
+              <button
+                class="
+                  num-btn
+                  bg-grey-100
+                  border border-solid border-primary-400
+                  text-primary-400
+                  rounded-lg
+                "
+                v-for="(num, k) in key.key"
+                :key="k"
+                @click="getInputValue(num)"
+              >
+                {{ num }}
+              </button>
+            </template>
             <button
               class="
                 num-btn
@@ -331,6 +132,7 @@
 import { ref, onMounted, watch, toRefs } from "vue";
 import axios from "axios";
 import BScroll from "@better-scroll/core";
+import { busKey, intercityBusKey } from "@/utils/keyboard.js";
 
 export default {
   props: {
@@ -347,6 +149,14 @@ export default {
     const keyboard = ref(null);
 
     const { toggleKeyBoard } = toRefs(props);
+
+    const keyClassObject = {
+      red: "bg-alert-100 border-alert-300 text-alert-300",
+      green: "bg-primary-100 border-primary-400 text-primary-500",
+      orange: "bg-accent-100 border-accent-400 text-accent-400",
+      blue: "bg-blue-100 border-blue-200 text-blue-200",
+      brown: "bg-brown-100 border-accent-500 text-accent-500",
+    };
     let inputValue = "";
 
     // key functions
@@ -391,6 +201,8 @@ export default {
     });
 
     return {
+      busKey,
+      keyClassObject,
       cityData,
       scroll,
       toggleBtn,

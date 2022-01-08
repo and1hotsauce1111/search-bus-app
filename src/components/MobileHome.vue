@@ -78,7 +78,7 @@
             justify-center
             items-center
           "
-          @click="searchLocation('bus')"
+          @click="searchType('bus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -99,7 +99,7 @@
             justify-center
             items-center
           "
-          @click="searchLocation('intercityBus')"
+          @click="searchType('intercityBus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -120,7 +120,7 @@
             justify-center
             items-center
           "
-          @click="searchLocation('bicycle')"
+          @click="searchType('bicycle')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import { ref, toRefs } from "vue";
+import { toRefs } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -226,24 +226,21 @@ export default {
     const { isArgreeGeoLocation } = toRefs(props);
     const store = useStore();
 
-    function searchLocation(type) {
-      emit("searchLocation", type);
+    function searchType(type) {
+      emit("searchType", type);
     }
 
     function rejectLocation() {
-      // get all Taichung city bus
-      store.dispatch("getAllCityBus", "Taichung");
       // jump to search page
-      emit("searchLocation", "bus");
+      emit("searchType", "bus");
     }
 
     function getMapLocation() {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            console.log("pos", position.coords);
             // search nearby bus
-            store.dispatch("getCurrentDistrictBus", position.coords);
+            store.dispatch("getCurrentDistrict", position.coords);
             store.dispatch("getNearByBus", position.coords);
             emit("getMapLocation", position);
             emit("toggleAgreeLocation");
@@ -259,7 +256,7 @@ export default {
     }
 
     return {
-      searchLocation,
+      searchType,
       getMapLocation,
       isArgreeGeoLocation,
       rejectLocation,

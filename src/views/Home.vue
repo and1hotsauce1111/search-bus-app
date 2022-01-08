@@ -4,14 +4,17 @@
       <keep-alive include="Map">
         <component
           :is="activeComponent"
-          @search-location="searchLocation"
+          @search-type="toggleSearchType"
           @get-map-location="getMapLocation"
           @toggle-agree-location="toggleAgreeLocation"
           :isArgreeGeoLocation="homeState.isArgreeGeoLocation"
           :mapLocation="mapLocation"
         ></component>
       </keep-alive>
-      <SideMenu v-if="activeComponent === 'Map'" />
+      <SideMenu
+        v-if="activeComponent === 'Map'"
+        :searchType="homeState.searchType"
+      />
     </main>
   </div>
 </template>
@@ -19,7 +22,6 @@
 <script>
 import {
   onUnmounted,
-  ref,
   shallowRef,
   defineAsyncComponent,
   computed,
@@ -40,6 +42,7 @@ export default {
       isMobileHome: true,
       toggleMobileHome: true,
       isArgreeGeoLocation: false,
+      searchType: "bus",
     });
 
     let mapLocation = shallowRef({});
@@ -48,7 +51,8 @@ export default {
       homeState.toggleMobileHome = false;
     }
 
-    function searchLocation(type) {
+    function toggleSearchType(type) {
+      homeState.searchType = type;
       homeState.isMobileHome = false;
     }
 
@@ -84,7 +88,7 @@ export default {
       homeState,
       activeComponent,
       toggleAgreeLocation,
-      searchLocation,
+      toggleSearchType,
       getMapLocation,
       mapLocation,
     };

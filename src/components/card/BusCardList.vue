@@ -117,10 +117,8 @@ export default {
     const { toggleKeyBoard } = toRefs(props);
     const store = useStore();
 
-    const allCityBus = computed(() => store.getters.allCityBus);
-    const nearbyBus = computed(() => store.getters.nearbyBus);
     const renderBusList = computed(() => {
-      return store.getters.allCityBus || [];
+      return store.getters.busCardList || [];
     });
 
     // filter city name
@@ -132,7 +130,7 @@ export default {
       if (!cardContainer.value) return;
       if (cardContainer.value && window.innerWidth >= 768) {
         cardContainer.value.style.maxHeight = "38.85rem";
-      } else if (toggleKeyBoard && window.innerWidth < 768) {
+      } else if (toggleKeyBoard.value && window.innerWidth < 768) {
         cardContainer.value.style.maxHeight = "calc(100vh - 22rem)";
       } else {
         cardContainer.value.style.maxHeight = "calc(100vh - 5.56rem)";

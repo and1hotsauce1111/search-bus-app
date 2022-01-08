@@ -1,6 +1,6 @@
 const state = {
-  allCityBus: [],
-  nearbyCityBus: []
+  currentDistrict: '',
+  busCardList: [],
 };
 
 export default state;

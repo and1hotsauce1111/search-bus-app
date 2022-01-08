@@ -1,2 +1,2 @@
-export const allCityBus = state => state.allCityBus;
-export const nearbyBus = state => state.nearbyCityBus;
+export const currentDistrict = state => state.currentDistrict;
+export const busCardList = state => state.busCardList;
