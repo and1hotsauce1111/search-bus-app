@@ -42,7 +42,7 @@
           ref="scroll"
         >
           <div class="scroll-content city-list inline-block">
-            <span
+            <button
               class="
                 city
                 text-xm
@@ -57,10 +57,11 @@
               "
               v-for="(city, index) in cityData"
               :key="index"
-              @click="searchCurrentCityBus"
+              @click="searchCurrentCityBus(index, city.CityEngName)"
+              :class="{ active: city.active }"
             >
               {{ city.CityName }}
-            </span>
+            </button>
           </div>
         </div>
       </div>
@@ -136,6 +137,7 @@ import { ref, onMounted, watch, toRefs, computed } from "vue";
 import axios from "axios";
 import BScroll from "@better-scroll/core";
 import { busKey, intercityBusKey } from "@/utils/keyboard.js";
+import { useStore } from "vuex";
 
 export default {
   props: {
@@ -151,10 +153,12 @@ export default {
   },
   setup(props, { emit }) {
     let cityData = ref();
+    let currentCityIndex = null;
     // get ref element
     const scroll = ref(null);
     const toggleBtn = ref(null);
     const keyboard = ref(null);
+    const store = useStore();
 
     const { toggleKeyBoard, searchType } = toRefs(props);
 
@@ -173,8 +177,14 @@ export default {
       keyboard.value.classList.toggle("translate-y-80");
     }
 
-    function searchCurrentCityBus() {
-      // search current city bus
+    function searchCurrentCityBus(index, city) {
+      if (currentCityIndex !== null) {
+        cityData.value[currentCityIndex].active =
+          !cityData.value[currentCityIndex].active;
+      }
+      cityData.value[index].active = !cityData.value[index].active;
+      currentCityIndex = index;
+      store.dispatch("getAllCityBus", city);
     }
 
     function getInputValue(value) {
@@ -242,5 +252,8 @@ export default {
 }
 .city:last-child {
   margin-right: 0;
+}
+.city.active {
+  background: #316649;
 }
 </style>

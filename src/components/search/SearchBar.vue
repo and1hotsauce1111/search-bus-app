@@ -164,11 +164,16 @@ export default {
       required: true,
       default: "bus",
     },
+    searchInputValue: {
+      type: String,
+      required: true,
+      default: "",
+    },
   },
   setup(props, { emit }) {
-    const { isSearching, searchType } = toRefs(props);
+    const { isSearching, searchType, searchInputValue } = toRefs(props);
     let isSlideUp = ref(false);
-    let searchInputValue = ref("");
+    // let searchInputValue = ref("");
 
     const searchingClassObject = {
       fixed: isSearching.value,

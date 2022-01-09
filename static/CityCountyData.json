@@ -1,90 +1,112 @@
 [
   {
     "CityName": "臺北市",
-    "CityEngName": "Taipei"
+    "CityEngName": "Taipei",
+    "active": false
   },
   {
     "CityName": "基隆市",
-    "CityEngName": "Keelung"
+    "CityEngName": "Keelung",
+    "active": false
   },
   {
     "CityName": "新北市",
-    "CityEngName": "NewTaipei"
+    "CityEngName": "NewTaipei",
+    "active": false
   },
   {
     "CityName": "連江縣",
-    "CityEngName": "LienchiangCounty"
+    "CityEngName": "LienchiangCounty",
+    "active": false
   },
   {
     "CityName": "宜蘭縣",
-    "CityEngName": "YilanCounty"
+    "CityEngName": "YilanCounty",
+    "active": false
   },
   {
     "CityName": "新竹市",
-    "CityEngName": "Hsinchu"
+    "CityEngName": "Hsinchu",
+    "active": false
   },
   {
     "CityName": "新竹縣",
-    "CityEngName": "HsinchuCounty"
+    "CityEngName": "HsinchuCounty",
+    "active": false
   },
   {
     "CityName": "桃園市",
-    "CityEngName": "Taoyuan"
+    "CityEngName": "Taoyuan",
+    "active": false
   },
   {
     "CityName": "苗栗縣",
-    "CityEngName": "MiaoliCounty"
+    "CityEngName": "MiaoliCounty",
+    "active": false
   },
   {
     "CityName": "臺中市",
-    "CityEngName": "Taichung"
+    "CityEngName": "Taichung",
+    "active": false
   },
   {
     "CityName": "彰化縣",
-    "CityEngName": "ChanghuaCounty"
+    "CityEngName": "ChanghuaCounty",
+    "active": false
   },
   {
     "CityName": "南投縣",
-    "CityEngName": "NantouCounty"
+    "CityEngName": "NantouCounty",
+    "active": false
   },
   {
     "CityName": "嘉義市",
-    "CityEngName": "Chiayi"
+    "CityEngName": "Chiayi",
+    "active": false
   },
   {
     "CityName": "嘉義縣",
-    "CityEngName": "ChiayiCounty"
+    "CityEngName": "ChiayiCounty",
+    "active": false
   },
   {
     "CityName": "雲林縣",
-    "CityEngName": "YunlinCounty"
+    "CityEngName": "YunlinCounty",
+    "active": false
   },
   {
     "CityName": "臺南市",
-    "CityEngName": "Tainan"
+    "CityEngName": "Tainan",
+    "active": false
   },
   {
     "CityName": "高雄市",
-    "CityEngName": "Kaohsiung"
+    "CityEngName": "Kaohsiung",
+    "active": false
   },
   {
     "CityName": "澎湖縣",
-    "CityEngName": "PenghuCounty"
+    "CityEngName": "PenghuCounty",
+    "active": false
   },
   {
     "CityName": "金門縣",
-    "CityEngName": "KinmenCounty"
+    "CityEngName": "KinmenCounty",
+    "active": false
   },
   {
     "CityName": "屏東縣",
-    "CityEngName": "PingtungCounty"
+    "CityEngName": "PingtungCounty",
+    "active": false
   },
   {
     "CityName": "臺東縣",
-    "CityEngName": "TaitungCounty"
+    "CityEngName": "TaitungCounty",
+    "active": false
   },
   {
     "CityName": "花蓮縣",
-    "CityEngName": "HualienCounty"
+    "CityEngName": "HualienCounty",
+    "active": false
   }
 ]

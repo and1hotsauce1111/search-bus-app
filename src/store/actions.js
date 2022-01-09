@@ -18,12 +18,33 @@ export const getCurrentDistrict = function (
     .catch((err) => console.log(err));
 };
 
+export const getAllCityBus = function ({ commit, state }, city) {
+  BusApi.getAllCityBus(city)
+    .then((res) => {
+      if(res.status === 200) {
+        commit(types.GET_ALL_CITY_BUS, res.data);
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
 export const getNearByBus = function ({ commit, state }, coords) {
   const position = { lat: coords.latitude, lng: coords.longitude };
   BusApi.getNearByBus(position)
     .then((res) => {
       if (res.status === 200) {
         commit(types.GET_NEARBY_CITY_BUS, res.data);
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getBusByKeyword = function ({ commit, state }, searchInput) {
+  const { city, keyword } = searchInput;
+  BusApi.getBusByKeyword(city, keyword)
+    .then((res) => {
+      if (res.status === 200) {
+        commit(types.GET_BUS_BY_KEYWORD, res.data);
       }
     })
     .catch((err) => console.log(err));

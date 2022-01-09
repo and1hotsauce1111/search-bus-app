@@ -1,5 +1,5 @@
 const state = {
-  currentDistrict: '',
+  currentDistrict: 'Taichung',
   busCardList: [],
 };
 

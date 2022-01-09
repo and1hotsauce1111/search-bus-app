@@ -15,6 +15,7 @@
     <SearchBar
       :isSearching="sideMenuState.isSearching"
       :searchType="searchType"
+      :searchInputValue="sideMenuState.inputValue"
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
@@ -47,6 +48,7 @@ import SearchBar from "@/components/search/SearchBar.vue";
 import BusCardDetails from "@/components/card/BusCardDetails.vue";
 import BicycleCard from "@/components/card/BicycleCard.vue";
 import { onUnmounted, reactive, ref, toRefs, watch, computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   props: {
@@ -72,16 +74,22 @@ export default {
     const { searchType } = toRefs(props);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
+    const store = useStore();
+    const currentCity = store.getters.currentDistrict;
 
     // key functions
 
-    function searchRoute() {
-      sideMenuState.toggleKeyBoard = false;
-    }
-
     function keyboardInput(inputValue) {
-      console.log(inputValue);
       sideMenuState.inputValue = inputValue;
+      if (inputValue === "") {
+        store.commit("CLEAR_BUSLIST");
+        return;
+      }
+      const searchInput = {
+        city: currentCity,
+        keyword: inputValue,
+      };
+      store.dispatch("getBusByKeyword", searchInput);
     }
 
     // custom styles

@@ -39,9 +39,18 @@
         <div class="bus-info">
           <div class="bus-num flex items-center justify-between mb-2">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-lg pr-2">{{
-                bus.RouteName.Zh_tw
-              }}</span>
+              <span
+                class="
+                  route-name
+                  font-bold
+                  text-lg
+                  pr-2
+                  overflow-hidden
+                  text-ellipsis
+                  whitespace-nowrap
+                "
+                >{{ bus.RouteName.Zh_tw }}</span
+              >
               <span
                 class="
                   rounded-lg
@@ -173,10 +182,16 @@ export default {
   border-radius: 50%;
   background: #767676;
 }
+.route-name {
+  max-width: 235px;
+}
 @media (min-width: 768px) {
   .card_container--block {
     padding-top: 2rem;
     max-height: 38.85rem;
+  }
+  .route-name {
+    max-width: 350px;
   }
 }
 </style>
