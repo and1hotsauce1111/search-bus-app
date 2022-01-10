@@ -6,9 +6,9 @@ html {
   font-size: 16px;
 }
 /* vue3 Popper style */
-:root {
-  --popper-theme-background-color: #4EA476;
-  --popper-theme-background-color-hover: #4EA476;
+.green-popper {
+  --popper-theme-background-color: #4ea476;
+  --popper-theme-background-color-hover: #4ea476;
   --popper-theme-text-color: #fff;
   --popper-theme-border-width: 1px;
   --popper-theme-border-style: solid;
@@ -17,7 +17,17 @@ html {
   --popper-theme-padding: 16px;
   --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
 }
-
+.white-popper {
+  --popper-theme-background-color: #fff;
+  --popper-theme-background-color-hover: #fff;
+  --popper-theme-text-color: #464646;
+  --popper-theme-border-width: 1px;
+  --popper-theme-border-style: solid;
+  --popper-theme-border-color: #eeeeee;
+  --popper-theme-border-radius: 8px;
+  --popper-theme-padding: 28px 24px;
+  --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+}
 
 @media screen and (min-width: 320px) {
   html {
@@ -27,18 +37,18 @@ html {
 }
 @media screen and (min-width: 375px) {
   html {
-      font-size: calc(100% + 2 * (100vw - 375px) / 39);
-      font-size: calc(16px + 2 * (100vw - 375px) / 39);
+    font-size: calc(100% + 2 * (100vw - 375px) / 39);
+    font-size: calc(16px + 2 * (100vw - 375px) / 39);
   }
 }
 @media screen and (min-width: 414px) {
   html {
-      font-size: calc(112.5% + 4 * (100vw - 414px) / 586);
-      font-size: calc(17px + 4 * (100vw - 414px) / 586);
+    font-size: calc(112.5% + 4 * (100vw - 414px) / 586);
+    font-size: calc(17px + 4 * (100vw - 414px) / 586);
   }
 }
 @media screen and (min-width: 600px) {
   html {
-      font-size: 16px;
+    font-size: 16px;
   }
 }

@@ -16,6 +16,7 @@
       :isSearching="sideMenuState.isSearching"
       :searchType="searchType"
       :searchInputValue="sideMenuState.inputValue"
+      :toggleKeyBoard="sideMenuState.toggleKeyBoard"
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
@@ -75,12 +76,12 @@ export default {
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
     const store = useStore();
-    const currentCity = store.getters.currentDistrict;
 
     // key functions
 
     function keyboardInput(inputValue) {
       sideMenuState.inputValue = inputValue;
+      const currentCity = store.getters.currentDistrict;
       if (inputValue === "") {
         store.commit("CLEAR_BUSLIST");
         return;

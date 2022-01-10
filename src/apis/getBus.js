@@ -1,22 +1,45 @@
-import { ptx_baseUrl, headers } from './config';
+import { headers, busQueryString } from './config';
 import axios from 'axios';
 
 export default {
   getAllCityBus(city) {
-    return axios.get(
-      ptx_baseUrl + `/v2/Bus/Route/City/${city}?$top=30&$select=City,RouteName,RouteUID,DepartureStopNameZh,DestinationStopNameZh&$format=JSON`,
-      { headers },
-    );
+    const select = [
+      'City',
+      'RouteName',
+      'RouteUID',
+      'DepartureStopNameZh',
+      'DestinationStopNameZh',
+    ];
+    const url = busQueryString(`Bus/Route/City/${city}`, { select });
+    return axios.get(url, { headers });
   },
   getNearByBus(position) {
-    const { lng, lat } = position;
-    return axios.get(
-      ptx_baseUrl +
-        `/v2/Bus/Route/NearBy?$top=30&$spatialFilter=nearby(${lat},${lng},500)&$select=City,RouteName,RouteUID,DepartureStopNameZh,DestinationStopNameZh&$format=JSON`,
-      { headers },
-    );
+    const select = [
+      'City',
+      'RouteName',
+      'RouteUID',
+      'DepartureStopNameZh',
+      'DestinationStopNameZh',
+    ];
+    const url = busQueryString('Bus/Route/NearBy', {
+      position,
+      filter: { type: 'nearby' },
+      select,
+    });
+    return axios.get(url, { headers });
   },
   getBusByKeyword(city, keyword) {
-    return axios.get(ptx_baseUrl + `/v2/Bus/Route/City/${city}/${keyword}?$top=30&$select=City,RouteName,RouteUID,DepartureStopNameZh,DestinationStopNameZh&$format=JSON`)
-  }
+    const select = [
+      'City',
+      'RouteName',
+      'RouteUID',
+      'DepartureStopNameZh',
+      'DestinationStopNameZh',
+    ];
+    const url = busQueryString(`Bus/Route/City/${city}`, {
+      filter: { type: 'bus', keyword },
+      select
+    });
+    return axios.get(url, { headers });
+  },
 };

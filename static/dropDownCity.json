@@ -1,0 +1,48 @@
+[
+  {
+    "area": "北部",
+    "cities": [
+      "Taipei",
+      "NewTaipei",
+      "Keelung",
+      "Taoyuan",
+      "Hsinchu",
+      "HsinchuCounty",
+      "YilanCounty"
+    ],
+    "active": false
+  },
+  {
+    "area": "中部",
+    "cities": [
+      "MiaoliCounty",
+      "Taichung",
+      "ChanghuaCounty",
+      "NantouCounty",
+      "YunlinCounty"
+    ],
+    "active": false
+  },
+  {
+    "area": "南部",
+    "cities": [
+      "Chiayi",
+      "ChiayiCounty",
+      "Tainan",
+      "Kaohsiung",
+      "PingtungCounty",
+      "PenghuCounty"
+    ],
+    "active": false
+  },
+  {
+    "area": "東部",
+    "cities": ["HualienCounty", "TaitungCounty"],
+    "active": false
+  },
+  {
+    "area": "外島",
+    "cities": ["KinmenCounty", "LienchiangCounty"],
+    "active": false
+  }
+]

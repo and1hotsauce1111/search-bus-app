@@ -5,6 +5,7 @@
 <script>
 import { onMounted, toRefs } from "vue";
 import DrawMap from "@/utils/drawMap";
+import { useStore } from "vuex";
 
 export default {
   name: "Map",
@@ -16,6 +17,8 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const store = useStore();
+
     onMounted(() => {
       const { mapLocation } = toRefs(props);
       const map = new DrawMap();
@@ -27,6 +30,8 @@ export default {
             .getGeoInfo()
             .then((position) => {
               map.update(position);
+              store.dispatch("getCurrentDistrict", position.coords);
+              store.dispatch("getNearByBus", position.coords);
               emit("toggleAgreeLocation");
             })
             .catch(({ errMsg, defaultPosition }) => {

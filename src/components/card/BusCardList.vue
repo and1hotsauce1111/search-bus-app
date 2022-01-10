@@ -61,7 +61,7 @@
                   text-grey-100
                   inline-block
                 "
-                >{{ cityNameZh(bus.City) }}</span
+                >{{ currentCity }}</span
               >
             </div>
             <i class="fas fa-angle-right text-grey-500"></i>
@@ -130,11 +130,6 @@ export default {
       return store.getters.busCardList || [];
     });
 
-    // filter city name
-    function cityNameZh(city) {
-      return getCityNameZh(city);
-    }
-
     function adjustMaxHeight() {
       if (!cardContainer.value) return;
       if (cardContainer.value && window.innerWidth >= 768) {
@@ -146,13 +141,18 @@ export default {
       }
     }
 
+    const currentCity = computed(() => {
+      const city = store.state.currentDistrict;
+      return getCityNameZh(city) || "";
+    });
+
     window.addEventListener("resize", adjustMaxHeight);
 
     onUnmounted(() => {
       window.removeEventListener("resize", adjustMaxHeight);
     });
 
-    return { renderBusList, toggleKeyBoard, cardContainer, cityNameZh };
+    return { renderBusList, toggleKeyBoard, cardContainer, currentCity };
   },
 };
 </script>
@@ -191,7 +191,7 @@ export default {
     max-height: 38.85rem;
   }
   .route-name {
-    max-width: 350px;
+    max-width: 290px;
   }
 }
 </style>

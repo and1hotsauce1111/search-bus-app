@@ -21,6 +21,7 @@
         class="input-area w-full flex justify-center items-center md:basis-9/12"
       >
         <input
+          v-if="toggleKeyBoard && isInputDisable"
           v-model="searchInputValue"
           type="text"
           class="
@@ -40,28 +41,107 @@
           :placeholder="searchBusInputPlaceholder"
           readonly
         />
-        <button class="absolute right-9 md:right-36">
+        <input
+          v-else
+          v-model="searchValue"
+          type="text"
+          class="
+            search-bus
+            w-full
+            py-1.5
+            pl-4
+            pr-8
+            outline-none
+            relative
+            md:py-2
+            md:px-5
+            md:text-sm
+            md:bg-primary-100
+            md:placeholder:text-primary-500
+          "
+          :placeholder="searchBusInputPlaceholder"
+        />
+        <button class="absolute right-9 md:right-36" @click="searchBus">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
         </button>
       </div>
-      <button
-        class="
-          py-2
-          px-3
-          ml-2.5
-          bg-grey-100
-          md:basis-3/12
-          justify-center
-          items-center
-          hidden
-          rounded-lg
-          md:flex
-          text-primary-400
-        "
-      >
-        <i class="fas fa-sort-amount-down text-sm mr-2.5"></i>
-        <span class="text-sm">篩選</span>
-      </button>
+      <Popper class="white-popper" offsetDistance="1" offsetSkid="200">
+        <button
+          class="
+            py-2
+            px-3
+            ml-2.5
+            bg-grey-100
+            md:basis-3/12
+            justify-center
+            items-center
+            hidden
+            rounded-lg
+            md:flex
+            text-primary-400
+          "
+        >
+          <i class="fas fa-sort-amount-down text-sm mr-2.5"></i>
+          <span class="text-sm">篩選</span>
+        </button>
+        <template #content>
+          <div
+            class="
+              drop-down-city
+              border-b border-grey-300
+              last:border-0
+              mt-3
+              first:mt-0
+            "
+            v-for="(area, index) in dropdownCity"
+            :key="index"
+          >
+            <p class="flex items-center mb-2">
+              <span class="text-md text-grey-600 font-bold">{{
+                area.area
+              }}</span>
+              <span
+                v-if="!area.active"
+                class="text-lg text-grey-500 cursor-pointer ml-2"
+                @click="toggleCollapseCityMenu(index)"
+                ><i class="fas fa-caret-right"></i
+              ></span>
+              <span
+                v-else
+                class="text-lg text-grey-500 cursor-pointer ml-2"
+                @click="toggleCollapseCityMenu(index)"
+                ><i class="fas fa-caret-down"></i
+              ></span>
+            </p>
+            <div
+              class="
+                cities
+                grid-cols-6
+                gap-x-5 gap-y-2
+                text-grey-600 text-sm
+                font-medium
+                pb-4
+                scale-y-0
+                hidden
+                origin-top
+                overflow-hidden
+                transition-transform
+                ease-in-out
+                duration-500
+              "
+              :class="{ active: area.active }"
+            >
+              <span
+                class="cursor-pointer"
+                v-for="(city, i) in area.cities"
+                :key="i"
+                @click="searchBusByCity(city)"
+                >{{ getCityNameZh(city) }}</span
+              >
+            </div>
+          </div>
+        </template>
+      </Popper>
     </div>
 
     <!-- search bicycle -->
@@ -79,6 +159,7 @@
       </div>
       <div class="search flex justify-center items-center grow">
         <input
+          v-if="toggleKeyBoard && isInputDisable"
           v-model="searchInputValue"
           type="text"
           class="
@@ -96,6 +177,25 @@
           "
           placeholder="搜尋站點或鄰近地點"
           readonly
+        />
+        <input
+          v-else
+          v-model="searchValue"
+          type="text"
+          class="
+            w-full
+            py-1.5
+            pl-4
+            pr-8
+            outline-none
+            relative
+            text-xm
+            rounded-lg
+            bg-primary-100
+            placeholder:text-primary-500
+            md:py-2 md:px-5 md:text-sm md:bg-primary-100
+          "
+          placeholder="搜尋站點或鄰近地點"
         />
         <button class="absolute right-28 md:right-36">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
@@ -151,7 +251,10 @@
 </template>
 
 <script>
-import { ref, toRefs, computed } from "vue";
+import { ref, toRefs, computed, onUnmounted, onMounted, watch } from "vue";
+import { useStore } from "vuex";
+import getCityNameZh from "@/utils/getCityNameZh.js";
+import axios from "axios";
 
 export default {
   props: {
@@ -169,11 +272,20 @@ export default {
       required: true,
       default: "",
     },
+    toggleKeyBoard: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
   setup(props, { emit }) {
-    const { isSearching, searchType, searchInputValue } = toRefs(props);
+    const { isSearching, searchType, searchInputValue, toggleKeyBoard } =
+      toRefs(props);
     let isSlideUp = ref(false);
-    // let searchInputValue = ref("");
+    let searchValue = ref("");
+    let isInputDisable = ref(true);
+    let dropdownCity = ref();
+    const store = useStore();
 
     const searchingClassObject = {
       fixed: isSearching.value,
@@ -188,6 +300,44 @@ export default {
       emit("toggleSlideMenu", isSlideUp.value);
     }
 
+    function toggleCollapseCityMenu(index) {
+      dropdownCity.value[index].active = !dropdownCity.value[index].active;
+    }
+
+    function searchBus() {
+      if (searchValue.value === "") return;
+      const currentCity = store.getters.currentDistrict;
+      const searchInput = {
+        city: currentCity,
+        keyword: searchValue.value,
+      };
+      store.dispatch("getBusByKeyword", searchInput);
+    }
+
+    function searchBusByCity(city) {
+      store.dispatch("getAllCityBus", city);
+    }
+
+    function toggleInputDisable() {
+      const innerWidth = window.innerWidth;
+      if (innerWidth >= 768) {
+        isInputDisable.value = false;
+      } else {
+        isInputDisable.value = true;
+      }
+    }
+
+    watch(
+      () => searchValue.value,
+      (newVal) => {
+        if (newVal === "") {
+          store.commit("CLEAR_BUSLIST");
+          return;
+        }
+        searchBus();
+      }
+    );
+
     const showBusInputSearch = computed(
       () =>
         isSearching.value &&
@@ -200,13 +350,33 @@ export default {
         : "尋找公路或國道路線或目的地..."
     );
 
+    axios
+      .get("../../static/dropDownCity.json")
+      .then((res) => (dropdownCity.value = res.data));
+
+    onMounted(() => {
+      const innerWidth = window.innerWidth;
+      if (innerWidth >= 768) isInputDisable.value = false;
+      window.addEventListener("resize", toggleInputDisable);
+    });
+    onUnmounted(() => window.removeEventListener("resize", toggleInputDisable));
+
     return {
-      searchInputValue,
-      showBusInputSearch,
+      dropdownCity,
+      getCityNameZh,
       isSlideUp,
+      isInputDisable,
+      searchInputValue,
+      searchValue,
+      showBusInputSearch,
       searchingClassObject,
-      toggleSlideMenu,
       searchBusInputPlaceholder,
+      searchBus,
+      searchBusByCity,
+      toggleSlideMenu,
+      toggleKeyBoard,
+      toggleInputDisable,
+      toggleCollapseCityMenu,
     };
   },
 };
@@ -222,6 +392,13 @@ export default {
 }
 input.search-bus {
   border-radius: 3.81rem;
+}
+.drop-down-city {
+  min-width: 425px;
+}
+.cities.active {
+  display: grid;
+  transform: scaleY(1);
 }
 
 @media (min-width: 768px) {

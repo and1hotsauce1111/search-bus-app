@@ -185,6 +185,8 @@ export default {
       cityData.value[index].active = !cityData.value[index].active;
       currentCityIndex = index;
       store.dispatch("getAllCityBus", city);
+      // reset current city
+      store.commit("GET_CURRENT_DISTRICT", city);
     }
 
     function getInputValue(value) {
