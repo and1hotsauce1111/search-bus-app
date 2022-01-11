@@ -24,6 +24,7 @@
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+        @go-to-route-stops="goToRouteStops"
       />
       <KeyBoard
         class="md:hidden"
@@ -93,24 +94,12 @@ export default {
       store.dispatch("getBusByKeyword", searchInput);
     }
 
+    function goToRouteStops() {
+      sideMenuState.isSearching = !sideMenuState.isSearching;
+    }
+
     // custom styles
     window.addEventListener("resize", resizeSideMenu);
-    const sideMenuClassObject = {
-      "bg-primary-100":
-        sideMenuState.isSearching &&
-        (searchType.value === "bus" || searchType.value === "intercityBus"),
-      "search-bicycle":
-        sideMenuState.isSearching && searchType.value === "bicycle",
-      "search-bus":
-        sideMenuState.isSearching &&
-        (searchType.value === "bus" || searchType.value === "intercityBus"),
-      "bg-grey-100":
-        !sideMenuState.isSearching || searchType.value === "bicycle",
-      "rounded-t-2xl":
-        !sideMenuState.isSearching || searchType.value === "bicycle",
-      "top-3/4": !sideMenuState.isSearching || searchType.value === "bicycle",
-      "not-search": !sideMenuState.isSearching,
-    };
 
     function changeMaxHeight() {
       sideMenuState.toggleKeyBoard = !sideMenuState.toggleKeyBoard;
@@ -157,6 +146,25 @@ export default {
       }
     );
 
+    const sideMenuClassObject = computed(() => {
+      return {
+        "bg-primary-100":
+          sideMenuState.isSearching &&
+          (searchType.value === "bus" || searchType.value === "intercityBus"),
+        "search-bicycle":
+          sideMenuState.isSearching && searchType.value === "bicycle",
+        "search-bus":
+          sideMenuState.isSearching &&
+          (searchType.value === "bus" || searchType.value === "intercityBus"),
+        "bg-grey-100":
+          !sideMenuState.isSearching || searchType.value === "bicycle",
+        "rounded-t-2xl":
+          !sideMenuState.isSearching || searchType.value === "bicycle",
+        "top-3/4": !sideMenuState.isSearching || searchType.value === "bicycle",
+        "not-search": !sideMenuState.isSearching,
+      };
+    });
+
     const showSearchBusList = computed(
       () =>
         sideMenuState.isSearching &&
@@ -174,16 +182,17 @@ export default {
     });
 
     return {
-      searchType,
-      sideMenuState,
       changeMaxHeight,
       cardListContainer,
+      goToRouteStops,
+      keyboardInput,
+      searchType,
+      sideMenuState,
       sideMenuContainer,
       sideMenuClassObject,
-      toggleSlideMenu,
-      keyboardInput,
       showSearchBusList,
       showSearchBusDetails,
+      toggleSlideMenu,
     };
   },
 };

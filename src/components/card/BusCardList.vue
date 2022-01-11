@@ -36,7 +36,10 @@
         v-for="bus in renderBusList"
         :key="bus.RouteUID"
       >
-        <div class="bus-info">
+        <div
+          class="bus-info cursor-pointer"
+          @click="goToRouteStops(bus.RouteName.Zh_tw)"
+        >
           <div class="bus-num flex items-center justify-between mb-2">
             <div class="flex items-center justify-between">
               <span
@@ -121,7 +124,7 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const cardContainer = ref(null);
     const { toggleKeyBoard } = toRefs(props);
     const store = useStore();
@@ -141,6 +144,10 @@ export default {
       }
     }
 
+    function goToRouteStops(routName) {
+      emit("goToRouteStops", routName);
+    }
+
     const currentCity = computed(() => {
       const city = store.state.currentDistrict;
       return getCityNameZh(city) || "";
@@ -152,7 +159,13 @@ export default {
       window.removeEventListener("resize", adjustMaxHeight);
     });
 
-    return { renderBusList, toggleKeyBoard, cardContainer, currentCity };
+    return {
+      currentCity,
+      cardContainer,
+      goToRouteStops,
+      renderBusList,
+      toggleKeyBoard,
+    };
   },
 };
 </script>

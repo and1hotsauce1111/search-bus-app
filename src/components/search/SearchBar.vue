@@ -287,14 +287,6 @@ export default {
     let dropdownCity = ref();
     const store = useStore();
 
-    const searchingClassObject = {
-      fixed: isSearching.value,
-      "py-4": isSearching.value,
-      "py-2": !isSearching.value || searchType.value === "bicycle",
-      "bg-primary-300": !isSearching.value || searchType.value === "bicycle",
-      "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
-    };
-
     function toggleSlideMenu() {
       isSlideUp.value = !isSlideUp.value;
       emit("toggleSlideMenu", isSlideUp.value);
@@ -337,6 +329,16 @@ export default {
         searchBus();
       }
     );
+
+    const searchingClassObject = computed(() => {
+      return {
+        fixed: isSearching.value,
+        "py-4": isSearching.value,
+        "py-2": !isSearching.value || searchType.value === "bicycle",
+        "bg-primary-300": !isSearching.value || searchType.value === "bicycle",
+        "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
+      };
+    });
 
     const showBusInputSearch = computed(
       () =>
