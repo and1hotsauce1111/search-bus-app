@@ -14,6 +14,7 @@
   >
     <SearchBar
       :isSearching="isSearching"
+      :isSlideUp="isSlideUp"
       :searchType="searchType"
       :searchInputValue="sideMenuState.inputValue"
       :toggleKeyBoard="sideMenuState.toggleKeyBoard"
@@ -38,6 +39,26 @@
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
       <BusCardDetails :currentBus="sideMenuState.currentBus" />
+    </div>
+    <div
+      v-if="showSearchBusDetails"
+      class="
+        fixed
+        top-14
+        left-4
+        w-9
+        h-9
+        back-to-search-btn
+        cursor-pointer
+        bg-grey-100
+        rounded-full
+        flex
+        justify-center
+        items-center
+      "
+      @click="backToSearch"
+    >
+      <i class="fas fa-angle-left md:hidden"></i>
     </div>
     <!-- search bicycle -->
     <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
@@ -77,6 +98,7 @@ export default {
     const { searchType } = toRefs(props);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
+    let isSlideUp = ref(false);
     const store = useStore();
 
     // key functions
@@ -97,6 +119,14 @@ export default {
 
     function goToRouteStops(bus) {
       sideMenuState.currentBus = bus;
+      // change side menu top to 75%
+      resetSideMenuContainerHeight("75%");
+    }
+
+    function backToSearch() {
+      store.commit("CHANGE_SEARCHING_STATUS");
+      // change sideMenu top 3.06rem
+      resetSideMenuContainerHeight("3.06rem");
     }
 
     // custom styles
@@ -106,9 +136,16 @@ export default {
       sideMenuState.toggleKeyBoard = !sideMenuState.toggleKeyBoard;
     }
 
-    function toggleSlideMenu(isSlide) {
+    function resetSideMenuContainerHeight(top) {
       const container = sideMenuContainer.value;
-      if (container && isSlide) {
+      if (container) container.style.top = top;
+      isSlideUp.value = false;
+    }
+
+    function toggleSlideMenu() {
+      isSlideUp.value = !isSlideUp.value;
+      const container = sideMenuContainer.value;
+      if (container && isSlideUp.value) {
         container.style.top = "15%";
       } else {
         container.style.top = "75%";
@@ -182,10 +219,12 @@ export default {
     });
 
     return {
+      backToSearch,
       changeMaxHeight,
       cardListContainer,
       goToRouteStops,
       isSearching,
+      isSlideUp,
       keyboardInput,
       searchType,
       sideMenuState,

@@ -258,9 +258,19 @@ import axios from "axios";
 
 export default {
   props: {
+    currentBus: {
+      type: Object,
+      requied: true,
+      default: {},
+    },
     isSearching: {
       type: Boolean,
       required: true,
+    },
+    isSlideUp: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     searchType: {
       type: String,
@@ -277,29 +287,24 @@ export default {
       required: true,
       default: true,
     },
-    currentBus: {
-      type: Object,
-      requied: true,
-      default: {},
-    },
   },
   setup(props, { emit }) {
     const {
       isSearching,
+      isSlideUp,
       searchType,
       searchInputValue,
       toggleKeyBoard,
       currentBus,
     } = toRefs(props);
-    let isSlideUp = ref(false);
+    // let isSlideUp = ref(false);
     let searchValue = ref("");
     let isInputDisable = ref(true);
     let dropdownCity = ref();
     const store = useStore();
 
     function toggleSlideMenu() {
-      isSlideUp.value = !isSlideUp.value;
-      emit("toggleSlideMenu", isSlideUp.value);
+      emit("toggleSlideMenu");
     }
 
     function toggleCollapseCityMenu(index) {
