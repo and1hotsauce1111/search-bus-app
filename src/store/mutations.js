@@ -4,6 +4,9 @@ const mutations = {
   [types.CLEAR_BUSLIST](state) {
     state.busCardList = [];
   },
+  [types.CHANGE_SEARCHING_STATUS](state) {
+    state.isSearching = !state.isSearching;
+  },
   [types.GET_CURRENT_DISTRICT](state, district) {
     state.currentDistrict = district;
   },

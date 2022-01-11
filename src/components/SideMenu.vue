@@ -13,10 +13,11 @@
     :class="sideMenuClassObject"
   >
     <SearchBar
-      :isSearching="sideMenuState.isSearching"
+      :isSearching="isSearching"
       :searchType="searchType"
       :searchInputValue="sideMenuState.inputValue"
       :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+      :currentBus="sideMenuState.currentBus"
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
@@ -36,13 +37,10 @@
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <BusCardDetails
-        :currentRouteUID="sideMenuState.currentRoutUID"
-        :currentRouteName="sideMenuState.currentRouteName"
-      />
+      <BusCardDetails :currentBus="sideMenuState.currentBus" />
     </div>
     <!-- search bicycle -->
-    <BicycleCard v-if="sideMenuState.isSearching && searchType === 'bicycle'" />
+    <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
   </div>
 </template>
 
@@ -72,9 +70,7 @@ export default {
   },
   setup(props) {
     const sideMenuState = reactive({
-      currentRoutUID: "",
-      currentRouteName: "",
-      // isSearching: true,
+      currentBus: {},
       inputValue: "",
       toggleKeyBoard: true,
     });
@@ -82,7 +78,6 @@ export default {
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
     const store = useStore();
-    const isSearching = store.state.isSearching;
 
     // key functions
 
@@ -100,10 +95,8 @@ export default {
       store.dispatch("getBusByKeyword", searchInput);
     }
 
-    function goToRouteStops({ routeName, routeUID }) {
-      sideMenuState.currentRoutUID = routeUID;
-      sideMenuState.currentRouteName = routeName;
-      sideMenuState.isSearching = !sideMenuState.isSearching;
+    function goToRouteStops(bus) {
+      sideMenuState.currentBus = bus;
     }
 
     // custom styles
@@ -157,33 +150,32 @@ export default {
     const sideMenuClassObject = computed(() => {
       return {
         "bg-primary-100":
-          sideMenuState.isSearching &&
+          isSearching.value &&
           (searchType.value === "bus" || searchType.value === "intercityBus"),
-        "search-bicycle":
-          sideMenuState.isSearching && searchType.value === "bicycle",
+        "search-bicycle": isSearching.value && searchType.value === "bicycle",
         "search-bus":
-          sideMenuState.isSearching &&
+          isSearching.value &&
           (searchType.value === "bus" || searchType.value === "intercityBus"),
-        "bg-grey-100":
-          !sideMenuState.isSearching || searchType.value === "bicycle",
-        "rounded-t-2xl":
-          !sideMenuState.isSearching || searchType.value === "bicycle",
-        "top-3/4": !sideMenuState.isSearching || searchType.value === "bicycle",
-        "not-search": !sideMenuState.isSearching,
+        "bg-grey-100": !isSearching.value || searchType.value === "bicycle",
+        "rounded-t-2xl": !isSearching.value || searchType.value === "bicycle",
+        "top-3/4": !isSearching.value || searchType.value === "bicycle",
+        "not-search": !isSearching.value,
       };
     });
 
     const showSearchBusList = computed(
       () =>
-        sideMenuState.isSearching &&
+        isSearching.value &&
         (searchType.value === "bus" || searchType.value === "intercityBus")
     );
 
     const showSearchBusDetails = computed(
       () =>
-        !sideMenuState.isSearching &&
+        !isSearching.value &&
         (searchType.value === "bus" || searchType.value === "intercityBus")
     );
+
+    const isSearching = computed(() => store.getters.isSearching);
 
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);

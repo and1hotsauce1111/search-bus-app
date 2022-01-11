@@ -47,7 +47,7 @@ export default {
   },
   getDisplayOfRouteStops(city, routeName) {
     const url = busQueryString(
-      `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
+      `Bus/StopOfRoute/City/${city}/${routeName}`,
       { filter: {type: 'stop', routeName} }
     );
     return axios.get(url, { headers });

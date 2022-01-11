@@ -36,10 +36,7 @@
         v-for="bus in renderBusList"
         :key="bus.RouteUID"
       >
-        <div
-          class="bus-info cursor-pointer"
-          @click="goToRouteStops(bus.RouteName.Zh_tw, bus.RouteUID)"
-        >
+        <div class="bus-info cursor-pointer" @click="goToRouteStops(bus)">
           <div class="bus-num flex items-center justify-between mb-2">
             <div class="flex items-center justify-between">
               <span
@@ -144,14 +141,14 @@ export default {
       }
     }
 
-    function goToRouteStops(routeName, routeUID) {
+    function goToRouteStops(bus) {
       const currentCity = store.getters.currentDistrict;
       const searchInfo = {
         city: currentCity,
-        routeName,
+        routeName: bus.RouteName.Zh_tw,
       };
       store.dispatch("getDisplayOfRouteStops", searchInfo);
-      emit("goToRouteStops", { routeName, routeUID });
+      emit("goToRouteStops", bus);
     }
 
     const currentCity = computed(() => {

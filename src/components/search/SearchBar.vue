@@ -242,7 +242,7 @@
       <button v-else class="md:hidden" @click="toggleSlideMenu">
         <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
       </button>
-      <span class="bus-num grow text-center">306</span>
+      <span class="bus-num grow text-center">{{ currentRouteName }}</span>
       <button>
         <i class="fas fa-info-circle cursor-pointer"></i>
       </button>
@@ -277,10 +277,20 @@ export default {
       required: true,
       default: true,
     },
+    currentBus: {
+      type: Object,
+      requied: true,
+      default: {},
+    },
   },
   setup(props, { emit }) {
-    const { isSearching, searchType, searchInputValue, toggleKeyBoard } =
-      toRefs(props);
+    const {
+      isSearching,
+      searchType,
+      searchInputValue,
+      toggleKeyBoard,
+      currentBus,
+    } = toRefs(props);
     let isSlideUp = ref(false);
     let searchValue = ref("");
     let isInputDisable = ref(true);
@@ -352,6 +362,10 @@ export default {
         : "尋找公路或國道路線或目的地..."
     );
 
+    const currentRouteName = computed(
+      () => currentBus.value.RouteName.Zh_tw || "無法顯示路線名稱"
+    );
+
     axios
       .get("../../static/dropDownCity.json")
       .then((res) => (dropdownCity.value = res.data));
@@ -364,6 +378,7 @@ export default {
     onUnmounted(() => window.removeEventListener("resize", toggleInputDisable));
 
     return {
+      currentRouteName,
       dropdownCity,
       getCityNameZh,
       isSlideUp,

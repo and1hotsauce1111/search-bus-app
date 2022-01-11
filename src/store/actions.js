@@ -55,6 +55,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
     .then((res) => {
       if(res.status === 200) {
         commit(types.GET_BUS_STOPS_BY_ROUTE, res.data);
+        commit(types.CHANGE_SEARCHING_STATUS);
       }
     })
     .catch((err) => console.log(err));
