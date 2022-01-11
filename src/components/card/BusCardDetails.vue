@@ -37,6 +37,21 @@
       class="card-details-block px-4 pt-3 md:px-8 md:pt-7"
     >
       <div v-for="stop in goRouteStops" :key="stop.StopUID">
+        <div
+          v-if="bufferZone.length && bufferZone[0] === stop.StopName.Zh_tw"
+          class="
+            buffer
+            bg-primary-100
+            text-primary-400
+            w-full
+            text-center text-xm
+            py-0.5
+            mb-4
+            rounded-lg
+          "
+        >
+          緩衝區
+        </div>
         <div class="detail flex justify-between items-center mb-4">
           <!-- <span
             class="
@@ -104,6 +119,7 @@
           </Popper> -->
         </div>
         <div
+          v-if="bufferZone.length && bufferZone[1] === stop.StopName.Zh_tw"
           class="
             buffer
             bg-primary-100
@@ -123,6 +139,21 @@
     <!-- card details back -->
     <div v-else class="card-details-block px-4 pt-3 md:px-8 md:pt-7">
       <div v-for="stop in backRouteStops" :key="stop.StopUID">
+        <div
+          v-if="bufferZone.length && bufferZone[1] === stop.StopName.Zh_tw"
+          class="
+            buffer
+            bg-primary-100
+            text-primary-400
+            w-full
+            text-center text-xm
+            py-0.5
+            mb-4
+            rounded-lg
+          "
+        >
+          緩衝區
+        </div>
         <div class="detail flex justify-between items-center mb-4">
           <!-- <span
             class="
@@ -190,6 +221,7 @@
           </Popper> -->
         </div>
         <div
+          v-if="bufferZone.length && bufferZone[0] === stop.StopName.Zh_tw"
           class="
             buffer
             bg-primary-100
@@ -228,9 +260,9 @@ export default {
     const routeStops = store.getters.busStopOfRoute;
     const goRouteStops = routeStops[0].Stops || [];
     const backRouteStops = routeStops[1].Stops || [];
-    const bufferZone = store.getters.fareBufferZoneDescriptionZh(
-      currentBus.value.RouteUID
-    );
+    const bufferZone =
+      store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
+      [];
 
     function stopStatus(status) {
       var currentStatus = "";

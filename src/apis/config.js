@@ -8,29 +8,52 @@ const selectString = (select) => {
   return select.reduce((acc, cur, index) => {
     let concat = index === 0 ? cur : ', ' + cur;
     return acc + concat;
-  }, '&$select=');
+  }, '$select=');
 };
 
 // const filterBusString = (keyword) =>
 //   `?$filter=Stops/any(d:(contains(d/StopName/Zh_tw, '${keyword}') eq true)) or contains(RouteName/Zh_tw, '${keyword}')`;
 const filterBusString = (keyword) =>
-  `&$filter=contains(RouteName/Zh_tw, '${keyword}')`;
-const filterBusStops = (routeName) => `&$filter=RouteName/Zh_tw eq '${routeName}'`;
+  `$filter=contains(RouteName/Zh_tw, '${keyword}')`;
+const filterBusStops = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
 const nearByBusString = (position) =>
-  `&$spatialFilter=nearby(${position.lat},${position.lng},500)`;
+  `$spatialFilter=nearby(${position.lat},${position.lng},500)`;
 
 export const busQueryString = (
   dataType,
-  query = { select: null, filter: null, position: null },
+  query = { select: null, filter: null, position: null, top: true },
 ) => {
   let requestUrl = '';
-  requestUrl += '?$top=30';
-  if (query.filter && query.filter.type === 'bus')
-  requestUrl += filterBusString(query.filter.keyword);
-  if (query.filter && query.filter.type === 'nearby')
-  requestUrl += nearByBusString(query.position);
-  if(query.filter && query.filter.type === 'stop') requestUrl += filterBusStops(query.filter.routeName);
-  if (query.select && query.select) requestUrl += selectString(query.select);
+  if(query.top) requestUrl += '?$top=30';
+  if (query.filter && query.filter.type === 'bus') {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + filterBusString(query.filter.keyword)
+    }else {
+      requestUrl = requestUrl + '&' + filterBusString(query.filter.keyword)
+    }
+  }
+  
+  if (query.filter && query.filter.type === 'nearby') {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + nearByBusString(query.position)
+    }else {
+      requestUrl = requestUrl + '&' + nearByBusString(query.position)
+    }
+  }
+  if(query.filter && query.filter.type === 'stop') {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + filterBusStops(query.filter.routeName)
+    }else {
+      requestUrl = requestUrl + '&' + filterBusStops(query.filter.routeName)
+    }
+  }
+  if (query.select && query.select) {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + selectString(query.select)
+    }else {
+      requestUrl = requestUrl + '&' + selectString(query.select)
+    }
+  }
   requestUrl += '&$format=JSON';
 
   return encodeURI(`${ptx_baseUrl}${dataType}${requestUrl}`);

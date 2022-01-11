@@ -38,7 +38,7 @@
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <BusCardDetails :currentBus="sideMenuState.currentBus" />
+      <!-- <BusCardDetails :currentBus="sideMenuState.currentBus" /> -->
     </div>
     <div
       v-if="showSearchBusDetails"
@@ -55,10 +55,11 @@
         flex
         justify-center
         items-center
+        md:hidden
       "
       @click="backToSearch"
     >
-      <i class="fas fa-angle-left md:hidden"></i>
+      <i class="fas fa-angle-left"></i>
     </div>
     <!-- search bicycle -->
     <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
@@ -119,6 +120,7 @@ export default {
 
     function goToRouteStops(bus) {
       sideMenuState.currentBus = bus;
+      store.commit("CHANGE_SEARCHING_STATUS");
       // change side menu top to 75%
       resetSideMenuContainerHeight("75%");
     }
@@ -138,7 +140,8 @@ export default {
 
     function resetSideMenuContainerHeight(top) {
       const container = sideMenuContainer.value;
-      if (container) container.style.top = top;
+      const innerWidth = window.innerWidth;
+      if (container && innerWidth < 640) container.style.top = top;
       isSlideUp.value = false;
     }
 
@@ -157,17 +160,17 @@ export default {
       const isNotSearch = container.classList.contains("not-search");
       const isSearchBus = container.classList.contains("search-bus");
       const isSearchBicycle = container.classList.contains("search-bicycle");
+      const innerWidth = window.innerWidth;
 
-      if (!container || isSearchBus) return;
-      if (
-        container &&
-        (isNotSearch || isSearchBicycle) &&
-        window.innerWidth >= 768
-      ) {
+      if (!container) return;
+      // searching
+      if (isSearchBus && innerWidth >= 768) container.style.top = "7rem";
+      if (isSearchBus && innerWidth < 640) container.style.top = "3.06rem";
+      // not searching or search bicycle
+      if ((isNotSearch || isSearchBicycle) && window.innerWidth >= 768)
         container.style.top = "7rem";
-      } else {
+      if ((isNotSearch || isSearchBicycle) && window.innerWidth < 640)
         container.style.top = "70%";
-      }
     }
 
     // watch and computed

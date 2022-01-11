@@ -233,7 +233,7 @@
         text-lg text-grey-100
       "
     >
-      <button @click="isSearching = true">
+      <button @click="backToSearch">
         <i class="fas fa-angle-left cursor-pointer hidden md:block"></i>
       </button>
       <button v-if="isSlideUp" class="md:hidden" @click="toggleSlideMenu">
@@ -297,18 +297,14 @@ export default {
       toggleKeyBoard,
       currentBus,
     } = toRefs(props);
-    // let isSlideUp = ref(false);
+
     let searchValue = ref("");
     let isInputDisable = ref(true);
     let dropdownCity = ref();
     const store = useStore();
 
-    function toggleSlideMenu() {
-      emit("toggleSlideMenu");
-    }
-
-    function toggleCollapseCityMenu(index) {
-      dropdownCity.value[index].active = !dropdownCity.value[index].active;
+    function backToSearch() {
+      store.commit("CHANGE_SEARCHING_STATUS");
     }
 
     function searchBus() {
@@ -320,9 +316,15 @@ export default {
       };
       store.dispatch("getBusByKeyword", searchInput);
     }
-
     function searchBusByCity(city) {
       store.dispatch("getAllCityBus", city);
+    }
+    function toggleSlideMenu() {
+      emit("toggleSlideMenu");
+    }
+
+    function toggleCollapseCityMenu(index) {
+      dropdownCity.value[index].active = !dropdownCity.value[index].active;
     }
 
     function toggleInputDisable() {
@@ -383,6 +385,7 @@ export default {
     onUnmounted(() => window.removeEventListener("resize", toggleInputDisable));
 
     return {
+      backToSearch,
       currentRouteName,
       dropdownCity,
       getCityNameZh,

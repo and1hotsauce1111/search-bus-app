@@ -11,7 +11,7 @@ export default {
       'DestinationStopNameZh',
       'FareBufferZoneDescriptionZh',
     ];
-    const url = busQueryString(`Bus/Route/City/${city}`, { select });
+    const url = busQueryString(`Bus/Route/City/${city}`, { select, top: true });
     return axios.get(url, { headers });
   },
   getNearByBus(position) {
@@ -27,6 +27,7 @@ export default {
       position,
       filter: { type: 'nearby' },
       select,
+      top: true
     });
     return axios.get(url, { headers });
   },
@@ -42,14 +43,26 @@ export default {
     const url = busQueryString(`Bus/Route/City/${city}`, {
       filter: { type: 'bus', keyword },
       select,
+      top: true
     });
     return axios.get(url, { headers });
   },
   getDisplayOfRouteStops(city, routeName) {
+    const url = busQueryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
+      filter: { type: 'stop', routeName },
+      top: true
+    });
+    return axios.get(url, { headers });
+  },
+  // estimate time of arrival
+  // ​/v2​/Bus​/EstimatedTimeOfArrival​/City​/{City}​/{RouteName}
+  getEstimatedTimeOfArrival(city, routeName) {
     const url = busQueryString(
-      `Bus/StopOfRoute/City/${city}/${routeName}`,
-      { filter: {type: 'stop', routeName} }
+      `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
+      { filter: { type: 'stop', routeName }, top: false },
     );
     return axios.get(url, { headers });
   },
+  // get current route bus position
+  // ​/v2​/Bus​/RealTimeByFrequency​/City​/{City}​/{RouteName}
 };

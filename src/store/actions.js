@@ -49,14 +49,19 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
     .catch((err) => console.log(err));
 };
 
-export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
+export const getDisplayOfRouteStops = async function ({ commit, state }, searchInfo) {
   const { city, routeName } = searchInfo;
-  BusApi.getDisplayOfRouteStops(city, routeName)
-    .then((res) => {
-      if(res.status === 200) {
-        commit(types.GET_BUS_STOPS_BY_ROUTE, res.data);
-        commit(types.CHANGE_SEARCHING_STATUS);
-      }
-    })
-    .catch((err) => console.log(err));
+  // BusApi.getDisplayOfRouteStops(city, routeName)
+  //   .then((res) => {
+  //     if(res.status === 200) {
+  //       commit(types.GET_BUS_STOPS_BY_ROUTE, res.data);
+  //       commit(types.CHANGE_SEARCHING_STATUS);
+  //     }
+  //   })
+  //   .catch((err) => console.log(err));
+  const { status: stopStatus, data:stopData } = await BusApi.getDisplayOfRouteStops(city, routeName);
+  const { status: estimateStatus, data: estimateData } = await BusApi.getEstimatedTimeOfArrival(city, routeName);
+  console.log('estimateData', estimateData);
+  // combine stop and estimate data
+  // use axios promise all
 };
