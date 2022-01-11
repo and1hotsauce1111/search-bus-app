@@ -38,7 +38,7 @@
       >
         <div
           class="bus-info cursor-pointer"
-          @click="goToRouteStops(bus.RouteName.Zh_tw)"
+          @click="goToRouteStops(bus.RouteName.Zh_tw, bus.RouteUID)"
         >
           <div class="bus-num flex items-center justify-between mb-2">
             <div class="flex items-center justify-between">
@@ -144,8 +144,14 @@ export default {
       }
     }
 
-    function goToRouteStops(routName) {
-      emit("goToRouteStops", routName);
+    function goToRouteStops(routeName, routeUID) {
+      const currentCity = store.getters.currentDistrict;
+      const searchInfo = {
+        city: currentCity,
+        routeName,
+      };
+      store.dispatch("getDisplayOfRouteStops", searchInfo);
+      emit("goToRouteStops", { routeName, routeUID });
     }
 
     const currentCity = computed(() => {

@@ -9,6 +9,7 @@ export default {
       'RouteUID',
       'DepartureStopNameZh',
       'DestinationStopNameZh',
+      'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString(`Bus/Route/City/${city}`, { select });
     return axios.get(url, { headers });
@@ -20,6 +21,7 @@ export default {
       'RouteUID',
       'DepartureStopNameZh',
       'DestinationStopNameZh',
+      'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString('Bus/Route/NearBy', {
       position,
@@ -35,11 +37,19 @@ export default {
       'RouteUID',
       'DepartureStopNameZh',
       'DestinationStopNameZh',
+      'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString(`Bus/Route/City/${city}`, {
       filter: { type: 'bus', keyword },
-      select
+      select,
     });
+    return axios.get(url, { headers });
+  },
+  getDisplayOfRouteStops(city, routeName) {
+    const url = busQueryString(
+      `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
+      { filter: {type: 'stop', routeName} }
+    );
     return axios.get(url, { headers });
   },
 };

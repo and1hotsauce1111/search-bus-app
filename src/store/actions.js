@@ -1,5 +1,4 @@
 import * as types from './mutation-types';
-import axios from 'axios';
 import BusApi from '../apis/getBus';
 import districtApi from '../apis/getDistrict';
 
@@ -21,7 +20,7 @@ export const getCurrentDistrict = function (
 export const getAllCityBus = function ({ commit, state }, city) {
   BusApi.getAllCityBus(city)
     .then((res) => {
-      if(res.status === 200) {
+      if (res.status === 200) {
         commit(types.GET_ALL_CITY_BUS, res.data);
       }
     })
@@ -45,6 +44,17 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
     .then((res) => {
       if (res.status === 200) {
         commit(types.GET_BUS_BY_KEYWORD, res.data);
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
+  const { city, routeName } = searchInfo;
+  BusApi.getDisplayOfRouteStops(city, routeName)
+    .then((res) => {
+      if(res.status === 200) {
+        commit(types.GET_BUS_STOPS_BY_ROUTE, res.data);
       }
     })
     .catch((err) => console.log(err));

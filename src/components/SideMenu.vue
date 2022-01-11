@@ -36,7 +36,10 @@
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <BusCardDetails />
+      <BusCardDetails
+        :currentRouteUID="sideMenuState.currentRoutUID"
+        :currentRouteName="sideMenuState.currentRouteName"
+      />
     </div>
     <!-- search bicycle -->
     <BicycleCard v-if="sideMenuState.isSearching && searchType === 'bicycle'" />
@@ -69,14 +72,17 @@ export default {
   },
   setup(props) {
     const sideMenuState = reactive({
-      isSearching: true,
-      toggleKeyBoard: true,
+      currentRoutUID: "",
+      currentRouteName: "",
+      // isSearching: true,
       inputValue: "",
+      toggleKeyBoard: true,
     });
     const { searchType } = toRefs(props);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
     const store = useStore();
+    const isSearching = store.state.isSearching;
 
     // key functions
 
@@ -94,7 +100,9 @@ export default {
       store.dispatch("getBusByKeyword", searchInput);
     }
 
-    function goToRouteStops() {
+    function goToRouteStops({ routeName, routeUID }) {
+      sideMenuState.currentRoutUID = routeUID;
+      sideMenuState.currentRouteName = routeName;
       sideMenuState.isSearching = !sideMenuState.isSearching;
     }
 
@@ -185,6 +193,7 @@ export default {
       changeMaxHeight,
       cardListContainer,
       goToRouteStops,
+      isSearching,
       keyboardInput,
       searchType,
       sideMenuState,

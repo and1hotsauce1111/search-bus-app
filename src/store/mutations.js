@@ -1,6 +1,9 @@
 import * as types from './mutation-types';
 
 const mutations = {
+  [types.CLEAR_BUSLIST](state) {
+    state.busCardList = [];
+  },
   [types.GET_CURRENT_DISTRICT](state, district) {
     state.currentDistrict = district;
   },
@@ -13,10 +16,9 @@ const mutations = {
   [types.GET_ALL_CITY_BUS](state, allCityBus) {
     state.busCardList = allCityBus;
   },
-  [types.CLEAR_BUSLIST](state) {
-    state.busCardList = [];
-  }
+  [types.GET_BUS_STOPS_BY_ROUTE](state, stops) {
+    state.busStopOfRoute = stops;
+  },
 };
-
 
 export default mutations;
