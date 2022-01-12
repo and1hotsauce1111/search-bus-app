@@ -1,6 +1,7 @@
 import * as types from './mutation-types';
 import BusApi from '../apis/getBus';
 import districtApi from '../apis/getDistrict';
+import { mapingRouteStopsAndEstimatedTimeData } from '@/utils/mappingData.js';
 
 export const getCurrentDistrict = function (
   { commit, state, dispatch },
@@ -49,19 +50,20 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
     .catch((err) => console.log(err));
 };
 
-export const getDisplayOfRouteStops = async function ({ commit, state }, searchInfo) {
+export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
   const { city, routeName } = searchInfo;
-  // BusApi.getDisplayOfRouteStops(city, routeName)
-  //   .then((res) => {
-  //     if(res.status === 200) {
-  //       commit(types.GET_BUS_STOPS_BY_ROUTE, res.data);
-  //       commit(types.CHANGE_SEARCHING_STATUS);
-  //     }
-  //   })
-  //   .catch((err) => console.log(err));
-  const { status: stopStatus, data:stopData } = await BusApi.getDisplayOfRouteStops(city, routeName);
-  const { status: estimateStatus, data: estimateData } = await BusApi.getEstimatedTimeOfArrival(city, routeName);
-  console.log('estimateData', estimateData);
-  // combine stop and estimate data
-  // use axios promise all
+
+  const requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
+  const requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
+
+  Promise.all([requestRouteStops, requestEstimateTime]).then((value) => {
+    if (value[0].status === 200 && value[1].status === 200) {
+      const mappingData = mapingRouteStopsAndEstimatedTimeData(
+        value[0].data,
+        value[1].data,
+      );
+      commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+      commit(types.CHANGE_SIDEMENU_HEIGHT);
+    }
+  });
 };

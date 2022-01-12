@@ -7,6 +7,9 @@ const mutations = {
   [types.CHANGE_SEARCHING_STATUS](state) {
     state.isSearching = !state.isSearching;
   },
+  [types.CHANGE_SIDEMENU_HEIGHT](state) {
+    state.isChangeSideMenuHeight = !state.isChangeSideMenuHeight;
+  },
   [types.GET_CURRENT_DISTRICT](state, district) {
     state.currentDistrict = district;
   },

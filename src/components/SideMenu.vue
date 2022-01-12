@@ -38,7 +38,7 @@
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <!-- <BusCardDetails :currentBus="sideMenuState.currentBus" /> -->
+      <BusCardDetails :currentBus="sideMenuState.currentBus" />
     </div>
     <div
       v-if="showSearchBusDetails"
@@ -120,9 +120,6 @@ export default {
 
     function goToRouteStops(bus) {
       sideMenuState.currentBus = bus;
-      store.commit("CHANGE_SEARCHING_STATUS");
-      // change side menu top to 75%
-      resetSideMenuContainerHeight("75%");
     }
 
     function backToSearch() {
@@ -184,6 +181,14 @@ export default {
         } else {
           container.style.maxHeight = "calc(100vh - 22rem)";
         }
+      }
+    );
+
+    watch(
+      () => store.getters.isChangeSideMenuHeight,
+      (newVal) => {
+        resetSideMenuContainerHeight("75%");
+        store.commit("CHANGE_SEARCHING_STATUS");
       }
     );
 

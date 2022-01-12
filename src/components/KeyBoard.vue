@@ -7,7 +7,7 @@
       fixed
       bottom-0
       transition-transform
-      duration-500
+      duration-300
     "
     ref="keyboard"
   >

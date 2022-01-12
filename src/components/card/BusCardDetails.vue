@@ -33,7 +33,7 @@
 
     <!-- card details go -->
     <div
-      v-if="showGoRoute"
+      v-show="showGoRoute"
       class="card-details-block px-4 pt-3 md:px-8 md:pt-7"
     >
       <div v-for="stop in goRouteStops" :key="stop.StopUID">
@@ -53,21 +53,7 @@
           緩衝區
         </div>
         <div class="detail flex justify-between items-center mb-4">
-          <!-- <span
-            class="
-              status
-              px-3
-              py-2
-              border
-              rounded-lg
-              border-grey-400
-              text-grey-400 text-xm text-center
-              font-bold
-            "
-            >{{ stopStatus(stop.StopStatus) }}</span
-          > -->
-          <!-- <span
-            v-else
+          <span
             class="
               status
               px-3
@@ -78,45 +64,43 @@
               font-bold
             "
             :class="{
-              'border-green-100': card.light === 'green',
-              'border-alert-400': card.light === 'red',
-              'text-primary-400': card.countDown > 5,
-              'text-alert-400': card.countDown <= 5,
+              'border-grey-400':
+                stop.StopStatus !== 0 ||
+                isNearStop(stop.EstimateTime) === 'grey',
+              'text-grey-400':
+                stop.StopStatus !== 0 ||
+                isNearStop(stop.EstimateTime) === 'grey',
+              'border-green-100': isNearStop(stop.EstimateTime) === 'green',
+              'text-primary-400': isNearStop(stop.EstimateTime) === 'green',
+              'border-alert-400': isNearStop(stop.EstimateTime) === 'red',
+              'text-alert-400': isNearStop(stop.EstimateTime) === 'red',
             }"
-            >{{ card.countDown + "分" }}</span
-          > -->
+          >
+            {{ stopStatus(stop.StopStatus, stop.EstimateTime) }}
+          </span>
+
           <span class="grow text-left ml-3 text-grey-500 text-sm">{{
             stop.StopName.Zh_tw
           }}</span>
 
-          <!-- <Popper v-if="card.light === 'grey'" arrow placement="left">
-            <button>
-              <img class="light-img" src="@/assets/light/grey.png" alt="grey" />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper>
-          <Popper v-if="card.light === 'green'" arrow placement="left">
-            <button>
-              <img
-                class="light-img"
-                src="@/assets/light/green.png"
-                alt="green"
-              />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper>
-          <Popper v-if="card.light === 'red'" arrow placement="left">
-            <button>
-              <img class="light-img" src="@/assets/light/red.png" alt="red" />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper> -->
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'grey'"
+            class="light-img"
+            src="@/assets/light/grey.png"
+            alt="grey"
+          />
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'green'"
+            class="light-img"
+            src="@/assets/light/green.png"
+            alt="green"
+          />
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'red'"
+            class="light-img"
+            src="@/assets/light/red.png"
+            alt="red"
+          />
         </div>
         <div
           v-if="bufferZone.length && bufferZone[1] === stop.StopName.Zh_tw"
@@ -137,7 +121,10 @@
     </div>
 
     <!-- card details back -->
-    <div v-else class="card-details-block px-4 pt-3 md:px-8 md:pt-7">
+    <div
+      v-show="!showGoRoute"
+      class="card-details-block px-4 pt-3 md:px-8 md:pt-7"
+    >
       <div v-for="stop in backRouteStops" :key="stop.StopUID">
         <div
           v-if="bufferZone.length && bufferZone[1] === stop.StopName.Zh_tw"
@@ -155,21 +142,7 @@
           緩衝區
         </div>
         <div class="detail flex justify-between items-center mb-4">
-          <!-- <span
-            class="
-              status
-              px-3
-              py-2
-              border
-              rounded-lg
-              border-grey-400
-              text-grey-400 text-xm text-center
-              font-bold
-            "
-            >{{ stopStatus(stop.StopStatus) }}</span
-          > -->
-          <!-- <span
-            v-else
+          <span
             class="
               status
               px-3
@@ -180,45 +153,43 @@
               font-bold
             "
             :class="{
-              'border-green-100': card.light === 'green',
-              'border-alert-400': card.light === 'red',
-              'text-primary-400': card.countDown > 5,
-              'text-alert-400': card.countDown <= 5,
+              'border-grey-400':
+                stop.StopStatus !== 0 ||
+                isNearStop(stop.EstimateTime) === 'grey',
+              'text-grey-400':
+                stop.StopStatus !== 0 ||
+                isNearStop(stop.EstimateTime) === 'grey',
+              'border-green-100': isNearStop(stop.EstimateTime) === 'green',
+              'text-primary-400': isNearStop(stop.EstimateTime) === 'green',
+              'border-alert-400': isNearStop(stop.EstimateTime) === 'red',
+              'text-alert-400': isNearStop(stop.EstimateTime) === 'red',
             }"
-            >{{ card.countDown + "分" }}</span
-          > -->
+          >
+            {{ stopStatus(stop.StopStatus, stop.EstimateTime) }}
+          </span>
+
           <span class="grow text-left ml-3 text-grey-500 text-sm">{{
             stop.StopName.Zh_tw
           }}</span>
 
-          <!-- <Popper v-if="card.light === 'grey'" arrow placement="left">
-            <button>
-              <img class="light-img" src="@/assets/light/grey.png" alt="grey" />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper>
-          <Popper v-if="card.light === 'green'" arrow placement="left">
-            <button>
-              <img
-                class="light-img"
-                src="@/assets/light/green.png"
-                alt="green"
-              />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper>
-          <Popper v-if="card.light === 'red'" arrow placement="left">
-            <button>
-              <img class="light-img" src="@/assets/light/red.png" alt="red" />
-            </button>
-            <template #content>
-              <div>{{ msg }}</div>
-            </template>
-          </Popper> -->
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'grey'"
+            class="light-img"
+            src="@/assets/light/grey.png"
+            alt="grey"
+          />
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'green'"
+            class="light-img"
+            src="@/assets/light/green.png"
+            alt="green"
+          />
+          <img
+            v-if="isNearStop(stop.EstimateTime) === 'red'"
+            class="light-img"
+            src="@/assets/light/red.png"
+            alt="red"
+          />
         </div>
         <div
           v-if="bufferZone.length && bufferZone[0] === stop.StopName.Zh_tw"
@@ -264,11 +235,18 @@ export default {
       store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
       [];
 
-    function stopStatus(status) {
+    function stopStatus(status, estimateTime) {
       var currentStatus = "";
       switch (status) {
         case 0:
-          currentStatus = "正常";
+          if (estimateTime !== undefined) {
+            const min = Math.floor(estimateTime / 60);
+            if (min <= 3) {
+              currentStatus = "即將進站";
+            } else {
+              currentStatus = Math.floor(estimateTime / 60) + "分";
+            }
+          }
           break;
         case 1:
           currentStatus = "尚未發車";
@@ -287,6 +265,12 @@ export default {
       return currentStatus;
     }
 
+    function isNearStop(estimateTime) {
+      if (estimateTime === undefined) return "grey";
+      const min = Math.floor(estimateTime / 60);
+      return min <= 5 ? "red" : "green";
+    }
+
     function showOtherRoute() {
       showGoRoute.value = !showGoRoute.value;
     }
@@ -296,6 +280,7 @@ export default {
       backRouteStops,
       currentBus,
       goRouteStops,
+      isNearStop,
       msg,
       stopStatus,
       showGoRoute,

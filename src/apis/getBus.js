@@ -1,6 +1,8 @@
 import { headers, busQueryString } from './config';
 import axios from 'axios';
 
+const axiosInstance = axios.create({ headers });
+
 export default {
   getAllCityBus(city) {
     const select = [
@@ -12,7 +14,7 @@ export default {
       'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString(`Bus/Route/City/${city}`, { select, top: true });
-    return axios.get(url, { headers });
+    return axiosInstance.get(url);
   },
   getNearByBus(position) {
     const select = [
@@ -29,7 +31,7 @@ export default {
       select,
       top: true
     });
-    return axios.get(url, { headers });
+    return axiosInstance.get(url);
   },
   getBusByKeyword(city, keyword) {
     const select = [
@@ -45,23 +47,21 @@ export default {
       select,
       top: true
     });
-    return axios.get(url, { headers });
+    return axiosInstance.get(url);
   },
   getDisplayOfRouteStops(city, routeName) {
     const url = busQueryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
       filter: { type: 'stop', routeName },
       top: true
     });
-    return axios.get(url, { headers });
+    return axiosInstance.get(url);
   },
-  // estimate time of arrival
-  // ​/v2​/Bus​/EstimatedTimeOfArrival​/City​/{City}​/{RouteName}
   getEstimatedTimeOfArrival(city, routeName) {
     const url = busQueryString(
       `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
-    return axios.get(url, { headers });
+    return axiosInstance.get(url);
   },
   // get current route bus position
   // ​/v2​/Bus​/RealTimeByFrequency​/City​/{City}​/{RouteName}

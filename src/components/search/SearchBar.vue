@@ -127,7 +127,7 @@
                 overflow-hidden
                 transition-transform
                 ease-in-out
-                duration-500
+                duration-300
               "
               :class="{ active: area.active }"
             >

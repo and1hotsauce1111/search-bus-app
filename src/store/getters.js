@@ -7,3 +7,4 @@ export const fareBufferZoneDescriptionZh = (state) => (RouteUID) => {
   return targetBus.FareBufferZoneDescriptionZh.split('－');
 };
 export const isSearching = (state) => state.isSearching;
+export const isChangeSideMenuHeight = (state) => state.isChangeSideMenuHeight;
