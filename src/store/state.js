@@ -3,7 +3,9 @@ const state = {
   isChangeSideMenuHeight: false,
   currentDistrict: 'Taichung',
   busCardList: [],
-  busStopOfRoute: []
+  busStopOfRoute: [],
+  allRouteStopsPosition: {},
+  allRouteBusPosition: [],
 };
 
 export default state;

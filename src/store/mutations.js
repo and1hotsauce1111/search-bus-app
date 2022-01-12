@@ -25,6 +25,12 @@ const mutations = {
   [types.GET_BUS_STOPS_BY_ROUTE](state, stops) {
     state.busStopOfRoute = stops;
   },
+  [types.GET_ALL_ROUTE_STOPS_POSITION](state, stops) {
+    state.allRouteStopsPosition = stops;
+  },
+  [types.GET_ALL_ROUTE_BUS_POSITION](state, bus) {
+    state.allRouteBusPosition = bus;
+  },
 };
 
 export default mutations;

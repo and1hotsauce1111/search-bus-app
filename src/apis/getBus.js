@@ -29,7 +29,7 @@ export default {
       position,
       filter: { type: 'nearby' },
       select,
-      top: true
+      top: true,
     });
     return axiosInstance.get(url);
   },
@@ -45,14 +45,14 @@ export default {
     const url = busQueryString(`Bus/Route/City/${city}`, {
       filter: { type: 'bus', keyword },
       select,
-      top: true
+      top: true,
     });
     return axiosInstance.get(url);
   },
   getDisplayOfRouteStops(city, routeName) {
     const url = busQueryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
       filter: { type: 'stop', routeName },
-      top: true
+      top: true,
     });
     return axiosInstance.get(url);
   },
@@ -63,6 +63,21 @@ export default {
     );
     return axiosInstance.get(url);
   },
-  // get current route bus position
-  // ​/v2​/Bus​/RealTimeByFrequency​/City​/{City}​/{RouteName}
+  // all route bus position
+  getCurrentRouteBusPosition(city, routeName) {
+    const url = busQueryString(
+      `Bus/RealTimeByFrequency/City/${city}/${routeName}`,
+      { filter: { type: 'stop', routeName }, top: false },
+    );
+    return axiosInstance.get(url);
+  },
+  // all real time near by stop bus
+  getRealTimeNearByBus(city, routeName) {
+    const url = busQueryString(
+      `Bus/RealTimeNearStop/City/${city}/${routeName}`,
+      { filter: { type: 'stop', routeName }, top: false },
+    );
+
+    return axiosInstance.get(url);
+  },
 };
