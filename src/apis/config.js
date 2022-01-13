@@ -11,10 +11,23 @@ const selectString = (select) => {
   }, '$select=');
 };
 
-// const filterBusString = (keyword) =>
-//   `?$filter=Stops/any(d:(contains(d/StopName/Zh_tw, '${keyword}') eq true)) or contains(RouteName/Zh_tw, '${keyword}')`;
-const filterBusString = (keyword) =>
-  `$filter=contains(RouteName/Zh_tw, '${keyword}')`;
+const filterMultipleRouteString = (routeUID) => {
+  return routeUID.reduce((acc, cur, index, array) => {
+    let concat = '';
+    if(index === array.length - 1) {
+      concat = 'RouteUID' + ' ' + 'eq' + ' ' + "'" + cur + "'";
+    } else {
+      concat = 'RouteUID' + ' ' + 'eq' + ' ' + "'" + cur + "'" + ' ' + 'or' + ' ';
+    }
+    
+    return acc + concat;
+  }, '$filter=');
+};
+
+const filterBusByStopString = (keyword) =>
+  `$filter=(Stops/any(d:(contains(d/StopName/Zh_tw, '${keyword}') eq true)) or Contains(RouteName/Zh_tw, '${keyword}') eq true) and Direction eq 0`;
+// const filterBusByRouteString = (keyword) =>
+//   `$filter=contains(RouteName/Zh_tw, '${keyword}')`;
 const filterBusStops = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
 const nearByBusString = (position) =>
   `$spatialFilter=nearby(${position.lat},${position.lng},500)`;
@@ -25,11 +38,19 @@ export const busQueryString = (
 ) => {
   let requestUrl = '';
   if(query.top) requestUrl += '?$top=30';
-  if (query.filter && query.filter.type === 'bus') {
+  if (query.filter && query.filter.type === 'bus/route') {
     if(requestUrl === '') {
-      requestUrl = requestUrl + '?' + filterBusString(query.filter.keyword)
+      requestUrl = requestUrl + '?' + filterMultipleRouteString(query.filter.routeUID)
     }else {
-      requestUrl = requestUrl + '&' + filterBusString(query.filter.keyword)
+      requestUrl = requestUrl + '&' + filterMultipleRouteString(query.filter.routeUID)
+    }
+  }
+
+  if (query.filter && query.filter.type === 'bus/stop') {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + filterBusByStopString(query.filter.keyword)
+    }else {
+      requestUrl = requestUrl + '&' + filterBusByStopString(query.filter.keyword)
     }
   }
   

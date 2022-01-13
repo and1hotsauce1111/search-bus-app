@@ -33,7 +33,8 @@ export default {
     });
     return axiosInstance.get(url);
   },
-  getBusByKeyword(city, keyword) {
+  // for show bus card list
+  getBusByRouteUIDs(city, routeUID) {
     const select = [
       'City',
       'RouteName',
@@ -43,9 +44,19 @@ export default {
       'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString(`Bus/Route/City/${city}`, {
-      filter: { type: 'bus', keyword },
+      filter: { type: 'bus/route', routeUID },
       select,
       top: true,
+    });
+    return axiosInstance.get(url);
+  },
+  // for search stopName or routeName
+  getBusByStopNameKeyword(city, keyword) {
+    const select = ['RouteUID'];
+    const url = busQueryString(`Bus/StopOfRoute/City/${city}`, {
+      select,
+      top: false,
+      filter: { type: 'bus/stop', keyword },
     });
     return axiosInstance.get(url);
   },

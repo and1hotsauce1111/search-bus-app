@@ -248,7 +248,18 @@
       <button v-else class="md:hidden" @click="toggleSlideMenu">
         <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
       </button>
-      <span class="bus-num grow text-center">{{ currentRouteName }}</span>
+      <span
+        class="
+          bus-num
+          grow
+          text-center
+          overflow-hidden
+          text-ellipsis
+          whitespace-nowrap
+          px-4
+        "
+        >{{ currentRouteName }}</span
+      >
       <button>
         <i class="fas fa-info-circle cursor-pointer"></i>
       </button>
@@ -314,19 +325,18 @@ export default {
 
     function searchBus() {
       if (searchInputValue.value === "") return;
-      // store.commit("UPDATE_SEARCH_INPUT_VALUE");
-      // const currentCity = store.getters.currentDistrict;
-      // const searchInput = {
-      //   city: currentCity,
-      //   keyword: searchValue.value,
-      // };
-      // store.dispatch("getBusByKeyword", searchInput);
-      // emit keyboard to update input value
-      // emit("updateInputValue", searchValue.value);
+      const currentCity = store.getters.currentDistrict;
+      const searchInput = {
+        city: currentCity,
+        keyword: searchInputValue.value,
+      };
+      store.dispatch("getBusByKeyword", searchInput);
     }
+
     function searchBusByCity(city) {
       store.dispatch("getAllCityBus", city);
     }
+
     function toggleSlideMenu() {
       emit("toggleSlideMenu");
     }
@@ -361,7 +371,7 @@ export default {
           store.commit("CLEAR_BUSLIST");
         }
         searchInputValue.value = newVal;
-        // searchBus();
+        searchBus();
       }
     );
 
@@ -390,8 +400,6 @@ export default {
         ? "尋找公車路線或站牌..."
         : "尋找公路或國道路線或目的地..."
     );
-
-    // const searchInputValue = computed(() => store.getters.searchInputValue);
 
     axios
       .get("../../static/dropDownCity.json")
@@ -446,6 +454,9 @@ input.search-bus {
 .cities.active {
   display: grid;
   transform: scaleY(1);
+}
+.bus-num {
+  min-width: 18rem;
 }
 
 @media (min-width: 768px) {

@@ -1,7 +1,10 @@
 import * as types from './mutation-types';
 import BusApi from '../apis/getBus';
 import districtApi from '../apis/getDistrict';
-import { mapingRouteStopsAndEstimatedTimeData, getAllStopsPosition } from '@/utils/mappingData.js';
+import {
+  mapingRouteStopsAndEstimatedTimeData,
+  getAllStopsPosition,
+} from '@/utils/mappingData.js';
 
 export const getCurrentDistrict = function (
   { commit, state, dispatch },
@@ -18,6 +21,7 @@ export const getCurrentDistrict = function (
     .catch((err) => console.log(err));
 };
 
+// filter routes by city 
 export const getAllCityBus = function ({ commit, state }, city) {
   BusApi.getAllCityBus(city)
     .then((res) => {
@@ -39,17 +43,30 @@ export const getNearByBus = function ({ commit, state }, coords) {
     .catch((err) => console.log(err));
 };
 
+// filter routes by stopName or routeName
 export const getBusByKeyword = function ({ commit, state }, searchInput) {
   const { city, keyword } = searchInput;
-  BusApi.getBusByKeyword(city, keyword)
+
+  const requestStopByKeyword = BusApi.getBusByStopNameKeyword(city, keyword);
+
+  requestStopByKeyword
     .then((res) => {
       if (res.status === 200) {
-        commit(types.GET_BUS_BY_KEYWORD, res.data);
+        if (res.data.length) {
+          const routUIDs = [];
+          res.data.forEach((data) => routUIDs.push(data.RouteUID));
+          BusApi.getBusByRouteUIDs(city, routUIDs).then((response) => {
+            if (response.status === 200) {
+              commit(types.GET_BUS_BY_KEYWORD, response.data);
+            }
+          });
+        }
       }
     })
     .catch((err) => console.log(err));
 };
 
+// show all stops of selected route
 export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
   const { city, routeName } = searchInfo;
 
@@ -81,7 +98,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       const mappingData = mapingRouteStopsAndEstimatedTimeData(
         value[0].data,
         value[1].data,
-        value[3].data
+        value[3].data,
       );
       commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
       commit(types.CHANGE_SIDEMENU_HEIGHT);
