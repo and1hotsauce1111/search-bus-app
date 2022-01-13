@@ -158,6 +158,8 @@ export default {
     const scroll = ref(null);
     const toggleBtn = ref(null);
     const keyboard = ref(null);
+
+    let searchInputValue = ref("");
     const store = useStore();
 
     const { toggleKeyBoard, searchType } = toRefs(props);
@@ -169,7 +171,6 @@ export default {
       blue: "bg-blue-100 border-blue-200 text-blue-200",
       brown: "bg-brown-100 border-accent-500 text-accent-500",
     };
-    let inputValue = "";
 
     // key functions
     function toggleKeyBoardHandler() {
@@ -190,12 +191,12 @@ export default {
     }
 
     function getInputValue(value) {
-      inputValue += value;
-      emit("inputValue", inputValue);
+      searchInputValue.value += value;
+      store.commit("UPDATE_SEARCH_INPUT_VALUE", searchInputValue.value);
     }
     function deleteInputValue() {
-      inputValue = inputValue.slice(0, -1);
-      emit("inputValue", inputValue);
+      searchInputValue.value = searchInputValue.value.slice(0, -1);
+      store.commit("UPDATE_SEARCH_INPUT_VALUE", searchInputValue.value);
     }
 
     // render cityt list
@@ -220,22 +221,33 @@ export default {
       }
     });
 
+    watch(
+      () => store.getters.searchInputValue,
+      (newVal) => {
+        if (newVal === "") {
+          store.commit("CLEAR_BUSLIST");
+        }
+        searchInputValue.value = newVal;
+      }
+    );
+
     const keyboardType = computed(() => {
       return searchType.value === "bus" ? busKey : intercityBusKey;
     });
 
     return {
-      searchType,
+      cityData,
+      deleteInputValue,
+      getInputValue,
+      keyboard,
       keyboardType,
       keyClassObject,
-      cityData,
+      searchType,
       scroll,
-      toggleBtn,
-      keyboard,
-      toggleKeyBoardHandler,
       searchCurrentCityBus,
-      getInputValue,
-      deleteInputValue,
+      searchInputValue,
+      toggleBtn,
+      toggleKeyBoardHandler,
     };
   },
 };

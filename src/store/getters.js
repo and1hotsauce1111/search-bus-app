@@ -8,3 +8,4 @@ export const fareBufferZoneDescriptionZh = (state) => (RouteUID) => {
 };
 export const isSearching = (state) => state.isSearching;
 export const isChangeSideMenuHeight = (state) => state.isChangeSideMenuHeight;
+export const searchInputValue = (state) => state.searchInputValue;

@@ -1,11 +1,12 @@
 const state = {
-  isSearching: true,
-  isChangeSideMenuHeight: false,
-  currentDistrict: 'Taichung',
-  busCardList: [],
-  busStopOfRoute: [],
   allRouteStopsPosition: {},
   allRouteBusPosition: [],
+  busCardList: [],
+  busStopOfRoute: [],
+  currentDistrict: 'Taichung',
+  isSearching: true,
+  isChangeSideMenuHeight: false,
+  searchInputValue: '',
 };
 
 export default state;

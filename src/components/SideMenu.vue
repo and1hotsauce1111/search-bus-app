@@ -16,13 +16,12 @@
       :isSearching="isSearching"
       :isSlideUp="isSlideUp"
       :searchType="searchType"
-      :searchInputValue="sideMenuState.inputValue"
       :toggleKeyBoard="sideMenuState.toggleKeyBoard"
       :currentBus="sideMenuState.currentBus"
       @toggle-slide-menu="toggleSlideMenu"
     />
     <!-- show search bus result -->
-    <div v-if="showSearchBusList" class="show-bus-cardlist">
+    <div v-show="showSearchBusList" class="show-bus-cardlist">
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
@@ -33,7 +32,6 @@
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
         :searchType="searchType"
         @change-max-height="changeMaxHeight"
-        @input-value="keyboardInput"
       />
     </div>
     <!-- show search bus details -->
@@ -104,29 +102,29 @@ export default {
 
     // key functions
 
-    function keyboardInput(inputValue) {
-      sideMenuState.inputValue = inputValue;
-      const currentCity = store.getters.currentDistrict;
-      if (inputValue === "") {
-        store.commit("CLEAR_BUSLIST");
-        return;
-      }
-      const searchInput = {
-        city: currentCity,
-        keyword: inputValue,
-      };
-      store.dispatch("getBusByKeyword", searchInput);
+    function backToSearch() {
+      store.commit("CHANGE_SEARCHING_STATUS");
+      // change sideMenu top 3.06rem
+      resetSideMenuContainerHeight("3.06rem");
     }
 
     function goToRouteStops(bus) {
       sideMenuState.currentBus = bus;
     }
 
-    function backToSearch() {
-      store.commit("CHANGE_SEARCHING_STATUS");
-      // change sideMenu top 3.06rem
-      resetSideMenuContainerHeight("3.06rem");
-    }
+    // function keyboardInput(inputValue) {
+    //   sideMenuState.inputValue = inputValue;
+    //   const currentCity = store.getters.currentDistrict;
+    //   if (inputValue === "") {
+    //     store.commit("CLEAR_BUSLIST");
+    //     return;
+    //   }
+    //   const searchInput = {
+    //     city: currentCity,
+    //     keyword: inputValue,
+    //   };
+    //   store.dispatch("getBusByKeyword", searchInput);
+    // }
 
     // custom styles
     window.addEventListener("resize", resizeSideMenu);
@@ -140,16 +138,6 @@ export default {
       const innerWidth = window.innerWidth;
       if (container && innerWidth < 640) container.style.top = top;
       isSlideUp.value = false;
-    }
-
-    function toggleSlideMenu() {
-      isSlideUp.value = !isSlideUp.value;
-      const container = sideMenuContainer.value;
-      if (container && isSlideUp.value) {
-        container.style.top = "15%";
-      } else {
-        container.style.top = "75%";
-      }
     }
 
     function resizeSideMenu() {
@@ -168,6 +156,16 @@ export default {
         container.style.top = "7rem";
       if ((isNotSearch || isSearchBicycle) && window.innerWidth < 640)
         container.style.top = "70%";
+    }
+
+    function toggleSlideMenu() {
+      isSlideUp.value = !isSlideUp.value;
+      const container = sideMenuContainer.value;
+      if (container && isSlideUp.value) {
+        container.style.top = "15%";
+      } else {
+        container.style.top = "75%";
+      }
     }
 
     // watch and computed
@@ -191,6 +189,8 @@ export default {
         store.commit("CHANGE_SEARCHING_STATUS");
       }
     );
+
+    const isSearching = computed(() => store.getters.isSearching);
 
     const sideMenuClassObject = computed(() => {
       return {
@@ -220,7 +220,7 @@ export default {
         (searchType.value === "bus" || searchType.value === "intercityBus")
     );
 
-    const isSearching = computed(() => store.getters.isSearching);
+    const searchInputValue = computed(() => store.getters.searchInputValue);
 
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);
@@ -233,13 +233,14 @@ export default {
       goToRouteStops,
       isSearching,
       isSlideUp,
-      keyboardInput,
+      // keyboardInput,
       searchType,
       sideMenuState,
       sideMenuContainer,
       sideMenuClassObject,
       showSearchBusList,
       showSearchBusDetails,
+      searchInputValue,
       toggleSlideMenu,
     };
   },

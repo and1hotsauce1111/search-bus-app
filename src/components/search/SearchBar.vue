@@ -43,7 +43,10 @@
         />
         <input
           v-else
-          v-model="searchValue"
+          :value="searchInputValue"
+          @input="updateInput"
+          @compositionstart="onCompositionStart"
+          @compositionend="onCompositionEnd"
           type="text"
           class="
             search-bus
@@ -180,7 +183,10 @@
         />
         <input
           v-else
-          v-model="searchValue"
+          :value="searchInputValue"
+          @input="updateInput"
+          @compositionstart="onCompositionStart"
+          @compositionend="onCompositionEnd"
           type="text"
           class="
             w-full
@@ -277,11 +283,6 @@ export default {
       required: true,
       default: "bus",
     },
-    searchInputValue: {
-      type: String,
-      required: true,
-      default: "",
-    },
     toggleKeyBoard: {
       type: Boolean,
       required: true,
@@ -289,32 +290,39 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const {
-      isSearching,
-      isSlideUp,
-      searchType,
-      searchInputValue,
-      toggleKeyBoard,
-      currentBus,
-    } = toRefs(props);
+    const { isSearching, isSlideUp, searchType, toggleKeyBoard, currentBus } =
+      toRefs(props);
 
-    let searchValue = ref("");
     let isInputDisable = ref(true);
     let dropdownCity = ref();
     const store = useStore();
+    let searchInputValue = ref("");
+    let typingCh = ref(false);
 
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
     }
 
+    function onCompositionStart() {
+      typingCh.value = true;
+    }
+
+    function onCompositionEnd(e) {
+      typingCh.value = false;
+      updateInput(e);
+    }
+
     function searchBus() {
-      if (searchValue.value === "") return;
-      const currentCity = store.getters.currentDistrict;
-      const searchInput = {
-        city: currentCity,
-        keyword: searchValue.value,
-      };
-      store.dispatch("getBusByKeyword", searchInput);
+      if (searchInputValue.value === "") return;
+      // store.commit("UPDATE_SEARCH_INPUT_VALUE");
+      // const currentCity = store.getters.currentDistrict;
+      // const searchInput = {
+      //   city: currentCity,
+      //   keyword: searchValue.value,
+      // };
+      // store.dispatch("getBusByKeyword", searchInput);
+      // emit keyboard to update input value
+      // emit("updateInputValue", searchValue.value);
     }
     function searchBusByCity(city) {
       store.dispatch("getAllCityBus", city);
@@ -336,15 +344,29 @@ export default {
       }
     }
 
+    function updateInput(e) {
+      if (typingCh.value) return;
+      if (e.inputType === "insertText" || e.type === "compositionend") {
+        searchInputValue.value += e.data;
+      } else {
+        searchInputValue.value = searchInputValue.value.slice(0, -1);
+      }
+      store.commit("UPDATE_SEARCH_INPUT_VALUE", searchInputValue.value);
+    }
+
     watch(
-      () => searchValue.value,
+      () => store.getters.searchInputValue,
       (newVal) => {
         if (newVal === "") {
           store.commit("CLEAR_BUSLIST");
-          return;
         }
-        searchBus();
+        searchInputValue.value = newVal;
+        // searchBus();
       }
+    );
+
+    const currentRouteName = computed(
+      () => currentBus.value.RouteName.Zh_tw || "無法顯示路線名稱"
     );
 
     const searchingClassObject = computed(() => {
@@ -369,9 +391,7 @@ export default {
         : "尋找公路或國道路線或目的地..."
     );
 
-    const currentRouteName = computed(
-      () => currentBus.value.RouteName.Zh_tw || "無法顯示路線名稱"
-    );
+    // const searchInputValue = computed(() => store.getters.searchInputValue);
 
     axios
       .get("../../static/dropDownCity.json")
@@ -391,8 +411,9 @@ export default {
       getCityNameZh,
       isSlideUp,
       isInputDisable,
+      onCompositionStart,
+      onCompositionEnd,
       searchInputValue,
-      searchValue,
       showBusInputSearch,
       searchingClassObject,
       searchBusInputPlaceholder,
@@ -402,6 +423,7 @@ export default {
       toggleKeyBoard,
       toggleInputDisable,
       toggleCollapseCityMenu,
+      updateInput,
     };
   },
 };
