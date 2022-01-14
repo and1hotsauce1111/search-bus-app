@@ -33,6 +33,15 @@ export default {
     });
     return axiosInstance.get(url);
   },
+  getBusVehicleType(city, plateNumb) {
+    console.log('plateNumb', plateNumb);
+    const url = busQueryString(`Bus/Vehicle/City/${city}`, {
+      filter: { type: 'bus/type', plateNumb},
+      top: false
+    })
+
+    return axiosInstance.get(url);
+  },
   // for show bus card list
   getBusByRouteUIDs(city, routeUID) {
     const select = [
@@ -55,7 +64,7 @@ export default {
     const select = ['RouteUID'];
     const url = busQueryString(`Bus/StopOfRoute/City/${city}`, {
       select,
-      top: false,
+      top: true,
       filter: { type: 'bus/stop', keyword },
     });
     return axiosInstance.get(url);

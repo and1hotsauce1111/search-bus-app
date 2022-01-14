@@ -53,6 +53,7 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
     .then((res) => {
       if (res.status === 200) {
         if (res.data.length) {
+          console.log('data', res.data);
           const routUIDs = [];
           res.data.forEach((data) => routUIDs.push(data.RouteUID));
           BusApi.getBusByRouteUIDs(city, routUIDs).then((response) => {
@@ -90,18 +91,52 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       value[2].status === 200 &&
       value[3].status === 200
     ) {
-      commit(types.GET_ALL_ROUTE_BUS_POSITION, value[2].data);
+      const routeStopsData = value[0].data;
+      const estimateTimeData = value[1].data;
+      const busPositionData = value[2].data;
+      const nearByBusData = value[3].data;
 
-      const allRouteStopsPosition = getAllStopsPosition(value[0].data);
+      commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
+
+      const allRouteStopsPosition = getAllStopsPosition(routeStopsData);
       commit(types.GET_ALL_ROUTE_STOPS_POSITION, allRouteStopsPosition);
 
-      const mappingData = mapingRouteStopsAndEstimatedTimeData(
-        value[0].data,
-        value[1].data,
-        value[3].data,
-      );
-      commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-      commit(types.CHANGE_SIDEMENU_HEIGHT);
+      // get nearby bus vehicle type
+      if(nearByBusData.length) {
+        const plateNumb = [];
+        nearByBusData.forEach(bus => plateNumb.push(bus.PlateNumb))
+        console.log('plate nums', plateNumb)
+        BusApi.getBusVehicleType(city, plateNumb).then(res => {
+          if(res.status === 200) {
+            console.log('nearby bus', nearByBusData);
+            if(res.data.length) {
+              res.data.forEach(vehicle => {
+                const targetIndex = nearByBusData.findIndex(bus => bus.PlateNumb === vehicle.PlateNumb);
+                if(targetIndex > -1) {
+                  nearByBusData[targetIndex]['VehicleType'] = vehicle.VehicleType;
+                }else {
+                  nearByBusData[targetIndex]['VehicleType'] = null
+                }
+              })
+            }
+            const mappingData = mapingRouteStopsAndEstimatedTimeData(
+              routeStopsData,
+              estimateTimeData,
+              nearByBusData,
+            );
+            commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+            commit(types.CHANGE_SIDEMENU_HEIGHT);
+          }         
+        })
+      } else {
+        const mappingData = mapingRouteStopsAndEstimatedTimeData(
+          routeStopsData,
+          estimateTimeData,
+          nearByBusData,
+        );
+        commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+        commit(types.CHANGE_SIDEMENU_HEIGHT);
+      }
     }
   });
 };

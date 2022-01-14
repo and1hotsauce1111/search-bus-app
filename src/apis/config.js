@@ -11,13 +11,13 @@ const selectString = (select) => {
   }, '$select=');
 };
 
-const filterMultipleRouteString = (routeUID) => {
-  return routeUID.reduce((acc, cur, index, array) => {
+const filterMultipleDataString = (column, dataArr) => {
+  return dataArr.reduce((acc, cur, index, array) => {
     let concat = '';
     if(index === array.length - 1) {
-      concat = 'RouteUID' + ' ' + 'eq' + ' ' + "'" + cur + "'";
+      concat = column + ' ' + 'eq' + ' ' + "'" + cur + "'";
     } else {
-      concat = 'RouteUID' + ' ' + 'eq' + ' ' + "'" + cur + "'" + ' ' + 'or' + ' ';
+      concat = column + ' ' + 'eq' + ' ' + "'" + cur + "'" + ' ' + 'or' + ' ';
     }
     
     return acc + concat;
@@ -37,12 +37,20 @@ export const busQueryString = (
   query = { select: null, filter: null, position: null, top: true },
 ) => {
   let requestUrl = '';
-  if(query.top) requestUrl += '?$top=30';
+  if(query.top) requestUrl += '?$top=15';
   if (query.filter && query.filter.type === 'bus/route') {
     if(requestUrl === '') {
-      requestUrl = requestUrl + '?' + filterMultipleRouteString(query.filter.routeUID)
+      requestUrl = requestUrl + '?' + filterMultipleDataString('RouteUID', query.filter.routeUID)
     }else {
-      requestUrl = requestUrl + '&' + filterMultipleRouteString(query.filter.routeUID)
+      requestUrl = requestUrl + '&' + filterMultipleDataString('RouteUID', query.filter.routeUID)
+    }
+  }
+
+  if (query.filter && query.filter.type === 'bus/type') {
+    if(requestUrl === '') {
+      requestUrl = requestUrl + '?' + filterMultipleDataString('PlateNumb', query.filter.plateNumb)
+    }else {
+      requestUrl = requestUrl + '&' + filterMultipleDataString('PlateNumb', query.filter.plateNumb)
     }
   }
 

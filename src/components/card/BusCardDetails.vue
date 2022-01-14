@@ -65,15 +65,17 @@
             "
             :class="{
               'border-grey-400':
-                stop.StopStatus !== 0 ||
-                isNearStop(stop.EstimateTime) === 'grey',
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey',
               'text-grey-400':
-                stop.StopStatus !== 0 ||
-                isNearStop(stop.EstimateTime) === 'grey',
-              'border-green-100': isNearStop(stop.EstimateTime) === 'green',
-              'text-primary-400': isNearStop(stop.EstimateTime) === 'green',
-              'border-alert-400': isNearStop(stop.EstimateTime) === 'red',
-              'text-alert-400': isNearStop(stop.EstimateTime) === 'red',
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey',
+              'border-green-100':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'green',
+              'text-primary-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'green',
+              'border-alert-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'red',
+              'text-alert-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'red',
             }"
           >
             {{ stopStatus(stop.StopStatus, stop.EstimateTime) }}
@@ -83,24 +85,55 @@
             stop.StopName.Zh_tw
           }}</span>
 
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'grey'"
-            class="light-img"
-            src="@/assets/light/grey.png"
-            alt="grey"
-          />
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'green'"
-            class="light-img"
-            src="@/assets/light/green.png"
-            alt="green"
-          />
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'red'"
-            class="light-img"
-            src="@/assets/light/red.png"
-            alt="red"
-          />
+          <div class="light-container relative">
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey'"
+              class="light-img"
+              src="@/assets/light/grey.png"
+              alt="grey"
+            />
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'green'"
+              class="light-img"
+              src="@/assets/light/green.png"
+              alt="green"
+            />
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'red'"
+              class="light-img"
+              src="@/assets/light/red.png"
+              alt="red"
+            />
+            <!-- show nearby bus -->
+            <div
+              v-if="stop.NearByBus"
+              class="
+                nearby-bus
+                text-grey-100 text-xs
+                bg-primary-400
+                rounded
+                py-1
+                px-1.5
+                absolute
+                right-7
+                -top-1.5
+              "
+            >
+              <div
+                class="nearby-bus-items flex justify-between items-center"
+                v-for="bus in stop.NearByBus"
+                :key="bus.PlateNumb"
+              >
+                <i
+                  v-if="bus.VehicleType === 1"
+                  class="fas fa-wheelchair text-xs"
+                ></i>
+                <span class="whitespace-nowrap ml-1.5">{{
+                  bus.PlateNumb
+                }}</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           v-if="bufferZone.length && bufferZone[1] === stop.StopName.Zh_tw"
@@ -154,15 +187,17 @@
             "
             :class="{
               'border-grey-400':
-                stop.StopStatus !== 0 ||
-                isNearStop(stop.EstimateTime) === 'grey',
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey',
               'text-grey-400':
-                stop.StopStatus !== 0 ||
-                isNearStop(stop.EstimateTime) === 'grey',
-              'border-green-100': isNearStop(stop.EstimateTime) === 'green',
-              'text-primary-400': isNearStop(stop.EstimateTime) === 'green',
-              'border-alert-400': isNearStop(stop.EstimateTime) === 'red',
-              'text-alert-400': isNearStop(stop.EstimateTime) === 'red',
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey',
+              'border-green-100':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'green',
+              'text-primary-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'green',
+              'border-alert-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'red',
+              'text-alert-400':
+                isNearStop(stop.StopStatus, stop.EstimateTime) === 'red',
             }"
           >
             {{ stopStatus(stop.StopStatus, stop.EstimateTime) }}
@@ -172,24 +207,55 @@
             stop.StopName.Zh_tw
           }}</span>
 
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'grey'"
-            class="light-img"
-            src="@/assets/light/grey.png"
-            alt="grey"
-          />
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'green'"
-            class="light-img"
-            src="@/assets/light/green.png"
-            alt="green"
-          />
-          <img
-            v-if="isNearStop(stop.EstimateTime) === 'red'"
-            class="light-img"
-            src="@/assets/light/red.png"
-            alt="red"
-          />
+          <div class="light-container relative">
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'grey'"
+              class="light-img"
+              src="@/assets/light/grey.png"
+              alt="grey"
+            />
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'green'"
+              class="light-img"
+              src="@/assets/light/green.png"
+              alt="green"
+            />
+            <img
+              v-if="isNearStop(stop.StopStatus, stop.EstimateTime) === 'red'"
+              class="light-img"
+              src="@/assets/light/red.png"
+              alt="red"
+            />
+            <!-- show nearby bus -->
+            <div
+              v-if="stop.NearByBus"
+              class="
+                nearby-bus
+                text-grey-100 text-xs
+                bg-primary-400
+                rounded
+                py-1
+                px-1.5
+                absolute
+                right-7
+                -top-1.5
+              "
+            >
+              <div
+                class="nearby-bus-items flex justify-between items-center"
+                v-for="bus in stop.NearByBus"
+                :key="bus.PlateNumb"
+              >
+                <i
+                  v-if="bus.VehicleType === 1"
+                  class="fas fa-wheelchair text-xs"
+                ></i>
+                <span class="whitespace-nowrap ml-1.5">{{
+                  bus.PlateNumb
+                }}</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           v-if="bufferZone.length && bufferZone[0] === stop.StopName.Zh_tw"
@@ -265,8 +331,8 @@ export default {
       return currentStatus;
     }
 
-    function isNearStop(estimateTime) {
-      if (estimateTime === undefined) return "grey";
+    function isNearStop(status, estimateTime) {
+      if (estimateTime === undefined || status !== 0) return "grey";
       const min = Math.floor(estimateTime / 60);
       return min <= 5 ? "red" : "green";
     }
@@ -291,6 +357,9 @@ export default {
 </script>
 
 <style scoped>
+.change-direction {
+  z-index: 99;
+}
 .detail-container {
   max-height: calc(100vh - 10rem);
 }
@@ -305,6 +374,16 @@ export default {
 }
 .status {
   min-width: 4.5rem;
+}
+.nearby-bus::before {
+  position: absolute;
+  right: -8px;
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5.5px 0 5.5px 9.5px;
+  border-color: transparent transparent transparent #4ea476;
 }
 
 @media (min-width: 768px) {

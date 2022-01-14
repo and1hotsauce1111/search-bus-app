@@ -17,7 +17,9 @@ export const mapingRouteStopsAndEstimatedTimeData = function (
   nearByBus,
 ) {
   console.log(routeStopsData, estimateTimeData, nearByBus);
+  if (!routeStopsData.length || !estimateTimeData.length) return [];
 
+  // map estimateTimeData to routeStopData
   estimateTimeData.forEach((estimate) => {
     if (estimate.Direction === 0) {
       const targetStopIndex = routeStopsData[0].Stops.findIndex(
@@ -47,18 +49,17 @@ export const mapingRouteStopsAndEstimatedTimeData = function (
     }
   });
 
+  // map nearbyBusData to routeStopData
   nearByBus.forEach((bus) => {
     if (bus.Direction === 0) {
       const nearByBusIndex = routeStopsData[0].Stops.findIndex(
         (stop) => stop.StopUID === bus.StopUID,
       );
       if (nearByBusIndex > -1) {
-        if (!routeStopsData[0].Stops[nearByBusIndex]['nearByBus']) {
-          routeStopsData[0].Stops[nearByBusIndex]['nearByBus'] = [];
+        if (!routeStopsData[0].Stops[nearByBusIndex]['NearByBus']) {
+          routeStopsData[0].Stops[nearByBusIndex]['NearByBus'] = [];
         }
-        routeStopsData[0].Stops[nearByBusIndex]['nearByBus'].push(
-          bus.PlateNumb,
-        );
+        routeStopsData[0].Stops[nearByBusIndex]['NearByBus'].push(bus);
       }
     }
     if (bus.Direction === 1) {
@@ -66,12 +67,10 @@ export const mapingRouteStopsAndEstimatedTimeData = function (
         (stop) => stop.StopUID === bus.StopUID,
       );
       if (nearByBusIndex > -1) {
-        if (!routeStopsData[1].Stops[nearByBusIndex]['nearByBus']) {
-          routeStopsData[1].Stops[nearByBusIndex]['nearByBus'] = [];
+        if (!routeStopsData[1].Stops[nearByBusIndex]['NearByBus']) {
+          routeStopsData[1].Stops[nearByBusIndex]['NearByBus'] = [];
         }
-        routeStopsData[1].Stops[nearByBusIndex]['nearByBus'].push(
-          bus.PlateNumb,
-        );
+        routeStopsData[1].Stops[nearByBusIndex]['NearByBus'].push(bus);
       }
     }
   });
