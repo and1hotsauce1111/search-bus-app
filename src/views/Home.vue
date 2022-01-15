@@ -14,6 +14,7 @@
       <SideMenu
         v-if="activeComponent === 'Map'"
         :searchType="homeState.searchType"
+        @close-mobile-home="closeMobileHome"
       />
     </main>
   </div>
@@ -51,6 +52,15 @@ export default {
       homeState.toggleMobileHome = false;
     }
 
+    function closeMobileHome() {
+      console.log("close mobile home");
+      homeState.isMobileHome = false;
+    }
+
+    function getMapLocation(position) {
+      mapLocation.value = position;
+    }
+
     function toggleSearchType(type) {
       homeState.searchType = type;
       homeState.isMobileHome = false;
@@ -63,10 +73,6 @@ export default {
       } else {
         homeState.toggleMobileHome = true;
       }
-    }
-
-    function getMapLocation(position) {
-      mapLocation.value = position;
     }
 
     function toggleAgreeLocation() {
@@ -85,12 +91,13 @@ export default {
       window.removeEventListener("resize", toggleMobileHomeWidth)
     );
     return {
-      homeState,
       activeComponent,
+      closeMobileHome,
+      getMapLocation,
+      homeState,
+      mapLocation,
       toggleAgreeLocation,
       toggleSearchType,
-      getMapLocation,
-      mapLocation,
     };
   },
 };

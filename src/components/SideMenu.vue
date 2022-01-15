@@ -88,7 +88,7 @@ export default {
     BusCardDetails,
     BicycleCard,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const sideMenuState = reactive({
       currentBus: {},
       inputValue: "",
@@ -110,6 +110,8 @@ export default {
 
     function goToRouteStops(bus) {
       sideMenuState.currentBus = bus;
+      // emit to close mobile home
+      emit("closeMobileHome");
     }
 
     // function keyboardInput(inputValue) {

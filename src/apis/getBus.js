@@ -34,11 +34,10 @@ export default {
     return axiosInstance.get(url);
   },
   getBusVehicleType(city, plateNumb) {
-    console.log('plateNumb', plateNumb);
     const url = busQueryString(`Bus/Vehicle/City/${city}`, {
-      filter: { type: 'bus/type', plateNumb},
-      top: false
-    })
+      filter: { type: 'bus/type', plateNumb },
+      top: false,
+    });
 
     return axiosInstance.get(url);
   },
@@ -97,6 +96,14 @@ export default {
       `Bus/RealTimeNearStop/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
+
+    return axiosInstance.get(url);
+  },
+  getBusRouteShape(city, routeName) {
+    const url = busQueryString(`Bus/Shape/City/${city}`, {
+      filter: { type: 'shape', routeName },
+      top: true,
+    });
 
     return axiosInstance.get(url);
   },

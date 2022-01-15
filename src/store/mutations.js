@@ -31,6 +31,9 @@ const mutations = {
   [types.GET_ALL_ROUTE_BUS_POSITION](state, bus) {
     state.allRouteBusPosition = bus;
   },
+  [types.GET_BUS_ROUTE_SHAPE](state, busRouteShapeData) {
+    state.busRouteShapeData = busRouteShapeData;
+  },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;
   }

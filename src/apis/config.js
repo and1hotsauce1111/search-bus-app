@@ -28,7 +28,7 @@ const filterBusByStopString = (keyword) =>
   `$filter=(Stops/any(d:(contains(d/StopName/Zh_tw, '${keyword}') eq true)) or Contains(RouteName/Zh_tw, '${keyword}') eq true) and Direction eq 0`;
 // const filterBusByRouteString = (keyword) =>
 //   `$filter=contains(RouteName/Zh_tw, '${keyword}')`;
-const filterBusStops = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
+const filterExactRoute = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
 const nearByBusString = (position) =>
   `$spatialFilter=nearby(${position.lat},${position.lng},500)`;
 
@@ -69,11 +69,11 @@ export const busQueryString = (
       requestUrl = requestUrl + '&' + nearByBusString(query.position)
     }
   }
-  if(query.filter && query.filter.type === 'stop') {
+  if(query.filter && (query.filter.type === 'stop' || query.filter.type === 'shape')) {
     if(requestUrl === '') {
-      requestUrl = requestUrl + '?' + filterBusStops(query.filter.routeName)
+      requestUrl = requestUrl + '?' + filterExactRoute(query.filter.routeName)
     }else {
-      requestUrl = requestUrl + '&' + filterBusStops(query.filter.routeName)
+      requestUrl = requestUrl + '&' + filterExactRoute(query.filter.routeName)
     }
   }
   if (query.select && query.select) {

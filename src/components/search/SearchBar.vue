@@ -335,6 +335,8 @@ export default {
 
     function searchBusByCity(city) {
       store.dispatch("getAllCityBus", city);
+      // reset current city
+      store.commit("GET_CURRENT_DISTRICT", city);
     }
 
     function toggleSlideMenu() {

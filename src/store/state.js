@@ -3,6 +3,7 @@ const state = {
   allRouteBusPosition: [],
   busCardList: [],
   busStopOfRoute: [],
+  busRouteShapeData: [],
   currentDistrict: 'Taichung',
   isSearching: true,
   isChangeSideMenuHeight: false,

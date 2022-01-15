@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { onMounted, toRefs } from "vue";
+import { onMounted, toRefs, watch, ref } from "vue";
 import DrawMap from "@/utils/drawMap";
 import { useStore } from "vuex";
 
@@ -18,10 +18,14 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore();
+    const mapInstance = ref(null);
 
     onMounted(() => {
-      const { mapLocation } = toRefs(props);
+      const defaultPosition = [24.136944, 120.684722];
       const map = new DrawMap();
+      mapInstance.value = map;
+      const { mapLocation } = toRefs(props);
+
       map.init();
       const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
@@ -29,21 +33,31 @@ export default {
           map
             .getGeoInfo()
             .then((position) => {
-              map.update(position);
+              map.updateUserPosition(position.coords);
               store.dispatch("getCurrentDistrict", position.coords);
               store.dispatch("getNearByBus", position.coords);
               emit("toggleAgreeLocation");
             })
-            .catch(({ errMsg, defaultPosition }) => {
+            .catch((err) => {
               map.map.setView(defaultPosition, 18);
             });
         }
       } else {
-        map.update(mapLocation.value);
+        map.updateUserPosition(mapLocation.value.coords);
       }
     });
 
-    return {};
+    watch(
+      () => store.getters.busRouteShapeData,
+      (busRouteShapeData) => {
+        // direction 0 or 1
+        mapInstance.value.drawLine(busRouteShapeData[0].Geometry);
+      }
+    );
+
+    return {
+      mapInstance,
+    };
   },
 };
 </script>

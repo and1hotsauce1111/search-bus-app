@@ -1,5 +1,6 @@
 export const busCardList = (state) => state.busCardList;
 export const busStopOfRoute = (state) => state.busStopOfRoute;
+export const busRouteShapeData = (state) => state.busRouteShapeData;
 export const currentDistrict = (state) => state.currentDistrict;
 export const fareBufferZoneDescriptionZh = (state) => (RouteUID) => {
   const targetBus = state.busCardList.find((bus) => bus.RouteUID === RouteUID);

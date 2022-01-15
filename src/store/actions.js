@@ -53,7 +53,6 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
     .then((res) => {
       if (res.status === 200) {
         if (res.data.length) {
-          console.log('data', res.data);
           const routUIDs = [];
           res.data.forEach((data) => routUIDs.push(data.RouteUID));
           BusApi.getBusByRouteUIDs(city, routUIDs).then((response) => {
@@ -78,25 +77,31 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
     routeName,
   );
   const requestNearByBus = BusApi.getRealTimeNearByBus(city, routeName);
+  const requestRouteShape = BusApi.getBusRouteShape(city, routeName);
 
   Promise.all([
     requestRouteStops,
     requestEstimateTime,
     requestRouteBusPosition,
     requestNearByBus,
+    requestRouteShape
   ]).then((value) => {
     if (
       value[0].status === 200 &&
       value[1].status === 200 &&
       value[2].status === 200 &&
-      value[3].status === 200
+      value[3].status === 200 &&
+      value[4].status === 200
     ) {
       const routeStopsData = value[0].data;
       const estimateTimeData = value[1].data;
       const busPositionData = value[2].data;
       const nearByBusData = value[3].data;
+      const routeShapeData = value[4].data;
+
 
       commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
+      commit(types.GET_BUS_ROUTE_SHAPE, routeShapeData);
 
       const allRouteStopsPosition = getAllStopsPosition(routeStopsData);
       commit(types.GET_ALL_ROUTE_STOPS_POSITION, allRouteStopsPosition);
@@ -105,10 +110,8 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       if(nearByBusData.length) {
         const plateNumb = [];
         nearByBusData.forEach(bus => plateNumb.push(bus.PlateNumb))
-        console.log('plate nums', plateNumb)
         BusApi.getBusVehicleType(city, plateNumb).then(res => {
           if(res.status === 200) {
-            console.log('nearby bus', nearByBusData);
             if(res.data.length) {
               res.data.forEach(vehicle => {
                 const targetIndex = nearByBusData.findIndex(bus => bus.PlateNumb === vehicle.PlateNumb);

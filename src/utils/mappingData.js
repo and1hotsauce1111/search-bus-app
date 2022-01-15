@@ -16,7 +16,7 @@ export const mapingRouteStopsAndEstimatedTimeData = function (
   estimateTimeData,
   nearByBus,
 ) {
-  console.log(routeStopsData, estimateTimeData, nearByBus);
+  // console.log(routeStopsData, estimateTimeData, nearByBus);
   if (!routeStopsData.length || !estimateTimeData.length) return [];
 
   // map estimateTimeData to routeStopData
