@@ -4,8 +4,9 @@
 
 <script>
 import { onMounted, toRefs, watch, ref } from "vue";
-import DrawMap from "@/utils/drawMap";
 import { useStore } from "vuex";
+import DrawMap from "@/utils/drawMap";
+import { filterRouteStopPositionData } from "@/utils/mappingData.js";
 
 export default {
   name: "Map",
@@ -48,10 +49,27 @@ export default {
     });
 
     watch(
-      () => store.getters.busRouteShapeData,
-      (busRouteShapeData) => {
-        // direction 0 or 1
-        mapInstance.value.drawLine(busRouteShapeData[0].Geometry);
+      [
+        () => store.getters.busRouteShapeData,
+        () => store.getters.showBusStopDirection,
+        () => store.getters.clearAllGeoJSONLayer,
+      ],
+      (newVals) => {
+        const shapeData = newVals[0];
+        const direction = newVals[1];
+        const clearGeoJSONLayer = newVals[2];
+        if (clearGeoJSONLayer) mapInstance.value.removeGeoJSONLayer();
+        const allRouteStopsPosition = store.getters.allRouteStopsPosition;
+        const filteredShapeData = filterRouteStopPositionData(
+          allRouteStopsPosition,
+          direction
+        );
+        if (shapeData[direction]) {
+          mapInstance.value.drawLine(shapeData[direction].Geometry);
+        } else {
+          mapInstance.value.drawLine(shapeData[0].Geometry);
+        }
+        mapInstance.value.drawBusStopIcon(filteredShapeData);
       }
     );
 

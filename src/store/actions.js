@@ -68,7 +68,7 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
 
 // show all stops of selected route
 export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
-  const { city, routeName } = searchInfo;
+  const { city, routeName, changeSideMenuHeight } = searchInfo;
 
   const requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
   const requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
@@ -128,7 +128,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
               nearByBusData,
             );
             commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-            commit(types.CHANGE_SIDEMENU_HEIGHT);
+            if(changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
           }         
         })
       } else {
@@ -138,7 +138,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
           nearByBusData,
         );
         commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-        commit(types.CHANGE_SIDEMENU_HEIGHT);
+        if(changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
       }
     }
   });

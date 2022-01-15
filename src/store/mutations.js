@@ -34,6 +34,12 @@ const mutations = {
   [types.GET_BUS_ROUTE_SHAPE](state, busRouteShapeData) {
     state.busRouteShapeData = busRouteShapeData;
   },
+  [types.TOGGLE_SHOW_BUS_STOP_DIRECTION](state, direction) {
+    state.showBusStopDirection = direction;
+  },
+  [types.TOGGLE_CLEAR_ALL_GEOJSON_LAYER](state, clear) {
+    state.clearAllGeoJSONLayer = clear;
+  },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;
   }

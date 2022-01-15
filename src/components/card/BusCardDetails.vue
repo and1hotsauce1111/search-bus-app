@@ -17,15 +17,15 @@
     >
       <button
         class="left-btn px-2 py-1 w-3/6"
-        :class="showGoRoute ? 'text-primary-500' : 'text-grey-100'"
-        @click="showOtherRoute"
+        :class="showGoRoute === 0 ? 'text-primary-500' : 'text-grey-100'"
+        @click="showOtherRoute(0)"
       >
         往 {{ currentBus.DestinationStopNameZh }}
       </button>
       <button
         class="right-btn px-2 py-1 w-3/6"
-        :class="!showGoRoute ? 'text-primary-500' : 'text-grey-100'"
-        @click="showOtherRoute"
+        :class="showGoRoute === 1 ? 'text-primary-500' : 'text-grey-100'"
+        @click="showOtherRoute(1)"
       >
         往 {{ currentBus.DepartureStopNameZh }}
       </button>
@@ -33,7 +33,7 @@
 
     <!-- card details go -->
     <div
-      v-show="showGoRoute"
+      v-show="showGoRoute === 0"
       class="card-details-block px-4 pt-3 md:px-8 md:pt-7"
     >
       <div v-for="stop in goRouteStops" :key="stop.StopUID">
@@ -155,7 +155,7 @@
 
     <!-- card details back -->
     <div
-      v-show="!showGoRoute"
+      v-show="showGoRoute === 1"
       class="card-details-block px-4 pt-3 md:px-8 md:pt-7"
     >
       <div v-for="stop in backRouteStops" :key="stop.StopUID">
@@ -278,7 +278,7 @@
 </template>
 
 <script>
-import { ref, toRefs } from "vue";
+import { computed, onUnmounted, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -291,15 +291,15 @@ export default {
   },
   setup(props) {
     let msg = ref("Hello");
-    let showGoRoute = ref(true);
+    let showGoRoute = ref(0);
     const store = useStore();
     const { currentBus } = toRefs(props);
-    const routeStops = store.getters.busStopOfRoute;
-    const goRouteStops = routeStops[0].Stops || [];
-    const backRouteStops = routeStops[1].Stops || [];
-    const bufferZone =
-      store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
-      [];
+
+    function isNearStop(status, estimateTime) {
+      if (estimateTime === undefined || status !== 0) return "grey";
+      const min = Math.floor(estimateTime / 60);
+      return min <= 5 ? "red" : "green";
+    }
 
     function stopStatus(status, estimateTime) {
       var currentStatus = "";
@@ -331,15 +331,39 @@ export default {
       return currentStatus;
     }
 
-    function isNearStop(status, estimateTime) {
-      if (estimateTime === undefined || status !== 0) return "grey";
-      const min = Math.floor(estimateTime / 60);
-      return min <= 5 ? "red" : "green";
+    function showOtherRoute(cur) {
+      if (cur === showGoRoute.value) return;
+      showGoRoute.value === 0
+        ? (showGoRoute.value = 1)
+        : (showGoRoute.value = 0);
+      store.commit("TOGGLE_SHOW_BUS_STOP_DIRECTION", showGoRoute.value);
+      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", true);
     }
 
-    function showOtherRoute() {
-      showGoRoute.value = !showGoRoute.value;
-    }
+    const goRouteStops = computed(
+      () => store.getters.busStopOfRoute[0].Stops || []
+    );
+    const backRouteStops = computed(
+      () => store.getters.busStopOfRoute[1].Stops || []
+    );
+    const bufferZone = computed(
+      () =>
+        store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
+        []
+    );
+
+    const intervalID = setInterval(() => {
+      const searchInfo = {
+        city: currentBus.value.City,
+        routeName: currentBus.value.RouteName.Zh_tw,
+        changeSideMenuHeight: false,
+      };
+      store.dispatch("getDisplayOfRouteStops", searchInfo);
+    }, 20000);
+
+    onUnmounted(() => {
+      clearInterval(intervalID);
+    });
 
     return {
       bufferZone,

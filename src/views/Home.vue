@@ -53,7 +53,6 @@ export default {
     }
 
     function closeMobileHome() {
-      console.log("close mobile home");
       homeState.isMobileHome = false;
     }
 

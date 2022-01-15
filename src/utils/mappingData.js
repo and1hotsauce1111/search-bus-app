@@ -1,3 +1,11 @@
+export const filterRouteStopPositionData = function(routeStopData, direction) {
+  const filteredData = {0: [], 1: []};
+  routeStopData[0].forEach(stop => filteredData[0].push({ lat: stop.PositionLat, lng: stop.PositionLon }));
+  routeStopData[1].forEach(stop => filteredData[1].push({ lat: stop.PositionLat, lng: stop.PositionLon }));
+
+  return filteredData[direction];
+}
+
 export const getAllStopsPosition = function (routeStopsData) {
   let allRoutePosition = { 0: [], 1: [] };
 

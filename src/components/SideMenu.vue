@@ -104,6 +104,7 @@ export default {
 
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
+      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", true);
       // change sideMenu top 3.06rem
       resetSideMenuContainerHeight("3.06rem");
     }
@@ -113,20 +114,6 @@ export default {
       // emit to close mobile home
       emit("closeMobileHome");
     }
-
-    // function keyboardInput(inputValue) {
-    //   sideMenuState.inputValue = inputValue;
-    //   const currentCity = store.getters.currentDistrict;
-    //   if (inputValue === "") {
-    //     store.commit("CLEAR_BUSLIST");
-    //     return;
-    //   }
-    //   const searchInput = {
-    //     city: currentCity,
-    //     keyword: inputValue,
-    //   };
-    //   store.dispatch("getBusByKeyword", searchInput);
-    // }
 
     // custom styles
     window.addEventListener("resize", resizeSideMenu);

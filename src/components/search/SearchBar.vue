@@ -312,6 +312,7 @@ export default {
 
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
+      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", true);
     }
 
     function onCompositionStart() {

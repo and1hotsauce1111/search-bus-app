@@ -1,8 +1,6 @@
-import getAuthorizationHeader from '@/utils/getAuthorizationHeader.js';
-
-export const headers = getAuthorizationHeader();
 export const ptx_baseUrl = 'https://ptx.transportdata.tw/MOTC/v2/';
 export const gist_baseUrl = 'https://gist.motc.gov.tw/gist_api';
+
 
 const selectString = (select) => {
   return select.reduce((acc, cur, index) => {

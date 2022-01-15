@@ -1,7 +1,7 @@
-import { headers, busQueryString } from './config';
+import { busQueryString } from './config';
+import getAuthorizationHeader from '@/utils/getAuthorizationHeader.js';
 import axios from 'axios';
 
-const axiosInstance = axios.create({ headers });
 
 export default {
   getAllCityBus(city) {
@@ -14,7 +14,7 @@ export default {
       'FareBufferZoneDescriptionZh',
     ];
     const url = busQueryString(`Bus/Route/City/${city}`, { select, top: true });
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getNearByBus(position) {
     const select = [
@@ -31,7 +31,7 @@ export default {
       select,
       top: true,
     });
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getBusVehicleType(city, plateNumb) {
     const url = busQueryString(`Bus/Vehicle/City/${city}`, {
@@ -39,7 +39,7 @@ export default {
       top: false,
     });
 
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   // for show bus card list
   getBusByRouteUIDs(city, routeUID) {
@@ -56,7 +56,7 @@ export default {
       select,
       top: true,
     });
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   // for search stopName or routeName
   getBusByStopNameKeyword(city, keyword) {
@@ -66,21 +66,21 @@ export default {
       top: true,
       filter: { type: 'bus/stop', keyword },
     });
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getDisplayOfRouteStops(city, routeName) {
     const url = busQueryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
       filter: { type: 'stop', routeName },
       top: true,
     });
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getEstimatedTimeOfArrival(city, routeName) {
     const url = busQueryString(
       `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   // all route bus position
   getCurrentRouteBusPosition(city, routeName) {
@@ -88,7 +88,7 @@ export default {
       `Bus/RealTimeByFrequency/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   // all real time near by stop bus
   getRealTimeNearByBus(city, routeName) {
@@ -97,7 +97,7 @@ export default {
       { filter: { type: 'stop', routeName }, top: false },
     );
 
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getBusRouteShape(city, routeName) {
     const url = busQueryString(`Bus/Shape/City/${city}`, {
@@ -105,6 +105,6 @@ export default {
       top: true,
     });
 
-    return axiosInstance.get(url);
+    return axios.get(url, { headers: getAuthorizationHeader() });
   },
 };

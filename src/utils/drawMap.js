@@ -8,7 +8,8 @@ const defaultPosition = [24.136944, 120.684722];
 
 class DrawMap {
   constructor(position) {
-    this.position = position || defaultPosition;
+    this.busStopIcon = L.icon({ iconUrl: busStopIcon });
+    this.geojsonLayer = null;
     this.map = L.map('map', {
       center: this.position,
       zoom: 18, // 0 - 18
@@ -16,10 +17,10 @@ class DrawMap {
       zoomControl: false,
       zoomAnimation: true,
     });
+    this.position = position || defaultPosition;
     this.userPositionIcon = L.icon({
       iconUrl: userPosIcon,
     });
-    this.busStopIcon = L.icon({ iconUrl: busStopIcon });
     this.userMarker = L.marker(this.position, {
       icon: this.userPositionIcon,
     }).addTo(this.map);
@@ -38,15 +39,15 @@ class DrawMap {
       weight: 4,
     };
     const firstStop = busLine.coordinates[0];
-
-    L.geoJSON(busLine, { style: busLineStyle }).addTo(this.map);
+    this.geojsonLayer = L.geoJSON(busLine, { style: busLineStyle }).addTo(this.map);
+    this.map.panTo({ lat: firstStop[1], lng: firstStop[0] });
   }
 
   drawBusStopIcon(coords) {
     if (!coords.length) return;
     for (let i = 0; i < coords.length; i++) {
       new L.marker(
-        { lat: coords[i][1], lng: coords[i][0] },
+        { lat: coords[i].lat, lng: coords[i].lng },
         {
           icon: this.busStopIcon,
         },
@@ -70,6 +71,11 @@ class DrawMap {
         alert('不支援GPS定位');
       }
     });
+  }
+
+  removeGeoJSONLayer() {
+    if(!this.geojsonLayer) return;
+    this.map.removeLayer(this.geojsonLayer);
   }
 
   updateUserPosition(position) {
