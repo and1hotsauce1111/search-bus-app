@@ -41,9 +41,9 @@ export default {
   setup() {
     const homeState = reactive({
       isMobileHome: true,
-      toggleMobileHome: true,
       isArgreeGeoLocation: false,
       searchType: "bus",
+      toggleMobileHome: true,
     });
 
     let mapLocation = shallowRef({});

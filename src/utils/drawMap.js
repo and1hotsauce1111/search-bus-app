@@ -31,10 +31,6 @@ class DrawMap {
     this.userPositionIcon = L.icon({
       iconUrl: userPosIcon,
     });
-
-    this.userMarker = L.marker(this.position, {
-      icon: this.userPositionIcon,
-    }).addTo(this.map);
   }
 
   init() {
@@ -131,10 +127,10 @@ class DrawMap {
     });
   }
 
-  updateUserPosition(position) {
-    const lat = position.latitude;
-    const lng = position.longitude;
-    this.userMarker.setLatLng({ lat, lng });
+  updateUserPosition({ lat, lng }) {
+    const userMarker = L.marker({ lat, lng }, {
+      icon: this.userPositionIcon,
+    }).addTo(this.map);
     this.map.panTo({ lat, lng });
   }
 }

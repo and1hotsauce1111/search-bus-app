@@ -34,11 +34,17 @@ const mutations = {
   [types.GET_BUS_ROUTE_SHAPE](state, busRouteShapeData) {
     state.busRouteShapeData = busRouteShapeData;
   },
+  [types.GET_USER_POSITON](state, position) {
+    state.userPosition = position;
+  },
   [types.TOGGLE_SHOW_BUS_STOP_DIRECTION](state, direction) {
     state.showBusStopDirection = direction;
   },
   [types.TOGGLE_GOTO_FIRST_STOP](state, isMove) {
     state.goToFirstStop = isMove;
+  },
+  [types.TOGGLE_GOTO_USER_POSITION](state) {
+    state.goToUserPosition = !state.goToUserPosition;
   },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { onMounted, toRefs, watch, ref } from "vue";
+import { onMounted, toRefs, watch } from "vue";
 import { useStore } from "vuex";
 import DrawMap from "@/utils/drawMap";
 import { filterRouteStopData } from "@/utils/mappingData.js";
@@ -22,7 +22,10 @@ export default {
     let map = null;
 
     onMounted(() => {
-      const defaultPosition = [24.136944, 120.684722];
+      const defaultPosition = {
+        lat: 24.136944,
+        lng: 120.684722,
+      };
       map = new DrawMap();
       map.init();
 
@@ -34,9 +37,15 @@ export default {
           map
             .getGeoInfo()
             .then((position) => {
-              map.updateUserPosition(position.coords);
+              const userPosition = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              map.updateUserPosition(userPosition);
               store.dispatch("getCurrentDistrict", position.coords);
               store.dispatch("getNearByBus", position.coords);
+              store.commit("GET_USER_POSITON", userPosition);
+
               emit("toggleAgreeLocation");
             })
             .catch((err) => {
@@ -55,12 +64,15 @@ export default {
       ],
       (newVals, oldVals) => {
         map.removeLayer();
+
         const shapeData = newVals[0];
+
         const newDirection = newVals[1];
         const oldDirection = oldVals[1];
-        const toggleMoveToFirstStop = store.getters.goToFirstStop;
+
         const allRouteStopsPosition = store.getters.allRouteStopsPosition;
         const allRouteBusPosition = store.getters.allRouteBusPosition;
+        const toggleMoveToFirstStop = store.getters.goToFirstStop;
         const isMoveToStart =
           newDirection !== oldDirection || toggleMoveToFirstStop ? true : false;
 
@@ -79,6 +91,14 @@ export default {
         map.drawStopIcon(routeStopData, isMoveToStart);
         map.drawBusIcon(allRouteBusPosition, newDirection);
         store.commit("TOGGLE_GOTO_FIRST_STOP", false);
+      }
+    );
+
+    watch(
+      () => store.getters.goToUserPosition,
+      () => {
+        const userPositon = store.getters.userPosition;
+        map.updateUserPosition(userPositon);
       }
     );
 

@@ -240,8 +240,14 @@ export default {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             // search nearby bus
+            const userPosition = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
             store.dispatch("getCurrentDistrict", position.coords);
             store.dispatch("getNearByBus", position.coords);
+            store.commit("GET_USER_POSITON", userPosition);
+
             emit("getMapLocation", position);
             emit("toggleAgreeLocation");
           },

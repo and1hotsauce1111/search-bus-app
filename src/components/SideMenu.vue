@@ -61,6 +61,36 @@
     </div>
     <!-- search bicycle -->
     <BicycleCard v-if="isSearching && searchType === 'bicycle'" />
+
+    <!-- geo location icon -->
+    <div
+      class="
+        absolute
+        -top-2
+        right-6
+        geo-icon
+        w-12
+        h-12
+        rounded-full
+        bg-grey-100
+        flex
+        justify-center
+        items-center
+        text-lg
+        cursor-pointer
+        md:w-14
+        md:h-14
+        md:bg-primary-400
+        md:text-grey-100
+        md:z-10
+        md:top-0
+        md:-right-20
+        md:text-xl
+      "
+      @click="goToUserPosition"
+    >
+      <i class="fas fa-crosshairs"></i>
+    </div>
   </div>
 </template>
 
@@ -113,6 +143,10 @@ export default {
       sideMenuState.currentBus = bus;
       // emit to close mobile home
       emit("closeMobileHome");
+    }
+
+    function goToUserPosition() {
+      store.commit("TOGGLE_GOTO_USER_POSITION");
     }
 
     // custom styles
@@ -220,9 +254,9 @@ export default {
       changeMaxHeight,
       cardListContainer,
       goToRouteStops,
+      goToUserPosition,
       isSearching,
       isSlideUp,
-      // keyboardInput,
       searchType,
       sideMenuState,
       sideMenuContainer,
