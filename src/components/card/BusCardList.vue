@@ -145,12 +145,13 @@ export default {
       const currentCity = store.getters.currentDistrict;
       const searchInfo = {
         city: currentCity,
-        routeName: bus.RouteName.Zh_tw,
         changeSideMenuHeight: true,
+        currentSelectedRoute: bus,
+        routeName: bus.RouteName.Zh_tw,
       };
+      store.commit("TOGGLE_GOTO_FIRST_STOP", true);
       store.dispatch("getDisplayOfRouteStops", searchInfo);
       emit("goToRouteStops", bus);
-      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", false);
     }
 
     const currentCity = computed(() => {

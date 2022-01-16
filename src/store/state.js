@@ -5,7 +5,7 @@ const state = {
   busStopOfRoute: [],
   busRouteShapeData: [],
   currentDistrict: 'Taichung',
-  clearAllGeoJSONLayer: false,
+  goToFirstStop: true,
   isSearching: true,
   isChangeSideMenuHeight: false,
   searchInputValue: '',

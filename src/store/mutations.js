@@ -37,8 +37,8 @@ const mutations = {
   [types.TOGGLE_SHOW_BUS_STOP_DIRECTION](state, direction) {
     state.showBusStopDirection = direction;
   },
-  [types.TOGGLE_CLEAR_ALL_GEOJSON_LAYER](state, clear) {
-    state.clearAllGeoJSONLayer = clear;
+  [types.TOGGLE_GOTO_FIRST_STOP](state, isMove) {
+    state.goToFirstStop = isMove;
   },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;

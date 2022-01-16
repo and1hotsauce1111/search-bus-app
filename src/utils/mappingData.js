@@ -1,19 +1,49 @@
-export const filterRouteStopPositionData = function(routeStopData, direction) {
-  const filteredData = {0: [], 1: []};
-  routeStopData[0].forEach(stop => filteredData[0].push({ lat: stop.PositionLat, lng: stop.PositionLon }));
-  routeStopData[1].forEach(stop => filteredData[1].push({ lat: stop.PositionLat, lng: stop.PositionLon }));
+export const filterRouteStopData = function (routeStopData, direction) {
+  if(!Object.keys(routeStopData).length) return [];
+
+  const filteredData = { 0: [], 1: [] };
+  routeStopData[0].forEach((stop) =>
+    filteredData[0].push({
+      stopName: stop.stopName,
+      position: {
+        lat: stop.position.PositionLat,
+        lng: stop.position.PositionLon,
+      },
+      destination: stop.destination,
+    }),
+  );
+  routeStopData[1].forEach((stop) =>
+    filteredData[1].push({
+      stopName: stop.stopName,
+      position: {
+        lat: stop.position.PositionLat,
+        lng: stop.position.PositionLon,
+      },
+      destination: stop.destination,
+    }),
+  );
 
   return filteredData[direction];
-}
+};
 
-export const getAllStopsPosition = function (routeStopsData) {
-  let allRoutePosition = { 0: [], 1: [] };
+export const getAllStopsPosition = function (routeStopsData, currentSelectedRoute) {
+  if(!routeStopsData.length) return [];
+
+  const allRoutePosition = { 0: [], 1: [] };
 
   routeStopsData[0].Stops.forEach((stop) =>
-    allRoutePosition[0].push(stop.StopPosition),
+    allRoutePosition[0].push({
+      stopName: stop.StopName.Zh_tw,
+      position: stop.StopPosition,
+      destination: currentSelectedRoute.DestinationStopNameZh,
+    }),
   );
   routeStopsData[1].Stops.forEach((stop) =>
-    allRoutePosition[1].push(stop.StopPosition),
+    allRoutePosition[1].push({
+      stopName: stop.StopName.Zh_tw,
+      position: stop.StopPosition,
+      destination: currentSelectedRoute.DepartureStopNameZh,
+    }),
   );
 
   return allRoutePosition;

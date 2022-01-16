@@ -68,7 +68,7 @@ export const getBusByKeyword = function ({ commit, state }, searchInput) {
 
 // show all stops of selected route
 export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
-  const { city, routeName, changeSideMenuHeight } = searchInfo;
+  const { city, routeName, changeSideMenuHeight, currentSelectedRoute } = searchInfo;
 
   const requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
   const requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
@@ -103,7 +103,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
       commit(types.GET_BUS_ROUTE_SHAPE, routeShapeData);
 
-      const allRouteStopsPosition = getAllStopsPosition(routeStopsData);
+      const allRouteStopsPosition = getAllStopsPosition(routeStopsData, currentSelectedRoute);
       commit(types.GET_ALL_ROUTE_STOPS_POSITION, allRouteStopsPosition);
 
       // get nearby bus vehicle type

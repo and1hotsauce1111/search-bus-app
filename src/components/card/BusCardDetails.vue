@@ -337,7 +337,6 @@ export default {
         ? (showGoRoute.value = 1)
         : (showGoRoute.value = 0);
       store.commit("TOGGLE_SHOW_BUS_STOP_DIRECTION", showGoRoute.value);
-      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", true);
     }
 
     const goRouteStops = computed(
@@ -355,8 +354,9 @@ export default {
     const intervalID = setInterval(() => {
       const searchInfo = {
         city: currentBus.value.City,
-        routeName: currentBus.value.RouteName.Zh_tw,
+        currentSelectedRoute: currentBus.value,
         changeSideMenuHeight: false,
+        routeName: currentBus.value.RouteName.Zh_tw,
       };
       store.dispatch("getDisplayOfRouteStops", searchInfo);
     }, 20000);

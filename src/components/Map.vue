@@ -6,7 +6,7 @@
 import { onMounted, toRefs, watch, ref } from "vue";
 import { useStore } from "vuex";
 import DrawMap from "@/utils/drawMap";
-import { filterRouteStopPositionData } from "@/utils/mappingData.js";
+import { filterRouteStopData } from "@/utils/mappingData.js";
 
 export default {
   name: "Map",
@@ -19,15 +19,15 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore();
-    const mapInstance = ref(null);
+    let map = null;
 
     onMounted(() => {
       const defaultPosition = [24.136944, 120.684722];
-      const map = new DrawMap();
-      mapInstance.value = map;
+      map = new DrawMap();
+      map.init();
+
       const { mapLocation } = toRefs(props);
 
-      map.init();
       const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
         if (innerWidth >= 640) {
@@ -40,7 +40,7 @@ export default {
               emit("toggleAgreeLocation");
             })
             .catch((err) => {
-              map.map.setView(defaultPosition, 18);
+              map.setView(defaultPosition, 18);
             });
         }
       } else {
@@ -52,30 +52,32 @@ export default {
       [
         () => store.getters.busRouteShapeData,
         () => store.getters.showBusStopDirection,
-        () => store.getters.clearAllGeoJSONLayer,
       ],
-      (newVals) => {
+      (newVals, oldVals) => {
+        map.removeLayer();
         const shapeData = newVals[0];
-        const direction = newVals[1];
-        const clearGeoJSONLayer = newVals[2];
-        if (clearGeoJSONLayer) mapInstance.value.removeGeoJSONLayer();
+        const newDirection = newVals[1];
+        const oldDirection = oldVals[1];
+        const toggleMoveToFirstStop = store.getters.goToFirstStop;
+        const isMoveToStart =
+          newDirection !== oldDirection || toggleMoveToFirstStop ? true : false;
         const allRouteStopsPosition = store.getters.allRouteStopsPosition;
-        const filteredShapeData = filterRouteStopPositionData(
+        const routeStopData = filterRouteStopData(
           allRouteStopsPosition,
-          direction
+          newDirection
         );
-        if (shapeData[direction]) {
-          mapInstance.value.drawLine(shapeData[direction].Geometry);
+        // draw route line
+        if (shapeData[newDirection]) {
+          map.drawLine(shapeData[newDirection].Geometry, isMoveToStart);
         } else {
-          mapInstance.value.drawLine(shapeData[0].Geometry);
+          map.drawLine(shapeData[0].Geometry, isMoveToStart);
         }
-        mapInstance.value.drawBusStopIcon(filteredShapeData);
+        map.drawStopIcon(routeStopData, "stop");
+        store.commit("TOGGLE_GOTO_FIRST_STOP", false);
       }
     );
 
-    return {
-      mapInstance,
-    };
+    return {};
   },
 };
 </script>

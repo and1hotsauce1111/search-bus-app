@@ -3,6 +3,7 @@ import L, { marker } from 'leaflet';
 import userPosIcon from '../assets/mark/user-position.png';
 import busStopIcon from '../assets/mark/bus-stop.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
+import { layer } from '@fortawesome/fontawesome-svg-core';
 
 const defaultPosition = [24.136944, 120.684722];
 
@@ -10,6 +11,7 @@ class DrawMap {
   constructor(position) {
     this.busStopIcon = L.icon({ iconUrl: busStopIcon });
     this.geojsonLayer = null;
+    this.position = position || defaultPosition;
     this.map = L.map('map', {
       center: this.position,
       zoom: 18, // 0 - 18
@@ -17,7 +19,7 @@ class DrawMap {
       zoomControl: false,
       zoomAnimation: true,
     });
-    this.position = position || defaultPosition;
+    this.tileLayer = null;
     this.userPositionIcon = L.icon({
       iconUrl: userPosIcon,
     });
@@ -27,31 +29,50 @@ class DrawMap {
   }
 
   init() {
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(
-      this.map,
-    );
+    this.tileLayer = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    ).addTo(this.map);
   }
 
-  drawLine(geometry) {
+  drawLine(geometry, isMove) {
     const busLine = wktToGeoJSON(geometry);
     const busLineStyle = {
       color: '#4EA476',
       weight: 4,
     };
     const firstStop = busLine.coordinates[0];
-    this.geojsonLayer = L.geoJSON(busLine, { style: busLineStyle }).addTo(this.map);
-    this.map.panTo({ lat: firstStop[1], lng: firstStop[0] });
+    this.geojsonLayer = L.geoJSON(busLine, { style: busLineStyle }).addTo(
+      this.map,
+    );
+    if (isMove) this.map.panTo({ lat: firstStop[1], lng: firstStop[0] });
   }
 
-  drawBusStopIcon(coords) {
-    if (!coords.length) return;
-    for (let i = 0; i < coords.length; i++) {
+  drawStopIcon(stopInfo, type) {
+    if (!stopInfo.length) return;
+
+    let icon = null;
+    let popUpContent = '';
+    let popUpOptions = {
+      closeButton: false,
+      autoClose: false,
+    };
+    if (type === 'stop') icon = this.busStopIcon;
+
+    for (let i = 0; i < stopInfo.length; i++) {
+      popUpContent = `
+        <div class="popup">
+          <div class="popup-title">${stopInfo[i].stopName}</div>
+          <div class="popup-content">往 ${stopInfo[i].destination}</div>
+        </div>
+      `;
       new L.marker(
-        { lat: coords[i].lat, lng: coords[i].lng },
+        { lat: stopInfo[i].position.lat, lng: stopInfo[i].position.lng },
         {
-          icon: this.busStopIcon,
+          icon,
         },
-      ).addTo(this.map);
+      )
+        .bindPopup(popUpContent, popUpOptions)
+        .addTo(this.map);
     }
   }
 
@@ -73,9 +94,10 @@ class DrawMap {
     });
   }
 
-  removeGeoJSONLayer() {
-    if(!this.geojsonLayer) return;
-    this.map.removeLayer(this.geojsonLayer);
+  removeLayer() {
+    this.map.eachLayer((layer) => {
+      if (layer !== this.tileLayer) layer.remove();
+    });
   }
 
   updateUserPosition(position) {
