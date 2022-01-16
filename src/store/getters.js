@@ -1,4 +1,5 @@
 export const allRouteStopsPosition = (state) => state.allRouteStopsPosition;
+export const allRouteBusPosition = (state) => state.allRouteBusPosition;
 export const busCardList = (state) => state.busCardList;
 export const busStopOfRoute = (state) => state.busStopOfRoute;
 export const busRouteShapeData = (state) => state.busRouteShapeData;

@@ -2,6 +2,7 @@ import 'leaflet/dist/leaflet.css';
 import L, { marker } from 'leaflet';
 import userPosIcon from '../assets/mark/user-position.png';
 import busStopIcon from '../assets/mark/bus-stop.png';
+import busIcon from '../assets/mark/BusPoint.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
 import { layer } from '@fortawesome/fontawesome-svg-core';
 
@@ -9,9 +10,12 @@ const defaultPosition = [24.136944, 120.684722];
 
 class DrawMap {
   constructor(position) {
-    this.busStopIcon = L.icon({ iconUrl: busStopIcon });
-    this.geojsonLayer = null;
     this.position = position || defaultPosition;
+
+    this.tileLayer = null;
+
+    this.geojsonLayer = null;
+
     this.map = L.map('map', {
       center: this.position,
       zoom: 18, // 0 - 18
@@ -19,10 +23,15 @@ class DrawMap {
       zoomControl: false,
       zoomAnimation: true,
     });
-    this.tileLayer = null;
+
+    this.busIcon = L.icon({ iconUrl: busIcon });
+
+    this.busStopIcon = L.icon({ iconUrl: busStopIcon });
+
     this.userPositionIcon = L.icon({
       iconUrl: userPosIcon,
     });
+
     this.userMarker = L.marker(this.position, {
       icon: this.userPositionIcon,
     }).addTo(this.map);
@@ -34,29 +43,29 @@ class DrawMap {
     ).addTo(this.map);
   }
 
-  drawLine(geometry, isMove) {
+  drawLine(geometry) {
     const busLine = wktToGeoJSON(geometry);
     const busLineStyle = {
       color: '#4EA476',
       weight: 4,
     };
-    const firstStop = busLine.coordinates[0];
     this.geojsonLayer = L.geoJSON(busLine, { style: busLineStyle }).addTo(
       this.map,
     );
-    if (isMove) this.map.panTo({ lat: firstStop[1], lng: firstStop[0] });
   }
 
-  drawStopIcon(stopInfo, type) {
+  drawStopIcon(stopInfo, isMove) {
     if (!stopInfo.length) return;
 
-    let icon = null;
     let popUpContent = '';
     let popUpOptions = {
       closeButton: false,
       autoClose: false,
     };
-    if (type === 'stop') icon = this.busStopIcon;
+    const firstStopPosition = {
+      lat: stopInfo[0].position.lat,
+      lng: stopInfo[0].position.lng,
+    };
 
     for (let i = 0; i < stopInfo.length; i++) {
       popUpContent = `
@@ -65,14 +74,36 @@ class DrawMap {
           <div class="popup-content">往 ${stopInfo[i].destination}</div>
         </div>
       `;
-      new L.marker(
+      const marker = new L.marker(
         { lat: stopInfo[i].position.lat, lng: stopInfo[i].position.lng },
         {
-          icon,
+          icon: this.busStopIcon,
         },
       )
         .bindPopup(popUpContent, popUpOptions)
         .addTo(this.map);
+
+      if (i === 0 && isMove) marker.openPopup(firstStopPosition);
+    }
+
+    if (isMove) this.map.panTo(firstStopPosition);
+  }
+
+  drawBusIcon(busInfo, direction) {
+    if (!busInfo.length) return;
+
+    for (let i = 0; i < busInfo.length; i++) {
+      if (busInfo[i].Direction === direction) {
+        const marker = new L.marker(
+          {
+            lat: busInfo[i].BusPosition.PositionLat,
+            lng: busInfo[i].BusPosition.PositionLon,
+          },
+          {
+            icon: this.busIcon,
+          },
+        ).addTo(this.map);
+      }
     }
   }
 

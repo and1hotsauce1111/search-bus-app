@@ -40,7 +40,7 @@ export default {
               emit("toggleAgreeLocation");
             })
             .catch((err) => {
-              map.setView(defaultPosition, 18);
+              map.map.setView(defaultPosition, 18);
             });
         }
       } else {
@@ -59,20 +59,25 @@ export default {
         const newDirection = newVals[1];
         const oldDirection = oldVals[1];
         const toggleMoveToFirstStop = store.getters.goToFirstStop;
+        const allRouteStopsPosition = store.getters.allRouteStopsPosition;
+        const allRouteBusPosition = store.getters.allRouteBusPosition;
         const isMoveToStart =
           newDirection !== oldDirection || toggleMoveToFirstStop ? true : false;
-        const allRouteStopsPosition = store.getters.allRouteStopsPosition;
+
         const routeStopData = filterRouteStopData(
           allRouteStopsPosition,
           newDirection
         );
+
         // draw route line
         if (shapeData[newDirection]) {
-          map.drawLine(shapeData[newDirection].Geometry, isMoveToStart);
+          map.drawLine(shapeData[newDirection].Geometry);
         } else {
-          map.drawLine(shapeData[0].Geometry, isMoveToStart);
+          map.drawLine(shapeData[0].Geometry);
         }
-        map.drawStopIcon(routeStopData, "stop");
+
+        map.drawStopIcon(routeStopData, isMoveToStart);
+        map.drawBusIcon(allRouteBusPosition, newDirection);
         store.commit("TOGGLE_GOTO_FIRST_STOP", false);
       }
     );

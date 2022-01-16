@@ -79,6 +79,10 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
   const requestNearByBus = BusApi.getRealTimeNearByBus(city, routeName);
   const requestRouteShape = BusApi.getBusRouteShape(city, routeName);
 
+
+  const start = Date.now();
+  console.log('start', start);
+
   Promise.all([
     requestRouteStops,
     requestEstimateTime,
@@ -93,6 +97,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       value[3].status === 200 &&
       value[4].status === 200
     ) {
+
       const routeStopsData = value[0].data;
       const estimateTimeData = value[1].data;
       const busPositionData = value[2].data;
@@ -141,5 +146,7 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
         if(changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
       }
     }
+
+    console.log('end', Date.now() - start);
   });
 };
