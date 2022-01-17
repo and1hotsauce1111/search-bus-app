@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { onMounted, toRefs, watch } from "vue";
+import { onMounted, onUnmounted, toRefs, watch } from "vue";
 import { useStore } from "vuex";
 import DrawMap from "@/utils/drawMap";
 import { filterRouteStopData } from "@/utils/mappingData.js";
@@ -22,6 +22,10 @@ export default {
     let map = null;
 
     onMounted(() => {
+      const mapDOM = document.querySelector("#map");
+      mapDOM.addEventListener("click", (e) => {
+        console.log("click map");
+      });
       const defaultPosition = {
         lat: 24.136944,
         lng: 120.684722,

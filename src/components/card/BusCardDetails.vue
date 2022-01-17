@@ -288,12 +288,17 @@ export default {
       required: true,
       default: {},
     },
+    searchType: {
+      type: String,
+      required: true,
+      default: "bus",
+    },
   },
   setup(props) {
     let msg = ref("Hello");
     let showGoRoute = ref(0);
     const store = useStore();
-    const { currentBus } = toRefs(props);
+    const { currentBus, searchType } = toRefs(props);
 
     function isNearStop(status, estimateTime) {
       if (estimateTime === undefined || status !== 0) return "grey";
@@ -339,12 +344,20 @@ export default {
       store.commit("TOGGLE_SHOW_BUS_STOP_DIRECTION", showGoRoute.value);
     }
 
-    const goRouteStops = computed(
-      () => store.getters.busStopOfRoute[0].Stops || []
+    const goRouteStops = computed(() =>
+      store.getters.busStopOfRoute[0]
+        ? store.getters.busStopOfRoute[0].Stops
+        : []
     );
-    const backRouteStops = computed(
-      () => store.getters.busStopOfRoute[1].Stops || []
-    );
+    const backRouteStops = computed(() => {
+      if (store.getters.busStopOfRoute[1]) {
+        return store.getters.busStopOfRoute[1].Stops;
+      } else if (store.getters.busStopOfRoute[0]) {
+        return store.getters.busStopOfRoute[0].Stops;
+      } else {
+        return [];
+      }
+    });
     const bufferZone = computed(
       () =>
         store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
@@ -352,13 +365,27 @@ export default {
     );
 
     const intervalID = setInterval(() => {
-      const searchInfo = {
-        city: currentBus.value.City,
-        currentSelectedRoute: currentBus.value,
-        changeSideMenuHeight: false,
-        routeName: currentBus.value.RouteName.Zh_tw,
-      };
-      store.dispatch("getDisplayOfRouteStops", searchInfo);
+      let searchInfo = {};
+      if (searchType.value === "bus") {
+        searchInfo = {
+          type: "bus",
+          city: currentBus.value.City,
+          currentSelectedRoute: currentBus.value,
+          changeSideMenuHeight: false,
+          routeName: currentBus.value.RouteName.Zh_tw,
+        };
+      }
+
+      if (searchType.value === "intercityBus") {
+        searchInfo = {
+          type: "intercityBus",
+          currentSelectedRoute: currentBus.value,
+          changeSideMenuHeight: false,
+          routeName: currentBus.value.RouteName.Zh_tw,
+        };
+      }
+
+      store.dispatch("getBusDisplayOfRouteStops", searchInfo);
     }, 20000);
 
     onUnmounted(() => {
@@ -375,6 +402,7 @@ export default {
       stopStatus,
       showGoRoute,
       showOtherRoute,
+      searchType,
     };
   },
 };

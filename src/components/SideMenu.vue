@@ -25,6 +25,7 @@
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+        :searchType="searchType"
         @go-to-route-stops="goToRouteStops"
       />
       <KeyBoard
@@ -36,7 +37,10 @@
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <BusCardDetails :currentBus="sideMenuState.currentBus" />
+      <BusCardDetails
+        :currentBus="sideMenuState.currentBus"
+        :searchType="searchType"
+      />
     </div>
     <div
       v-if="showSearchBusDetails"
@@ -64,10 +68,11 @@
 
     <!-- geo location icon -->
     <div
+      v-if="showSearchBusDetails"
       class="
         absolute
-        -top-2
-        right-6
+        -top-16
+        right-5
         geo-icon
         w-12
         h-12
@@ -134,7 +139,6 @@ export default {
 
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
-      store.commit("TOGGLE_CLEAR_ALL_GEOJSON_LAYER", true);
       // change sideMenu top 3.06rem
       resetSideMenuContainerHeight("3.06rem");
     }
@@ -193,23 +197,23 @@ export default {
 
     // watch and computed
     watch(
-      () => sideMenuState.toggleKeyBoard,
-      (newVal) => {
+      [
+        () => sideMenuState.toggleKeyBoard,
+        () => store.getters.isChangeSideMenuHeight,
+      ],
+      (newVals, oldVals) => {
         // change cardlist maxheight when toggle keyboard
         const container = cardListContainer.value.$refs.cardContainer;
-        if (!newVal) {
+        if (!newVals[0]) {
           container.style.maxHeight = "calc(100vh - 5.56rem)";
         } else {
           container.style.maxHeight = "calc(100vh - 22rem)";
         }
-      }
-    );
 
-    watch(
-      () => store.getters.isChangeSideMenuHeight,
-      (newVal) => {
-        resetSideMenuContainerHeight("75%");
-        store.commit("CHANGE_SEARCHING_STATUS");
+        if (newVals[1] !== oldVals[1]) {
+          resetSideMenuContainerHeight("75%");
+          store.commit("CHANGE_SEARCHING_STATUS");
+        }
       }
     );
 

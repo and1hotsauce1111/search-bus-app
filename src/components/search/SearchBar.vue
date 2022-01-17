@@ -326,16 +326,23 @@ export default {
 
     function searchBus() {
       if (searchInputValue.value === "") return;
-      const currentCity = store.getters.currentDistrict;
-      const searchInput = {
-        city: currentCity,
-        keyword: searchInputValue.value,
-      };
-      store.dispatch("getBusByKeyword", searchInput);
+
+      if (searchType.value === "bus") {
+        const currentCity = store.getters.currentDistrict;
+        const searchInput = {
+          city: currentCity,
+          keyword: searchInputValue.value,
+        };
+        store.dispatch("getBusByKeyword", searchInput);
+      }
+
+      if (searchType.value === "intercityBus") {
+        store.dispatch("getIntercityBusByKeyword", searchInputValue.value);
+      }
     }
 
     function searchBusByCity(city) {
-      store.dispatch("getAllCityBus", city);
+      if (searchType.value === "bus") store.dispatch("getAllCityBus", city);
       // reset current city
       store.commit("GET_CURRENT_DISTRICT", city);
     }

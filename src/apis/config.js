@@ -24,8 +24,7 @@ const filterMultipleDataString = (column, dataArr) => {
 
 const filterBusByStopString = (keyword) =>
   `$filter=(Stops/any(d:(contains(d/StopName/Zh_tw, '${keyword}') eq true)) or Contains(RouteName/Zh_tw, '${keyword}') eq true) and Direction eq 0`;
-// const filterBusByRouteString = (keyword) =>
-//   `$filter=contains(RouteName/Zh_tw, '${keyword}')`;
+
 const filterExactRoute = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
 const nearByBusString = (position) =>
   `$spatialFilter=nearby(${position.lat},${position.lng},500)`;

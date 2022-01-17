@@ -1,11 +1,13 @@
 import * as types from './mutation-types';
 import BusApi from '../apis/getBus';
+import InterCityBusApi from '../apis/getInterCityBus';
 import districtApi from '../apis/getDistrict';
 import {
   mapingRouteStopsAndEstimatedTimeData,
   getAllStopsPosition,
 } from '@/utils/mappingData.js';
 
+/** search city bus */
 export const getCurrentDistrict = function (
   { commit, state, dispatch },
   coords,
@@ -21,7 +23,7 @@ export const getCurrentDistrict = function (
     .catch((err) => console.log(err));
 };
 
-// filter routes by city 
+// filter routes by city
 export const getAllCityBus = function ({ commit, state }, city) {
   BusApi.getAllCityBus(city)
     .then((res) => {
@@ -44,51 +46,69 @@ export const getNearByBus = function ({ commit, state }, coords) {
 };
 
 // filter routes by stopName or routeName
-export const getBusByKeyword = function ({ commit, state }, searchInput) {
+export const getBusByKeyword = async function ({ commit, state }, searchInput) {
   const { city, keyword } = searchInput;
 
-  const requestStopByKeyword = BusApi.getBusByStopNameKeyword(city, keyword);
+  const { data: result, status: status1 } =
+    await BusApi.getBusByStopNameKeyword(city, keyword);
+  if (status1 === 200 && result.length) {
+    const routUIDs = [];
+    for (let i = 0, len = result.length; i < len; i++) {
+      routUIDs.push(result[i].RouteUID);
+    }
 
-  requestStopByKeyword
-    .then((res) => {
-      if (res.status === 200) {
-        if (res.data.length) {
-          const routUIDs = [];
-          res.data.forEach((data) => routUIDs.push(data.RouteUID));
-          BusApi.getBusByRouteUIDs(city, routUIDs).then((response) => {
-            if (response.status === 200) {
-              commit(types.GET_BUS_BY_KEYWORD, response.data);
-            }
-          });
-        }
-      }
-    })
-    .catch((err) => console.log(err));
+    const { data: searchResult, status: status2 } =
+      await BusApi.getBusByRouteUIDs(city, routUIDs);
+    if (status2 === 200) commit(types.GET_BUS_BY_KEYWORD, searchResult);
+  }
 };
 
 // show all stops of selected route
-export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
-  const { city, routeName, changeSideMenuHeight, currentSelectedRoute } = searchInfo;
+export const getBusDisplayOfRouteStops = async function (
+  { commit, state },
+  searchInfo,
+) {
+  const { type, city, routeName, changeSideMenuHeight, currentSelectedRoute } =
+    searchInfo;
 
-  const requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
-  const requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
-  const requestRouteBusPosition = BusApi.getCurrentRouteBusPosition(
-    city,
-    routeName,
-  );
-  const requestNearByBus = BusApi.getRealTimeNearByBus(city, routeName);
-  const requestRouteShape = BusApi.getBusRouteShape(city, routeName);
+  let requestRouteStops = '';
+  let requestEstimateTime = '';
+  let requestRouteBusPosition = '';
+  let requestNearByBus = '';
+  let requestRouteShape = '';
 
+
+  if(type === 'bus') {
+    requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
+    requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
+    requestRouteBusPosition = BusApi.getCurrentRouteBusPosition(
+      city,
+      routeName,
+    );
+    requestNearByBus = BusApi.getRealTimeNearByBus(city, routeName);
+    requestRouteShape = BusApi.getBusRouteShape(city, routeName);
+  }
+  if(type === 'intercityBus') {
+    requestRouteStops = InterCityBusApi.getIntercitybusDisplayOfRouteStops(routeName);
+    requestEstimateTime = InterCityBusApi.getIntercitybusEstimatedTimeOfArrival(routeName);
+    requestRouteBusPosition = InterCityBusApi.getIntercitybusCurrentRouteBusPosition(routeName);
+    requestNearByBus  = InterCityBusApi.getIntercitybusRealTimeNearByBus(routeName);
+    requestRouteShape  = InterCityBusApi.getIntercitybusRouteShape(routeName);
+  }
 
   const start = Date.now();
   console.log('start', start);
 
-  Promise.all([
+  let nearByBusData = null;
+  let estimateTimeData = null;
+  let routeStopsData = null;
+
+  await Promise.all([
     requestRouteStops,
     requestEstimateTime,
     requestRouteBusPosition,
     requestNearByBus,
-    requestRouteShape
+    requestRouteShape,
   ]).then((value) => {
     if (
       value[0].status === 200 &&
@@ -97,55 +117,114 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       value[3].status === 200 &&
       value[4].status === 200
     ) {
-
-      const routeStopsData = value[0].data;
-      const estimateTimeData = value[1].data;
+      routeStopsData = value[0].data;
+      estimateTimeData = value[1].data;
+      nearByBusData = value[3].data;
       const busPositionData = value[2].data;
-      const nearByBusData = value[3].data;
       const routeShapeData = value[4].data;
+
+      console.log('routeStopsData', routeStopsData);
+      console.log('currentSelectedRoute', currentSelectedRoute);
 
       commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
       commit(types.GET_BUS_ROUTE_SHAPE, routeShapeData);
 
-      const allRouteStopsPosition = getAllStopsPosition(routeStopsData, currentSelectedRoute);
+      const allRouteStopsPosition = getAllStopsPosition(
+        routeStopsData,
+        currentSelectedRoute,
+      );
       commit(types.GET_ALL_ROUTE_STOPS_POSITION, allRouteStopsPosition);
+    }
+  });
 
-      // get nearby bus vehicle type
-      if(nearByBusData.length) {
-        const plateNumb = [];
-        nearByBusData.forEach(bus => plateNumb.push(bus.PlateNumb))
-        BusApi.getBusVehicleType(city, plateNumb).then(res => {
-          if(res.status === 200) {
-            if(res.data.length) {
-              res.data.forEach(vehicle => {
-                const targetIndex = nearByBusData.findIndex(bus => bus.PlateNumb === vehicle.PlateNumb);
-                if(targetIndex > -1) {
-                  nearByBusData[targetIndex]['VehicleType'] = vehicle.VehicleType;
-                }else {
-                  nearByBusData[targetIndex]['VehicleType'] = null
-                }
-              })
+  // get nearby bus vehicle type
+  if (nearByBusData.length) {
+    const plateNumb = [];
+    nearByBusData.forEach((bus) => plateNumb.push(bus.PlateNumb));
+    if(type === 'bus') {
+      BusApi.getBusVehicleType(city, plateNumb).then((res) => {
+        if (res.status === 200) {
+          if (res.data.length) {
+            for (let i = 0, len = res.data.length; i < len; i++) {
+              const targetIndex = nearByBusData.findIndex(
+                (bus) => bus.PlateNumb === res.data[i].PlateNumb,
+              );
+              if (targetIndex > -1) {
+                nearByBusData[targetIndex]['VehicleType'] =
+                  res.data[i].VehicleType;
+              } else {
+                nearByBusData[targetIndex]['VehicleType'] = null;
+              }
             }
-            const mappingData = mapingRouteStopsAndEstimatedTimeData(
-              routeStopsData,
-              estimateTimeData,
-              nearByBusData,
-            );
-            commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-            if(changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
-          }         
-        })
-      } else {
-        const mappingData = mapingRouteStopsAndEstimatedTimeData(
-          routeStopsData,
-          estimateTimeData,
-          nearByBusData,
-        );
-        commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-        if(changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
-      }
+          }
+          const mappingData = mapingRouteStopsAndEstimatedTimeData(
+            routeStopsData,
+            estimateTimeData,
+            nearByBusData,
+          );
+          commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+          if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
+        }
+      });
     }
 
-    console.log('end', Date.now() - start);
-  });
+    if(type === 'intercityBus') {
+      InterCityBusApi.getIntercitybusVehicleType(plateNumb).then((res) => {
+        if (res.status === 200) {
+          if (res.data.length) {
+            for (let i = 0, len = res.data.length; i < len; i++) {
+              const targetIndex = nearByBusData.findIndex(
+                (bus) => bus.PlateNumb === res.data[i].PlateNumb,
+              );
+              if (targetIndex > -1) {
+                nearByBusData[targetIndex]['VehicleType'] =
+                  res.data[i].VehicleType;
+              } else {
+                nearByBusData[targetIndex]['VehicleType'] = null;
+              }
+            }
+          }
+          const mappingData = mapingRouteStopsAndEstimatedTimeData(
+            routeStopsData,
+            estimateTimeData,
+            nearByBusData,
+          );
+          commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+          if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
+        }
+      });
+    }
+
+  } else {
+    const mappingData = mapingRouteStopsAndEstimatedTimeData(
+      routeStopsData,
+      estimateTimeData,
+      nearByBusData,
+    );
+    commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+    if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
+  }
+
+  console.log('end', Date.now() - start);
 };
+
+/** search inter city bus */
+export const getIntercityBusByKeyword = async function (
+  { commit, state },
+  keyword,
+) {
+  const { data: result, status: status1 } =
+    await InterCityBusApi.getIntercitybusByStopNameKeyword(keyword);
+
+  if (status1 === 200 && result.length) {
+    const routUIDs = [];
+    for (let i = 0, len = result.length; i < len; i++) {
+      routUIDs.push(result[i].RouteUID);
+    }
+
+    const { data: searchResult, status: status2 } =
+      await InterCityBusApi.getIntercitybusByRouteUIDs(routUIDs);
+    if (status2 === 200) commit(types.GET_BUS_BY_KEYWORD, searchResult);
+  }
+};
+

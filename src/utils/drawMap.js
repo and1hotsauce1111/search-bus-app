@@ -4,7 +4,6 @@ import userPosIcon from '../assets/mark/user-position.png';
 import busStopIcon from '../assets/mark/bus-stop.png';
 import busIcon from '../assets/mark/BusPoint.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
-import { layer } from '@fortawesome/fontawesome-svg-core';
 
 const defaultPosition = [24.136944, 120.684722];
 
@@ -40,7 +39,7 @@ class DrawMap {
   }
 
   drawLine(geometry) {
-    if(!geometry) return;
+    if (!geometry) return;
 
     // clear layer
     this.removeLayer();
@@ -61,14 +60,14 @@ class DrawMap {
     let popUpContent = '';
     let popUpOptions = {
       closeButton: false,
-      autoClose: false,
+      closeOnClick: true,
     };
     const firstStopPosition = {
       lat: stopInfo[0].position.lat,
       lng: stopInfo[0].position.lng,
     };
 
-    for (let i = 0; i < stopInfo.length; i++) {
+    for (let i = 0, len = stopInfo.length; i < len; i++) {
       popUpContent = `
         <div class="popup">
           <div class="popup-title">${stopInfo[i].stopName}</div>
@@ -93,7 +92,21 @@ class DrawMap {
   drawBusIcon(busInfo, direction) {
     if (!busInfo.length) return;
 
-    for (let i = 0; i < busInfo.length; i++) {
+    if (busInfo.length === 1) {
+      for (let i = 0, len = busInfo.length; i < len; i++) {
+        const marker = new L.marker(
+          {
+            lat: busInfo[i].BusPosition.PositionLat,
+            lng: busInfo[i].BusPosition.PositionLon,
+          },
+          {
+            icon: this.busIcon,
+          },
+        ).addTo(this.map);
+      }
+    }
+
+    for (let i = 0, len = busInfo.length; i < len; i++) {
       if (busInfo[i].Direction === direction) {
         const marker = new L.marker(
           {
@@ -133,9 +146,12 @@ class DrawMap {
   }
 
   updateUserPosition({ lat, lng }) {
-    const userMarker = L.marker({ lat, lng }, {
-      icon: this.userPositionIcon,
-    }).addTo(this.map);
+    const userMarker = L.marker(
+      { lat, lng },
+      {
+        icon: this.userPositionIcon,
+      },
+    ).addTo(this.map);
     this.map.panTo({ lat, lng });
   }
 }

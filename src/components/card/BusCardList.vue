@@ -52,6 +52,7 @@
                 >{{ bus.RouteName.Zh_tw }}</span
               >
               <span
+                v-if="bus.City"
                 class="
                   rounded-lg
                   bg-primary-400
@@ -120,10 +121,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    searchType: {
+      type: String,
+      required: true,
+      default: "bus",
+    },
   },
   setup(props, { emit }) {
     const cardContainer = ref(null);
-    const { toggleKeyBoard } = toRefs(props);
+    const { toggleKeyBoard, searchType } = toRefs(props);
     const store = useStore();
 
     const renderBusList = computed(() => {
@@ -142,15 +148,29 @@ export default {
     }
 
     function goToRouteStops(bus) {
-      const currentCity = store.getters.currentDistrict;
-      const searchInfo = {
-        city: currentCity,
-        changeSideMenuHeight: true,
-        currentSelectedRoute: bus,
-        routeName: bus.RouteName.Zh_tw,
-      };
+      let searchInfo = {};
+
+      if (searchType.value === "bus") {
+        const currentCity = store.getters.currentDistrict;
+        searchInfo = {
+          type: "bus",
+          city: currentCity,
+          changeSideMenuHeight: true,
+          currentSelectedRoute: bus,
+          routeName: bus.RouteName.Zh_tw,
+        };
+      }
+
+      if (searchType.value === "intercityBus") {
+        searchInfo = {
+          type: "intercityBus",
+          changeSideMenuHeight: true,
+          currentSelectedRoute: bus,
+          routeName: bus.RouteName.Zh_tw,
+        };
+      }
+      store.dispatch("getBusDisplayOfRouteStops", searchInfo);
       store.commit("TOGGLE_GOTO_FIRST_STOP", true);
-      store.dispatch("getDisplayOfRouteStops", searchInfo);
       emit("goToRouteStops", bus);
     }
 
@@ -170,6 +190,7 @@ export default {
       cardContainer,
       goToRouteStops,
       renderBusList,
+      searchType,
       toggleKeyBoard,
     };
   },
