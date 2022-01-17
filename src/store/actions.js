@@ -104,7 +104,6 @@ export const getDisplayOfRouteStops = function ({ commit, state }, searchInfo) {
       const nearByBusData = value[3].data;
       const routeShapeData = value[4].data;
 
-
       commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
       commit(types.GET_BUS_ROUTE_SHAPE, routeShapeData);
 

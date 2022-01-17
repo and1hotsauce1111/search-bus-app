@@ -40,6 +40,11 @@ class DrawMap {
   }
 
   drawLine(geometry) {
+    if(!geometry) return;
+
+    // clear layer
+    this.removeLayer();
+
     const busLine = wktToGeoJSON(geometry);
     const busLineStyle = {
       color: '#4EA476',

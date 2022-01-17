@@ -61,14 +61,22 @@ export default {
       [
         () => store.getters.busRouteShapeData,
         () => store.getters.showBusStopDirection,
+        () => store.getters.goToUserPosition,
       ],
       (newVals, oldVals) => {
-        map.removeLayer();
-
         const shapeData = newVals[0];
 
         const newDirection = newVals[1];
         const oldDirection = oldVals[1];
+
+        const newUserPosition = newVals[2];
+        const oldUserPosition = oldVals[2];
+        const userPositon = store.getters.userPosition;
+
+        if (newUserPosition !== oldUserPosition) {
+          map.updateUserPosition(userPositon);
+          return;
+        }
 
         const allRouteStopsPosition = store.getters.allRouteStopsPosition;
         const allRouteBusPosition = store.getters.allRouteBusPosition;
@@ -91,14 +99,6 @@ export default {
         map.drawStopIcon(routeStopData, isMoveToStart);
         map.drawBusIcon(allRouteBusPosition, newDirection);
         store.commit("TOGGLE_GOTO_FIRST_STOP", false);
-      }
-    );
-
-    watch(
-      () => store.getters.goToUserPosition,
-      () => {
-        const userPositon = store.getters.userPosition;
-        map.updateUserPosition(userPositon);
       }
     );
 
