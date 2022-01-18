@@ -1,7 +1,8 @@
 import * as types from './mutation-types';
 import BusApi from '../apis/getBus';
+import BikeApi from '../apis/getBike';
+import DistrictApi from '../apis/getDistrict';
 import InterCityBusApi from '../apis/getInterCityBus';
-import districtApi from '../apis/getDistrict';
 import {
   mapingRouteStopsAndEstimatedTimeData,
   getAllStopsPosition,
@@ -10,11 +11,11 @@ import {
 /** search city bus */
 export const getCurrentDistrict = function (
   { commit, state, dispatch },
-  coords,
+  position,
 ) {
-  const position = { LocationX: coords.longitude, LocationY: coords.latitude };
-  districtApi
-    .getCurrentDistrict(position)
+  const currentPosition = { LocationX: position.lng, LocationY: position.lat};
+  DistrictApi
+    .getCurrentDistrict(currentPosition)
     .then((res) => {
       if (res.status === 200) {
         commit(types.GET_CURRENT_DISTRICT, res.data[0].City);
@@ -34,8 +35,7 @@ export const getAllCityBus = function ({ commit, state }, city) {
     .catch((err) => console.log(err));
 };
 
-export const getNearByBus = function ({ commit, state }, coords) {
-  const position = { lat: coords.latitude, lng: coords.longitude };
+export const getNearByBus = function ({ commit, state }, position) {
   BusApi.getNearByBus(position)
     .then((res) => {
       if (res.status === 200) {
@@ -122,9 +122,6 @@ export const getBusDisplayOfRouteStops = async function (
       nearByBusData = value[3].data;
       const busPositionData = value[2].data;
       const routeShapeData = value[4].data;
-
-      console.log('routeStopsData', routeStopsData);
-      console.log('currentSelectedRoute', currentSelectedRoute);
 
       commit(types.GET_ALL_ROUTE_BUS_POSITION, busPositionData);
       commit(types.GET_BUS_ROUTE_SHAPE, routeShapeData);
@@ -227,4 +224,19 @@ export const getIntercityBusByKeyword = async function (
     if (status2 === 200) commit(types.GET_BUS_BY_KEYWORD, searchResult);
   }
 };
+
+/** search bike */
+// search by keyword
+
+// search nearby station
+export const getNearByBikeStation = async function({ commit, state }, position) {
+  const requestNearByBikeStation = BikeApi.getNearByBikeStation(position);
+  const requestNearByBikeAvailability = BikeApi.getNearBikeAvailability(position);
+
+  Promise.all([requestNearByBikeStation, requestNearByBikeAvailability]).then(values => {
+    console.log('nearby station', values[0]);
+    console.log('nearby availability', values[1]);
+  })
+}
+
 

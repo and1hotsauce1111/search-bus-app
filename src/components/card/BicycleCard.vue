@@ -150,10 +150,17 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { onMounted } from "@vue/runtime-core";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
+
+    onMounted(() => {
+      const userPosition = store.getters.userPosition;
+      store.dispatch("getNearByBikeStation", userPosition);
+    });
     return {};
   },
 };

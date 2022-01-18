@@ -54,8 +54,8 @@ export default {
                 lng: position.coords.longitude,
               };
               map.updateUserPosition(userPosition);
-              store.dispatch("getCurrentDistrict", position.coords);
-              store.dispatch("getNearByBus", position.coords);
+              store.dispatch("getCurrentDistrict", userPosition);
+              store.dispatch("getNearByBus", userPosition);
               store.commit("GET_USER_POSITON", userPosition);
 
               emit("toggleAgreeLocation");
@@ -65,7 +65,11 @@ export default {
             });
         }
       } else {
-        map.updateUserPosition(mapLocation.value.coords);
+        const userPosition = {
+          lat: mapLocation.value.coords.latitude,
+          lng: mapLocation.value.coords.longitude,
+        };
+        map.updateUserPosition(userPosition);
       }
     });
 

@@ -27,9 +27,9 @@ const filterBusByStopString = (keyword) =>
 
 const filterExactRoute = (routeName) => `$filter=RouteName/Zh_tw eq '${routeName}'`;
 const nearByBusString = (position) =>
-  `$spatialFilter=nearby(${position.lat},${position.lng},500)`;
+  `$spatialFilter=nearby(${position.lat},${position.lng},1000)`;
 
-export const busQueryString = (
+export const queryString = (
   dataType,
   query = { select: null, filter: null, position: null, top: true },
 ) => {
@@ -80,7 +80,11 @@ export const busQueryString = (
       requestUrl = requestUrl + '&' + selectString(query.select)
     }
   }
-  requestUrl += '&$format=JSON';
+  if(requestUrl === "") {
+    requestUrl = requestUrl + '?$format=JSON'
+  } else {
+    requestUrl += '&$format=JSON';
+  }
 
   return encodeURI(`${ptx_baseUrl}${dataType}${requestUrl}`);
 };

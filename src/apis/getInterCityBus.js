@@ -1,40 +1,11 @@
-import { busQueryString } from './config';
+import { queryString } from './config';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader.js';
 import axios from 'axios';
 
 
 export default {
-  getAllCityBus(city) {
-    const select = [
-      'City',
-      'RouteName',
-      'RouteUID',
-      'DepartureStopNameZh',
-      'DestinationStopNameZh',
-      'FareBufferZoneDescriptionZh',
-    ];
-    const url = busQueryString(`Bus/Route/City/${city}`, { select, top: true });
-    return axios.get(url, { headers: getAuthorizationHeader() });
-  },
-  getNearByBus(position) {
-    const select = [
-      'City',
-      'RouteName',
-      'RouteUID',
-      'DepartureStopNameZh',
-      'DestinationStopNameZh',
-      'FareBufferZoneDescriptionZh',
-    ];
-    const url = busQueryString('Bus/Route/NearBy', {
-      position,
-      filter: { type: 'nearby' },
-      select,
-      top: true,
-    });
-    return axios.get(url, { headers: getAuthorizationHeader() });
-  },
   getIntercitybusVehicleType(plateNumb) {
-    const url = busQueryString(`Bus/Vehicle/InterCity`, {
+    const url = queryString(`Bus/Vehicle/InterCity`, {
       filter: { type: 'bus/type', plateNumb },
       top: false,
     });
@@ -51,7 +22,7 @@ export default {
       'DestinationStopNameZh',
       'FareBufferZoneDescriptionZh',
     ];
-    const url = busQueryString(`Bus/Route/InterCity`, {
+    const url = queryString(`Bus/Route/InterCity`, {
       filter: { type: 'bus/route', routeUID },
       select,
       top: true,
@@ -61,7 +32,7 @@ export default {
   // for search stopName or routeName
   getIntercitybusByStopNameKeyword(keyword) {
     const select = ['RouteUID'];
-    const url = busQueryString(`Bus/StopOfRoute/InterCity`, {
+    const url = queryString(`Bus/StopOfRoute/InterCity`, {
       select,
       top: true,
       filter: { type: 'bus/stop', keyword },
@@ -69,14 +40,14 @@ export default {
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getIntercitybusDisplayOfRouteStops(routeName) {
-    const url = busQueryString(`Bus/StopOfRoute/InterCity/${routeName}`, {
+    const url = queryString(`Bus/StopOfRoute/InterCity/${routeName}`, {
       filter: { type: 'stop', routeName },
       top: true,
     });
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getIntercitybusEstimatedTimeOfArrival(routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/EstimatedTimeOfArrival/InterCity/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -84,7 +55,7 @@ export default {
   },
   // all route bus position
   getIntercitybusCurrentRouteBusPosition(routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/RealTimeByFrequency/InterCity/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -92,7 +63,7 @@ export default {
   },
   // all real time near by stop bus
   getIntercitybusRealTimeNearByBus(routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/RealTimeNearStop/InterCity/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -100,7 +71,7 @@ export default {
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getIntercitybusRouteShape(routeName) {
-    const url = busQueryString(`Bus/Shape/InterCity/${routeName}`, {
+    const url = queryString(`Bus/Shape/InterCity/${routeName}`, {
       filter: { type: 'shape', routeName },
       top: true,
     });

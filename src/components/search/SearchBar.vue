@@ -64,7 +64,7 @@
           "
           :placeholder="searchBusInputPlaceholder"
         />
-        <button class="absolute right-9 md:right-36" @click="searchBus">
+        <button class="absolute right-9 md:right-36" @click.stop="searchData">
           <i class="fas fa-search text-grey-500 md:text-primary-500"></i>
         </button>
       </div>
@@ -106,13 +106,13 @@
               <span
                 v-if="!area.active"
                 class="text-lg text-grey-500 cursor-pointer ml-2"
-                @click="toggleCollapseCityMenu(index)"
+                @click.stop="toggleCollapseCityMenu(index)"
                 ><i class="fas fa-caret-right"></i
               ></span>
               <span
                 v-else
                 class="text-lg text-grey-500 cursor-pointer ml-2"
-                @click="toggleCollapseCityMenu(index)"
+                @click.stop="toggleCollapseCityMenu(index)"
                 ><i class="fas fa-caret-down"></i
               ></span>
             </p>
@@ -138,7 +138,7 @@
                 class="cursor-pointer"
                 v-for="(city, i) in area.cities"
                 :key="i"
-                @click="searchBusByCity(city)"
+                @click.stop="searchBusByCity(city)"
                 >{{ getCityNameZh(city) }}</span
               >
             </div>
@@ -153,10 +153,10 @@
       class="search-bicycle-block flex justify-between items-center"
     >
       <div class="toggle-btn text-lg text-grey-100 md:hidden basis-8">
-        <button v-if="isSlideUp" @click="toggleSlideMenu">
+        <button v-if="isSlideUp" @click.stop="toggleSlideMenu">
           <i class="fas fa-angle-down cursor-pointer md:hidden"></i>
         </button>
-        <button v-else @click="toggleSlideMenu">
+        <button v-else @click.stop="toggleSlideMenu">
           <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
         </button>
       </div>
@@ -239,13 +239,13 @@
         text-lg text-grey-100
       "
     >
-      <button @click="backToSearch">
+      <button @click.stop="backToSearch">
         <i class="fas fa-angle-left cursor-pointer hidden md:block"></i>
       </button>
-      <button v-if="isSlideUp" class="md:hidden" @click="toggleSlideMenu">
+      <button v-if="isSlideUp" class="md:hidden" @click.stop="toggleSlideMenu">
         <i class="fas fa-angle-down cursor-pointer md:hidden"></i>
       </button>
-      <button v-else class="md:hidden" @click="toggleSlideMenu">
+      <button v-else class="md:hidden" @click.stop="toggleSlideMenu">
         <i class="fas fa-angle-up cursor-pointer md:hidden"></i>
       </button>
       <span
@@ -324,11 +324,11 @@ export default {
       updateInput(e);
     }
 
-    function searchBus() {
+    function searchData() {
       if (searchInputValue.value === "") return;
 
+      const currentCity = store.getters.currentDistrict;
       if (searchType.value === "bus") {
-        const currentCity = store.getters.currentDistrict;
         const searchInput = {
           city: currentCity,
           keyword: searchInputValue.value,
@@ -336,9 +336,11 @@ export default {
         store.dispatch("getBusByKeyword", searchInput);
       }
 
-      if (searchType.value === "intercityBus") {
+      if (searchType.value === "intercityBus")
         store.dispatch("getIntercityBusByKeyword", searchInputValue.value);
-      }
+
+      // if (searchType.value === "bike")
+      //   store.dispatch("getCurrentCityBikeStation", currentCity);
     }
 
     function searchBusByCity(city) {
@@ -381,7 +383,7 @@ export default {
           store.commit("CLEAR_BUSLIST");
         }
         searchInputValue.value = newVal;
-        searchBus();
+        searchData();
       }
     );
 
@@ -435,7 +437,7 @@ export default {
       showBusInputSearch,
       searchingClassObject,
       searchBusInputPlaceholder,
-      searchBus,
+      searchData,
       searchBusByCity,
       toggleSlideMenu,
       toggleKeyBoard,

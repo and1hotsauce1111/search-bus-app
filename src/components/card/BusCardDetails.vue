@@ -1,34 +1,47 @@
 <template>
   <div class="detail-container overflow-scroll no-scrollbar relative">
-    <div
-      class="
-        sticky
-        top-0
-        left-0
-        w-full
-        change-direction
-        flex
-        justify-between
-        items-center
-        bg-primary-200
-        px-5
-        py-1
-      "
-    >
-      <button
-        class="left-btn px-2 py-1 w-3/6"
-        :class="showGoRoute === 0 ? 'text-primary-500' : 'text-grey-100'"
-        @click.stop="showOtherRoute(0)"
+    <div class="change-direction sticky top-0 left-0 w-full">
+      <div
+        class="
+          div
+          btn-container
+          flex
+          justify-between
+          items-center
+          bg-primary-200
+          px-5
+          py-1
+        "
       >
-        往 {{ currentBus.DestinationStopNameZh }}
-      </button>
-      <button
-        class="right-btn px-2 py-1 w-3/6"
-        :class="showGoRoute === 1 ? 'text-primary-500' : 'text-grey-100'"
-        @click.stop="showOtherRoute(1)"
-      >
-        往 {{ currentBus.DepartureStopNameZh }}
-      </button>
+        <button
+          class="left-btn px-2 py-1 w-3/6"
+          :class="showGoRoute === 0 ? 'text-primary-500' : 'text-grey-100'"
+          @click.stop="showOtherRoute(0)"
+        >
+          往 {{ currentBus.DestinationStopNameZh }}
+        </button>
+        <button
+          class="right-btn px-2 py-1 w-3/6"
+          :class="showGoRoute === 1 ? 'text-primary-500' : 'text-grey-100'"
+          @click.stop="showOtherRoute(1)"
+        >
+          往 {{ currentBus.DepartureStopNameZh }}
+        </button>
+      </div>
+      <!-- progress bar -->
+      <div
+        ref="progressBar"
+        class="
+          progress-bar
+          w-full
+          bg-green-100
+          opacity-60
+          h-1
+          transition-all
+          ease-linear
+          duration-1000
+        "
+      ></div>
     </div>
 
     <!-- card details go -->
@@ -278,7 +291,7 @@
 </template>
 
 <script>
-import { computed, onUnmounted, ref, toRefs } from "vue";
+import { computed, onMounted, onUnmounted, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -297,6 +310,9 @@ export default {
   setup(props) {
     let msg = ref("Hello");
     let showGoRoute = ref(0);
+    let progressPercent = 100;
+    let intervalID = null;
+    const progressBar = ref(null);
     const store = useStore();
     const { currentBus, searchType } = toRefs(props);
 
@@ -346,27 +362,7 @@ export default {
       store.commit("TOGGLE_SHOW_BUS_STOP_DIRECTION", showGoRoute.value);
     }
 
-    const goRouteStops = computed(() =>
-      store.getters.busStopOfRoute[0]
-        ? store.getters.busStopOfRoute[0].Stops
-        : []
-    );
-    const backRouteStops = computed(() => {
-      if (store.getters.busStopOfRoute[1]) {
-        return store.getters.busStopOfRoute[1].Stops;
-      } else if (store.getters.busStopOfRoute[0]) {
-        return store.getters.busStopOfRoute[0].Stops;
-      } else {
-        return [];
-      }
-    });
-    const bufferZone = computed(
-      () =>
-        store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
-        []
-    );
-
-    const intervalID = setInterval(() => {
+    function updateRouteData() {
       let searchInfo = {};
       if (searchType.value === "bus") {
         searchInfo = {
@@ -388,7 +384,41 @@ export default {
       }
 
       store.dispatch("getBusDisplayOfRouteStops", searchInfo);
-    }, 20000);
+    }
+
+    const goRouteStops = computed(() =>
+      store.getters.busStopOfRoute[0]
+        ? store.getters.busStopOfRoute[0].Stops
+        : []
+    );
+    const backRouteStops = computed(() => {
+      if (store.getters.busStopOfRoute[1]) {
+        return store.getters.busStopOfRoute[1].Stops;
+      } else if (store.getters.busStopOfRoute[0]) {
+        return store.getters.busStopOfRoute[0].Stops;
+      } else {
+        return [];
+      }
+    });
+    const bufferZone = computed(
+      () =>
+        store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
+        []
+    );
+
+    onMounted(() => {
+      intervalID = setInterval(() => {
+        if (progressPercent === 0) {
+          console.log("refresh");
+          updateRouteData();
+          progressPercent = 100;
+          progressBar.value.style.width = progressPercent + "%";
+        } else {
+          progressPercent -= 5;
+          progressBar.value.style.width = progressPercent + "%";
+        }
+      }, 1000);
+    });
 
     onUnmounted(() => {
       clearInterval(intervalID);
@@ -401,10 +431,12 @@ export default {
       goRouteStops,
       isNearStop,
       msg,
+      progressBar,
       stopStatus,
       showGoRoute,
       showOtherRoute,
       searchType,
+      updateRouteData,
     };
   },
 };

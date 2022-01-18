@@ -227,6 +227,10 @@ export default {
     const store = useStore();
 
     function searchType(type) {
+      // if agree geo location, search nearby station
+      const userPosition = store.getters.userPosition;
+      console.log("userPosition", userPosition);
+      if (type === "bus") store.dispatch("getNearByBus", userPosition);
       emit("searchType", type);
     }
 
@@ -244,8 +248,7 @@ export default {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
             };
-            store.dispatch("getCurrentDistrict", position.coords);
-            store.dispatch("getNearByBus", position.coords);
+            store.dispatch("getCurrentDistrict", userPosition);
             store.commit("GET_USER_POSITON", userPosition);
 
             emit("getMapLocation", position);

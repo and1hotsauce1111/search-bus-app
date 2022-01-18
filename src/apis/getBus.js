@@ -1,4 +1,4 @@
-import { busQueryString } from './config';
+import { queryString } from './config';
 import getAuthorizationHeader from '@/utils/getAuthorizationHeader.js';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ export default {
       'DestinationStopNameZh',
       'FareBufferZoneDescriptionZh',
     ];
-    const url = busQueryString(`Bus/Route/City/${city}`, { select, top: true });
+    const url = queryString(`Bus/Route/City/${city}`, { select, top: true });
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getNearByBus(position) {
@@ -25,7 +25,7 @@ export default {
       'DestinationStopNameZh',
       'FareBufferZoneDescriptionZh',
     ];
-    const url = busQueryString('Bus/Route/NearBy', {
+    const url = queryString('Bus/Route/NearBy', {
       position,
       filter: { type: 'nearby' },
       select,
@@ -34,7 +34,7 @@ export default {
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getBusVehicleType(city, plateNumb) {
-    const url = busQueryString(`Bus/Vehicle/City/${city}`, {
+    const url = queryString(`Bus/Vehicle/City/${city}`, {
       filter: { type: 'bus/type', plateNumb },
       top: false,
     });
@@ -51,7 +51,7 @@ export default {
       'DestinationStopNameZh',
       'FareBufferZoneDescriptionZh',
     ];
-    const url = busQueryString(`Bus/Route/City/${city}`, {
+    const url = queryString(`Bus/Route/City/${city}`, {
       filter: { type: 'bus/route', routeUID },
       select,
       top: true,
@@ -61,7 +61,7 @@ export default {
   // for search stopName or routeName
   getBusByStopNameKeyword(city, keyword) {
     const select = ['RouteUID'];
-    const url = busQueryString(`Bus/StopOfRoute/City/${city}`, {
+    const url = queryString(`Bus/StopOfRoute/City/${city}`, {
       select,
       top: true,
       filter: { type: 'bus/stop', keyword },
@@ -69,14 +69,14 @@ export default {
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getDisplayOfRouteStops(city, routeName) {
-    const url = busQueryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
+    const url = queryString(`Bus/StopOfRoute/City/${city}/${routeName}`, {
       filter: { type: 'stop', routeName },
       top: true,
     });
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getEstimatedTimeOfArrival(city, routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/EstimatedTimeOfArrival/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -84,7 +84,7 @@ export default {
   },
   // all route bus position
   getCurrentRouteBusPosition(city, routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/RealTimeByFrequency/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -92,7 +92,7 @@ export default {
   },
   // all real time near by stop bus
   getRealTimeNearByBus(city, routeName) {
-    const url = busQueryString(
+    const url = queryString(
       `Bus/RealTimeNearStop/City/${city}/${routeName}`,
       { filter: { type: 'stop', routeName }, top: false },
     );
@@ -100,7 +100,7 @@ export default {
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
   getBusRouteShape(city, routeName) {
-    const url = busQueryString(`Bus/Shape/City/${city}`, {
+    const url = queryString(`Bus/Shape/City/${city}`, {
       filter: { type: 'shape', routeName },
       top: true,
     });
