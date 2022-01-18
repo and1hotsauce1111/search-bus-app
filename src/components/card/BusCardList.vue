@@ -25,6 +25,7 @@
           rounded-lg
           relative
           shadow-md
+          cursor-pointer
           md:shadow-none
           md:py-0
           md:px-0
@@ -36,7 +37,7 @@
         v-for="bus in renderBusList"
         :key="bus.RouteUID"
       >
-        <div class="bus-info cursor-pointer" @click="goToRouteStops(bus)">
+        <div class="bus-info" @click.stop="goToRouteStops(bus)">
           <div class="bus-num flex items-center justify-between mb-2">
             <div class="flex items-center justify-between">
               <span

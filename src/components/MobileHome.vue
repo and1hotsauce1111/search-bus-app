@@ -78,7 +78,7 @@
             justify-center
             items-center
           "
-          @click="searchType('bus')"
+          @click.stop="searchType('bus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -99,7 +99,7 @@
             justify-center
             items-center
           "
-          @click="searchType('intercityBus')"
+          @click.stop="searchType('intercityBus')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -120,7 +120,7 @@
             justify-center
             items-center
           "
-          @click="searchType('bicycle')"
+          @click.stop="searchType('bicycle')"
         >
           <div
             class="feature-content flex flex-col justify-center items-center"
@@ -176,13 +176,13 @@
       <div class="btn-block">
         <button
           class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
-          @click="getMapLocation"
+          @click.stop="getMapLocation"
         >
           同意
         </button>
         <button
           class="py-0.5 px-2 text-xm bg-alert-300 text-grey-100 rounded-lg ml-2"
-          @click="rejectLocation"
+          @click.stop="rejectLocation"
         >
           拒絕
         </button>

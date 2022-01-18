@@ -21,11 +21,19 @@ export default {
     const store = useStore();
     let map = null;
 
+    function touchHandler(e) {
+      e.preventDefault();
+    }
+    function clickHandler(e) {
+      e.stopPropagation();
+    }
+
     onMounted(() => {
       const mapDOM = document.querySelector("#map");
-      mapDOM.addEventListener("click", (e) => {
-        console.log("click map");
-      });
+      // prevent trigger click twice on mobile side
+      mapDOM.addEventListener("touchstart", touchHandler);
+      mapDOM.addEventListener("click", clickHandler);
+
       const defaultPosition = {
         lat: 24.136944,
         lng: 120.684722,
@@ -59,6 +67,11 @@ export default {
       } else {
         map.updateUserPosition(mapLocation.value.coords);
       }
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener("touchstart", touchHandler);
+      document.removeEventListener("click", clickHandler);
     });
 
     watch(

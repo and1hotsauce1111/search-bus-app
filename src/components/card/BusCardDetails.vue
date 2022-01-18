@@ -18,14 +18,14 @@
       <button
         class="left-btn px-2 py-1 w-3/6"
         :class="showGoRoute === 0 ? 'text-primary-500' : 'text-grey-100'"
-        @click="showOtherRoute(0)"
+        @click.stop="showOtherRoute(0)"
       >
         往 {{ currentBus.DestinationStopNameZh }}
       </button>
       <button
         class="right-btn px-2 py-1 w-3/6"
         :class="showGoRoute === 1 ? 'text-primary-500' : 'text-grey-100'"
-        @click="showOtherRoute(1)"
+        @click.stop="showOtherRoute(1)"
       >
         往 {{ currentBus.DepartureStopNameZh }}
       </button>
@@ -331,6 +331,8 @@ export default {
         case 4:
           currentStatus = "今日未營運";
           break;
+        default:
+          currentStatus = "尚未發車";
       }
 
       return currentStatus;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main class="main relative" @click="test">
+    <main class="main relative">
       <keep-alive include="Map">
         <component
           :is="activeComponent"
@@ -78,10 +78,6 @@ export default {
       homeState.isArgreeGeoLocation = !homeState.isArgreeGeoLocation;
     }
 
-    function test() {
-      console.log("click main");
-    }
-
     const activeComponent = computed(() => {
       if (homeState.isMobileHome && homeState.toggleMobileHome)
         return "MobileHome";
@@ -101,7 +97,6 @@ export default {
       mapLocation,
       toggleAgreeLocation,
       toggleSearchType,
-      test,
     };
   },
 };

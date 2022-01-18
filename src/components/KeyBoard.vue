@@ -28,7 +28,7 @@
         -top-16
         shadow-md
       "
-      @click="toggleKeyBoardHandler"
+      @click.stop="toggleKeyBoardHandler"
     >
       <i class="fas fa-keyboard text-grey-500"></i>
     </div>
@@ -57,7 +57,7 @@
               "
               v-for="(city, index) in cityData"
               :key="index"
-              @click="searchCurrentCityBus(index, city.CityEngName)"
+              @click.stop="searchCurrentCityBus(index, city.CityEngName)"
               :class="{ active: city.active }"
             >
               {{ city.CityName }}
@@ -75,7 +75,7 @@
             <button
               class="route-btn red border border-solid rounded-lg"
               :class="keyClassObject[key]"
-              @click="getInputValue(route)"
+              @click.stop="getInputValue(route)"
             >
               {{ route }}
             </button>
@@ -106,7 +106,7 @@
                 "
                 v-for="(num, k) in key.key"
                 :key="k"
-                @click="getInputValue(num)"
+                @click.stop="getInputValue(num)"
               >
                 {{ num }}
               </button>
@@ -121,7 +121,7 @@
                 grow
                 col-span-2
               "
-              @click="deleteInputValue"
+              @click.stop="deleteInputValue"
             >
               <i class="fas fa-backspace"></i>
             </button>
