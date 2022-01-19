@@ -273,6 +273,7 @@ import getCityNameZh from "@/utils/getCityNameZh.js";
 import axios from "axios";
 
 export default {
+  name: "SearchBar",
   props: {
     currentBus: {
       type: Object,

@@ -117,6 +117,7 @@ import { useStore } from "vuex";
 import getCityNameZh from "@/utils/getCityNameZh";
 
 export default {
+  name: "BusCardList",
   props: {
     toggleKeyBoard: {
       type: Boolean,

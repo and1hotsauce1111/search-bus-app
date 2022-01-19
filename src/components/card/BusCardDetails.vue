@@ -30,19 +30,7 @@
         </button>
       </div>
       <!-- progress bar -->
-      <div
-        ref="progressBar"
-        class="
-          progress-bar
-          w-full
-          bg-green-100
-          opacity-60
-          h-1
-          transition-all
-          ease-linear
-          duration-1000
-        "
-      ></div>
+      <ProgressBar :interval="5" :updateFunc="updateRouteData" />
     </div>
 
     <!-- card details go -->
@@ -294,11 +282,14 @@
 <script>
 import { computed, onMounted, onUnmounted, ref, toRefs } from "vue";
 import { useStore } from "vuex";
-import Loading from "@/components/Loading.vue";
+import Loading from "@/components/loading/Loading.vue";
+import ProgressBar from "@/components/loading/ProgressBar.vue";
 
 export default {
+  name: "BusCardDetails",
   components: {
     Loading,
+    ProgressBar,
   },
   props: {
     currentBus: {
@@ -315,9 +306,6 @@ export default {
   setup(props) {
     let msg = ref("Hello");
     let showGoRoute = ref(0);
-    let progressPercent = 100;
-    let intervalID = null;
-    const progressBar = ref(null);
     const store = useStore();
     const { currentBus, searchType } = toRefs(props);
 
@@ -411,23 +399,6 @@ export default {
         []
     );
 
-    onMounted(() => {
-      intervalID = setInterval(() => {
-        if (progressPercent === 0) {
-          updateRouteData();
-          progressPercent = 100;
-          progressBar.value.style.width = progressPercent + "%";
-        } else {
-          progressPercent -= 5;
-          progressBar.value.style.width = progressPercent + "%";
-        }
-      }, 1000);
-    });
-
-    onUnmounted(() => {
-      clearInterval(intervalID);
-    });
-
     return {
       bufferZone,
       backRouteStops,
@@ -435,7 +406,6 @@ export default {
       goRouteStops,
       isNearStop,
       msg,
-      progressBar,
       stopStatus,
       showGoRoute,
       showOtherRoute,

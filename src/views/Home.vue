@@ -8,6 +8,7 @@
           @get-map-location="getMapLocation"
           @toggle-agree-location="toggleAgreeLocation"
           :isArgreeGeoLocation="homeState.isArgreeGeoLocation"
+          :searchType="homeState.searchType"
           :mapLocation="mapLocation"
         ></component>
       </keep-alive>

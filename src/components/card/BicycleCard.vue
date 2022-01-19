@@ -2,16 +2,13 @@
   <Loading v-if="!renderList.length" />
   <div
     v-else
-    class="
-      bicyclecard-container
-      px-6
-      pt-16
-      md:pt-4
-      overflow-scroll
-      no-scrollbar
-    "
+    class="bicyclecard-container relative md:pt-4 overflow-scroll no-scrollbar"
   >
-    <div class="bicyclecard-list-wrapper">
+    <div class="progress-bar sticky w-full">
+      <ProgressBar :interval="5" :bgColor="'dark'" :opacity="100" />
+    </div>
+
+    <div class="bicyclecard-list-wrapper px-6">
       <div
         class="item py-5 border-b border-grey-300 last:border-b-0"
         v-for="stop in renderList"
@@ -44,7 +41,12 @@
             >
             <span
               class="border text-xm rounded py-1 px-2 md:hidden"
-              :class="statusTagClassObj"
+              :class="
+                statusTagClassObj(
+                  stop.Availability.AvailableRentBikes,
+                  stop.Availability.AvailableReturnBikes
+                )
+              "
               >{{
                 showStatusTag(
                   stop.Availability.AvailableRentBikes,
@@ -116,7 +118,12 @@
         >
           <span
             class="border text-xm rounded py-1 px-2 hidden md:inline-block"
-            :class="statusTagClassObj"
+            :class="
+              statusTagClassObj(
+                stop.Availability.AvailableRentBikes,
+                stop.Availability.AvailableReturnBikes
+              )
+            "
             >{{
               showStatusTag(
                 stop.Availability.AvailableRentBikes,
@@ -137,19 +144,20 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import Loading from "@/components/Loading.vue";
+import Loading from "@/components/loading/Loading.vue";
+import ProgressBar from "@/components/loading/ProgressBar.vue";
 import { getDistance } from "@/utils/getDistance.js";
 
 export default {
+  name: "BicycleCard",
   components: {
     Loading,
+    ProgressBar,
   },
   setup() {
     const store = useStore();
-
-    let tagStatus = ref("");
 
     function latLngToDistance(position) {
       const getUserPosition = store.getters.userPosition;
@@ -167,20 +175,16 @@ export default {
     }
 
     function showStatusTag(rentCount, returnCount) {
-      if (rentCount === 0) {
-        tagStatus.value = "red";
+      if (rentCount === 0 && returnCount !== 0) {
         return "只可停車";
       }
-      if (returnCount === 0) {
-        tagStatus.value = "red";
+      if (returnCount === 0 && rentCount !== 0) {
         return "只可借車";
       }
       if (rentCount !== 0 && returnCount !== 0) {
-        tagStatus.value = "brown";
         return "可借可還";
       }
       if (rentCount === 0 && returnCount === 0) {
-        tagStatus.value = "grey";
         return "站點施工中";
       }
     }
@@ -197,16 +201,18 @@ export default {
       }
     }
 
-    const statusTagClassObj = computed(() => {
-      return {
-        "border-alert-300": tagStatus.value === "red",
-        "text-alert-400": tagStatus.value === "red",
-        "border-brown-200": tagStatus.value === "brown",
-        "text-brown-200": tagStatus.value === "brown",
-        "border-grey-300": tagStatus.value === "grey",
-        "text-grey-400": tagStatus.value === "grey",
-      };
-    });
+    function statusTagClassObj(rentCount, returnCount) {
+      if (rentCount === 0 || returnCount === 0) {
+        return ["border-alert-300", "text-alert-400"];
+      }
+      if (rentCount !== 0 && returnCount !== 0) {
+        return ["border-brown-200", "text-brown-200"];
+      }
+      if (rentCount === 0 && returnCount === 0) {
+        return ["border-grey-300", "text-grey-400"];
+      }
+    }
+
     const renderList = computed(() => store.getters.bikeCardList || []);
 
     return {
@@ -223,11 +229,13 @@ export default {
 <style scoped>
 .bicyclecard-container {
   max-height: calc(100vh - 10rem);
+  padding-top: 3.85rem;
 }
 
 @media (min-width: 768px) {
   .bicyclecard-container {
     max-height: 38.85rem;
+    padding-top: 0;
   }
 }
 </style>

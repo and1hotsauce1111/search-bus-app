@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, toRefs, watch } from "vue";
+import { onMounted, onUnmounted, toRefs, watch, watchEffect } from "vue";
 import { useStore } from "vuex";
 import DrawMap from "@/utils/drawMap";
 import { filterRouteStopData } from "@/utils/mappingData.js";
@@ -15,6 +15,10 @@ export default {
       type: Object,
       required: true,
       default: {},
+    },
+    searchType: {
+      type: String,
+      required: true,
     },
   },
   setup(props, { emit }) {
@@ -29,6 +33,7 @@ export default {
     }
 
     onMounted(() => {
+      console.log("map mounted");
       const mapDOM = document.querySelector("#map");
       // prevent trigger click twice on mobile side
       mapDOM.addEventListener("touchstart", touchHandler);
@@ -45,19 +50,24 @@ export default {
 
       const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
+        if (props.searchType === "bicycle") {
+          const userPosition = store.getters.userPosition;
+          store.dispatch("getNearByBikeStation", userPosition);
+        }
         if (innerWidth >= 640) {
           map
             .getGeoInfo()
             .then((position) => {
+              console.log("get geo info");
               const userPosition = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
               };
+              store.commit("GET_USER_POSITON", userPosition);
               map.updateUserPosition(userPosition);
               store.dispatch("getCurrentDistrict", userPosition);
-              store.dispatch("getNearByBus", userPosition);
-              store.commit("GET_USER_POSITON", userPosition);
-
+              if (props.searchType === "bicycle")
+                store.dispatch("getNearByBikeStation", userPosition);
               emit("toggleAgreeLocation");
             })
             .catch((err) => {
@@ -69,6 +79,8 @@ export default {
           lat: mapLocation.value.coords.latitude,
           lng: mapLocation.value.coords.longitude,
         };
+        if (props.searchType === "bicycle")
+          store.dispatch("getNearByBikeStation", userPosition);
         map.updateUserPosition(userPosition);
       }
     });
@@ -80,46 +92,58 @@ export default {
 
     watch(
       [
-        () => store.getters.busRouteShapeData,
-        () => store.getters.showBusStopDirection,
-        () => store.getters.goToUserPosition,
+        () => store.state.busRouteShapeData,
+        () => store.state.showBusStopDirection,
+        () => store.state.goToUserPosition,
+        () => store.getters.bikeCardList,
       ],
       (newVals, oldVals) => {
-        const shapeData = newVals[0];
-
-        const newDirection = newVals[1];
-        const oldDirection = oldVals[1];
-
-        const newUserPosition = newVals[2];
-        const oldUserPosition = oldVals[2];
         const userPositon = store.getters.userPosition;
 
-        if (newUserPosition !== oldUserPosition) {
-          map.updateUserPosition(userPositon);
-          return;
+        if (props.searchType === "bus" || props.searchType === "intercityBus") {
+          const shapeData = newVals[0];
+
+          const newDirection = newVals[1];
+          const oldDirection = oldVals[1];
+
+          const newUserPosition = newVals[2];
+          const oldUserPosition = oldVals[2];
+
+          if (newUserPosition !== oldUserPosition) {
+            map.updateUserPosition(userPositon);
+            return;
+          }
+
+          const allRouteStopsPosition = store.getters.allRouteStopsPosition;
+          const allRouteBusPosition = store.getters.allRouteBusPosition;
+          const toggleMoveToFirstStop = store.getters.goToFirstStop;
+          const isMoveToStart =
+            newDirection !== oldDirection || toggleMoveToFirstStop
+              ? true
+              : false;
+
+          const routeStopData = filterRouteStopData(
+            allRouteStopsPosition,
+            newDirection
+          );
+
+          // draw route line
+          if (shapeData[newDirection]) {
+            map.drawLine(shapeData[newDirection].Geometry);
+          } else {
+            map.drawLine(shapeData[0].Geometry);
+          }
+
+          map.drawStopIcon(routeStopData, isMoveToStart);
+          map.drawBusIcon(allRouteBusPosition, newDirection);
+          store.commit("TOGGLE_GOTO_FIRST_STOP", false);
         }
 
-        const allRouteStopsPosition = store.getters.allRouteStopsPosition;
-        const allRouteBusPosition = store.getters.allRouteBusPosition;
-        const toggleMoveToFirstStop = store.getters.goToFirstStop;
-        const isMoveToStart =
-          newDirection !== oldDirection || toggleMoveToFirstStop ? true : false;
-
-        const routeStopData = filterRouteStopData(
-          allRouteStopsPosition,
-          newDirection
-        );
-
-        // draw route line
-        if (shapeData[newDirection]) {
-          map.drawLine(shapeData[newDirection].Geometry);
-        } else {
-          map.drawLine(shapeData[0].Geometry);
+        if (props.searchType === "bicycle") {
+          const innerWidth = window.innerWidth;
+          const bikeData = newVals[3];
+          map.drawBikeIcon(bikeData, innerWidth, userPositon);
         }
-
-        map.drawStopIcon(routeStopData, isMoveToStart);
-        map.drawBusIcon(allRouteBusPosition, newDirection);
-        store.commit("TOGGLE_GOTO_FIRST_STOP", false);
       }
     );
 

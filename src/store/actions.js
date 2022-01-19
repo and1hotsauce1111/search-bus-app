@@ -230,6 +230,7 @@ export const getIntercityBusByKeyword = async function (
 
 // search nearby station
 export const getNearByBikeStation = async function({ commit, state }, position) {
+  console.log('get nearby bike');
   const requestNearByBikeStation = BikeApi.getNearByBikeStation(position);
   const requestNearByBikeAvailability = BikeApi.getNearBikeAvailability(position);
 

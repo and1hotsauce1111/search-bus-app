@@ -109,6 +109,7 @@ import { onUnmounted, reactive, ref, toRefs, watch, computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
+  name: "SideMenu",
   props: {
     searchType: {
       type: String,

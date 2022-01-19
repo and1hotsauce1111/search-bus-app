@@ -61,7 +61,6 @@
 
     <!-- main block -->
     <div class="main_block">
-      <!-- find bus -->
       <div
         class="
           feature_list--wrapper
@@ -69,6 +68,8 @@
           gap-x-[1.1875rem] gap-y-[1.25rem]
         "
       >
+        <!-- find bus -->
+
         <button
           class="
             feature
@@ -215,6 +216,7 @@ import { toRefs } from "vue";
 import { useStore } from "vuex";
 
 export default {
+  name: "MobileHome",
   props: {
     isArgreeGeoLocation: {
       type: Boolean,
@@ -230,8 +232,6 @@ export default {
       // if agree geo location, search nearby station
       const userPosition = store.getters.userPosition;
       if (type === "bus") store.dispatch("getNearByBus", userPosition);
-      if (type === "bicycle")
-        store.dispatch("getNearByBikeStation", userPosition);
       emit("searchType", type);
     }
 

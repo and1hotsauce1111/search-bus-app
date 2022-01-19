@@ -3,6 +3,12 @@ import L, { marker } from 'leaflet';
 import userPosIcon from '../assets/mark/user-position.png';
 import busStopIcon from '../assets/mark/bus-stop.png';
 import busIcon from '../assets/mark/BusPoint.png';
+import bikeIconGreen from '../assets/mark/bike-green.png';
+import bikeIconRed from '../assets/mark/bike-red.png';
+import bikeIconGrey from '../assets/mark/bike-grey.png';
+import mBikeIconGreen from '../assets/mark/bike-position-M-green.png';
+import mBikeIconRed from '../assets/mark/bike-position-M-red.png';
+import mBikeIconGrey from '../assets/mark/bike-position-M-grey.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
 
 const defaultPosition = [24.136944, 120.684722];
@@ -26,6 +32,18 @@ class DrawMap {
     this.busIcon = L.icon({ iconUrl: busIcon });
 
     this.busStopIcon = L.icon({ iconUrl: busStopIcon });
+
+    this.bikeIconGreen = L.icon({ iconUrl: bikeIconGreen });
+
+    this.bikeIconRed = L.icon({ iconUrl: bikeIconRed });
+
+    this.bikeIconGrey = L.icon({ iconUrl: bikeIconGrey });
+
+    this.mBikeIconGreen = L.icon({ iconUrl: mBikeIconGreen });
+
+    this.mBikeIconRed = L.icon({ iconUrl: mBikeIconRed });
+
+    this.mBikeIconGrey = L.icon({ iconUrl: mBikeIconGrey });
 
     this.userPositionIcon = L.icon({
       iconUrl: userPosIcon,
@@ -119,6 +137,51 @@ class DrawMap {
         ).addTo(this.map);
       }
     }
+  }
+
+  drawBikeIcon(bikeInfo, innerWidth, userPosition) {
+    if (!bikeInfo.length) return;
+
+    this.removeLayer();
+
+    let iconType = null;
+
+    for (let i = 0, len = bikeInfo.length; i < len; i++) {
+      if (bikeInfo[i].Availability.AvailableRentBikes > 5) {
+        if (innerWidth >= 640) {
+          iconType = this.bikeIconGreen;
+        } else {
+          iconType = this.mBikeIconGreen;
+        }
+      }
+      if (bikeInfo[i].Availability.AvailableRentBikes <= 5) {
+        if (innerWidth >= 640) {
+          iconType = this.bikeIconRed;
+        } else {
+          iconType = this.mBikeIconRed;
+        }
+      }
+      if (bikeInfo[i].Availability.AvailableRentBikes === 0) {
+        if (innerWidth >= 640) {
+          iconType = this.bikeIconGrey;
+        } else {
+          iconType = this.mBikeIconGrey;
+        }
+      }
+
+      const marker = new L.marker(
+        {
+          lat: bikeInfo[i].StationPosition.PositionLat,
+          lng: bikeInfo[i].StationPosition.PositionLon,
+        },
+        {
+          icon: iconType,
+        },
+      ).addTo(this.map);
+    }
+
+    // put useposition back
+    this.updateUserPosition(userPosition);
   }
 
   getGeoInfo() {

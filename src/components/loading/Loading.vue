@@ -21,6 +21,7 @@
 
 <script>
 export default {
+  name: "Loading",
   setup() {
     return {};
   },

@@ -140,6 +140,7 @@ import { busKey, intercityBusKey } from "@/utils/keyboard.js";
 import { useStore } from "vuex";
 
 export default {
+  name: "Keyboard",
   props: {
     toggleKeyBoard: {
       type: Boolean,
