@@ -4,8 +4,7 @@ export const filterRouteStopData = function (routeStopData, direction) {
   const filteredData = { 0: [], 1: [] };
 
   // only direction 0 or 1
-  if(Object.keys(routeStopData).length === 1) {
-
+  if (Object.keys(routeStopData).length === 1) {
     for (let i = 0, len = routeStopData[0].length; i < len; i++) {
       filteredData[0].push({
         stopName: routeStopData[0][i].stopName,
@@ -29,7 +28,6 @@ export const filterRouteStopData = function (routeStopData, direction) {
     }
 
     console.log('filteredData', filteredData);
-
 
     return filteredData[direction];
   }
@@ -68,7 +66,7 @@ export const getAllStopsPosition = function (
   const allRoutePosition = { 0: [], 1: [] };
 
   // only direction 0 or 1
-  if(routeStopsData.length === 1) {
+  if (routeStopsData.length === 1) {
     for (let i = 0, len = routeStopsData[0].Stops.length; i < len; i++) {
       allRoutePosition[0].push({
         stopName: routeStopsData[0].Stops[i].StopName.Zh_tw,
@@ -77,7 +75,7 @@ export const getAllStopsPosition = function (
       });
     }
 
-    delete allRoutePosition[1]
+    delete allRoutePosition[1];
 
     return allRoutePosition;
   }
@@ -101,7 +99,7 @@ export const getAllStopsPosition = function (
   return allRoutePosition;
 };
 
-export const mapingRouteStopsAndEstimatedTimeData = function (
+export const mappingRouteStopsAndEstimatedTimeData = function (
   routeStopsData,
   estimateTimeData,
   nearByBus,
@@ -166,4 +164,25 @@ export const mapingRouteStopsAndEstimatedTimeData = function (
   }
 
   return routeStopsData;
+};
+
+export const mappingBikeStationAndAvailabilityData = function (
+  nearbyStationData,
+  nearbyAvailabilityData,
+) {
+  if (!nearbyAvailabilityData.length || !nearbyStationData.length) return [];
+
+  for (let i = 0, len = nearbyStationData.length; i < len; i++) {
+    const targetIndex = nearbyAvailabilityData.findIndex(nearby => nearby.StationUID === nearbyStationData[i].StationUID);
+
+    if (targetIndex > -1) {
+      if (!nearbyStationData[i]['Availability']) {
+        nearbyStationData[i]['Availability'] = {};
+        nearbyStationData[i]['Availability'] =
+          nearbyAvailabilityData[targetIndex];
+      }
+    }
+  }
+
+  return nearbyStationData;
 };

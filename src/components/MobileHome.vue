@@ -229,8 +229,9 @@ export default {
     function searchType(type) {
       // if agree geo location, search nearby station
       const userPosition = store.getters.userPosition;
-      console.log("userPosition", userPosition);
       if (type === "bus") store.dispatch("getNearByBus", userPosition);
+      if (type === "bicycle")
+        store.dispatch("getNearByBikeStation", userPosition);
       emit("searchType", type);
     }
 

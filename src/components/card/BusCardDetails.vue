@@ -1,5 +1,6 @@
 <template>
-  <div class="detail-container overflow-scroll no-scrollbar relative">
+  <Loading v-if="!goRouteStops.length" />
+  <div v-else class="detail-container overflow-scroll no-scrollbar relative">
     <div class="change-direction sticky top-0 left-0 w-full">
       <div
         class="
@@ -293,8 +294,12 @@
 <script>
 import { computed, onMounted, onUnmounted, ref, toRefs } from "vue";
 import { useStore } from "vuex";
+import Loading from "@/components/Loading.vue";
 
 export default {
+  components: {
+    Loading,
+  },
   props: {
     currentBus: {
       type: Object,
@@ -409,7 +414,6 @@ export default {
     onMounted(() => {
       intervalID = setInterval(() => {
         if (progressPercent === 0) {
-          console.log("refresh");
           updateRouteData();
           progressPercent = 100;
           progressBar.value.style.width = progressPercent + "%";

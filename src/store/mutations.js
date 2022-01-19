@@ -4,6 +4,9 @@ const mutations = {
   [types.CLEAR_BUSLIST](state) {
     state.busCardList = [];
   },
+  [types.CLEAR_BUS_STOP_ROUTE](state) {
+    state.busStopOfRoute = [];
+  },
   [types.CHANGE_SEARCHING_STATUS](state) {
     state.isSearching = !state.isSearching;
   },
@@ -15,6 +18,9 @@ const mutations = {
   },
   [types.GET_NEARBY_CITY_BUS](state, nearbyCityBus) {
     state.busCardList = nearbyCityBus;
+  },
+  [types.GET_NEARBY_CITY_BIKE](state, nearbyBikes) {
+    state.bikeCardList = nearbyBikes;
   },
   [types.GET_BUS_BY_KEYWORD](state, busListByKeyword) {
     state.busCardList = busListByKeyword;

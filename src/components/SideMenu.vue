@@ -139,6 +139,7 @@ export default {
 
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
+      store.commit("CLEAR_BUS_STOP_ROUTE");
       // change sideMenu top 3.06rem
       resetSideMenuContainerHeight("3.06rem");
     }
@@ -212,7 +213,7 @@ export default {
 
         if (newVals[1] !== oldVals[1]) {
           resetSideMenuContainerHeight("75%");
-          store.commit("CHANGE_SEARCHING_STATUS");
+          // store.commit("CHANGE_SEARCHING_STATUS");
         }
       }
     );

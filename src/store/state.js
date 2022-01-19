@@ -4,6 +4,7 @@ const state = {
   busCardList: [],
   busStopOfRoute: [],
   busRouteShapeData: [],
+  bikeCardList: [],
   currentDistrict: 'Taichung',
   goToUserPosition: false,
   goToFirstStop: true,

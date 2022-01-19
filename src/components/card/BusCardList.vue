@@ -151,6 +151,7 @@ export default {
     function goToRouteStops(bus) {
       let searchInfo = {};
 
+      store.commit("CHANGE_SEARCHING_STATUS");
       if (searchType.value === "bus") {
         const currentCity = store.getters.currentDistrict;
         searchInfo = {

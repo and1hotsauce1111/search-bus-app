@@ -4,7 +4,8 @@ import BikeApi from '../apis/getBike';
 import DistrictApi from '../apis/getDistrict';
 import InterCityBusApi from '../apis/getInterCityBus';
 import {
-  mapingRouteStopsAndEstimatedTimeData,
+  mappingRouteStopsAndEstimatedTimeData,
+  mappingBikeStationAndAvailabilityData,
   getAllStopsPosition,
 } from '@/utils/mappingData.js';
 
@@ -99,6 +100,8 @@ export const getBusDisplayOfRouteStops = async function (
   const start = Date.now();
   console.log('start', start);
 
+  if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
+
   let nearByBusData = null;
   let estimateTimeData = null;
   let routeStopsData = null;
@@ -154,13 +157,12 @@ export const getBusDisplayOfRouteStops = async function (
               }
             }
           }
-          const mappingData = mapingRouteStopsAndEstimatedTimeData(
+          const mappingData = mappingRouteStopsAndEstimatedTimeData(
             routeStopsData,
             estimateTimeData,
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-          if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
         }
       });
     }
@@ -181,25 +183,23 @@ export const getBusDisplayOfRouteStops = async function (
               }
             }
           }
-          const mappingData = mapingRouteStopsAndEstimatedTimeData(
+          const mappingData = mappingRouteStopsAndEstimatedTimeData(
             routeStopsData,
             estimateTimeData,
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-          if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
         }
       });
     }
 
   } else {
-    const mappingData = mapingRouteStopsAndEstimatedTimeData(
+    const mappingData = mappingRouteStopsAndEstimatedTimeData(
       routeStopsData,
       estimateTimeData,
       nearByBusData,
     );
     commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-    if (changeSideMenuHeight) commit(types.CHANGE_SIDEMENU_HEIGHT);
   }
 
   console.log('end', Date.now() - start);
@@ -234,8 +234,11 @@ export const getNearByBikeStation = async function({ commit, state }, position) 
   const requestNearByBikeAvailability = BikeApi.getNearBikeAvailability(position);
 
   Promise.all([requestNearByBikeStation, requestNearByBikeAvailability]).then(values => {
-    console.log('nearby station', values[0]);
-    console.log('nearby availability', values[1]);
+    const nearbyStationData = values[0].data;
+    const nearbyAvailabilityData = values[1].data;
+
+    const resultData = mappingBikeStationAndAvailabilityData(nearbyStationData, nearbyAvailabilityData);
+    commit(types.GET_NEARBY_CITY_BIKE, resultData);
   })
 }
 

@@ -161,7 +161,7 @@
         </button>
       </div>
       <div class="search flex justify-center items-center grow">
-        <input
+        <!-- <input
           v-if="toggleKeyBoard && isInputDisable"
           v-model="searchInputValue"
           type="text"
@@ -180,9 +180,8 @@
           "
           placeholder="搜尋站點或鄰近地點"
           readonly
-        />
+        /> -->
         <input
-          v-else
           :value="searchInputValue"
           @input="updateInput"
           @compositionstart="onCompositionStart"
