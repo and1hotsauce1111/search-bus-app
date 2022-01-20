@@ -141,6 +141,7 @@ export default {
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
       store.commit("CLEAR_BUS_STOP_ROUTE");
+      store.commit("TOGGLE_LOADING_STATUS");
       // change sideMenu top 3.06rem
       resetSideMenuContainerHeight("3.06rem");
     }

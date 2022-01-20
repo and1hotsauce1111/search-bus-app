@@ -14,6 +14,7 @@ export const goToFirstStop = (state) => state.goToFirstStop;
 export const goToUserPosition = (state) => state.goToUserPosition;
 export const isSearching = (state) => state.isSearching;
 export const isChangeSideMenuHeight = (state) => state.isChangeSideMenuHeight;
+export const isLoading = (state) => state.isLoading;
 export const searchInputValue = (state) => state.searchInputValue;
 export const showBusStopDirection = (state) => state.showBusStopDirection;
 export const userPosition = (state) => state.userPosition;

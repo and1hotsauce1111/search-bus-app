@@ -11,6 +11,7 @@ import mBikeIconRed from '../assets/mark/bike-position-M-red.png';
 import mBikeIconGrey from '../assets/mark/bike-position-M-grey.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
 import { genBikeIconPopup } from '@/utils/genBikeIconPopup.js';
+import { getDistance } from '@/utils/getDistance.js';
 
 const defaultPosition = [24.136944, 120.684722];
 
@@ -153,14 +154,24 @@ class DrawMap {
       closeOnClick: true,
       className: 'm-bike-popup',
     };
+    const userLatLng = {
+      userLat: userPosition.lat,
+      userLng: userPosition.lng,
+    };
 
     for (let i = 0, len = bikeInfo.length; i < len; i++) {
+      const stationPosition = {
+        stationLat: bikeInfo[i].StationPosition.PositionLat,
+        stationLng: bikeInfo[i].StationPosition.PositionLon,
+      };
+      const distance = getDistance(userLatLng, stationPosition, 'M');
+
       if (bikeInfo[i].Availability.AvailableRentBikes > 5) {
         if (innerWidth >= 640) {
           iconType = this.bikeIconGreen;
         } else {
           iconType = this.mBikeIconGreen;
-          html = `<span class="m-custom-div-icon green">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
+          html = `<span class="m-custom-div-icon text-primary-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
       if (bikeInfo[i].Availability.AvailableRentBikes <= 5) {
@@ -168,7 +179,7 @@ class DrawMap {
           iconType = this.bikeIconRed;
         } else {
           iconType = this.mBikeIconRed;
-          html = `<span class="m-custom-div-icon red">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
+          html = `<span class="m-custom-div-icon text-alert-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
       if (bikeInfo[i].Availability.AvailableRentBikes === 0) {
@@ -176,17 +187,19 @@ class DrawMap {
           iconType = this.bikeIconGrey;
         } else {
           iconType = this.mBikeIconGrey;
-          html = `<span class="m-custom-div-icon grey">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
+          html = `<span class="m-custom-div-icon text-grey-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
 
       popUpContent = genBikeIconPopup(
+        bikeInfo[i].StationName.Zh_tw,
         bikeInfo[i].Availability.AvailableRentBikes,
         bikeInfo[i].Availability.AvailableReturnBikes,
+        distance,
       );
 
       const divIcon = L.divIcon({
-        iconSize: null,
+        iconSize: [38, 51],
         html,
       });
 
@@ -199,8 +212,8 @@ class DrawMap {
           icon: iconType,
         },
       )
-      .bindPopup(popUpContent, popUpOptions)
-      .addTo(this.map);
+        .bindPopup(popUpContent, popUpOptions)
+        .addTo(this.map);
 
       const divIconMarker = new L.marker(
         {

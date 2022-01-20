@@ -1,5 +1,16 @@
 <template>
-  <Loading v-if="!renderList.length" />
+  <Loading v-if="isLoading" />
+  <div
+    v-if="!renderList.length"
+    class="no-search-result flex justify-center items-center flex-wrap pt-20"
+  >
+    <img
+      src="@/assets/search/no-result.png"
+      alt="no-result"
+      class="w-3/4 flex-full"
+    />
+    <p class="flex-full mt-3 text-grey-500 text-md">輸入自行車站牌找看看吧！</p>
+  </div>
   <div
     v-else
     class="bicyclecard-container relative md:pt-4 overflow-scroll no-scrollbar"
@@ -213,9 +224,12 @@ export default {
       }
     }
 
+    const isLoading = computed(() => store.getters.isLoading);
+
     const renderList = computed(() => store.getters.bikeCardList || []);
 
     return {
+      isLoading,
       latLngToDistance,
       showStatusTag,
       statusTagClassObj,

@@ -30,7 +30,7 @@ export default {
 
 <style scoped>
 .loading {
-  z-index: 99;
+  z-index: 999;
 }
 
 .pin {

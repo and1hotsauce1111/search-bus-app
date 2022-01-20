@@ -14,9 +14,8 @@ export const getCurrentDistrict = function (
   { commit, state, dispatch },
   position,
 ) {
-  const currentPosition = { LocationX: position.lng, LocationY: position.lat};
-  DistrictApi
-    .getCurrentDistrict(currentPosition)
+  const currentPosition = { LocationX: position.lng, LocationY: position.lat };
+  DistrictApi.getCurrentDistrict(currentPosition)
     .then((res) => {
       if (res.status === 200) {
         commit(types.GET_CURRENT_DISTRICT, res.data[0].City);
@@ -60,7 +59,9 @@ export const getBusByKeyword = async function ({ commit, state }, searchInput) {
 
     const { data: searchResult, status: status2 } =
       await BusApi.getBusByRouteUIDs(city, routUIDs);
-    if (status2 === 200) commit(types.GET_BUS_BY_KEYWORD, searchResult);
+    if (status2 === 200) {
+      commit(types.GET_BUS_BY_KEYWORD, searchResult);
+    }
   }
 };
 
@@ -78,8 +79,7 @@ export const getBusDisplayOfRouteStops = async function (
   let requestNearByBus = '';
   let requestRouteShape = '';
 
-
-  if(type === 'bus') {
+  if (type === 'bus') {
     requestRouteStops = BusApi.getDisplayOfRouteStops(city, routeName);
     requestEstimateTime = BusApi.getEstimatedTimeOfArrival(city, routeName);
     requestRouteBusPosition = BusApi.getCurrentRouteBusPosition(
@@ -89,12 +89,16 @@ export const getBusDisplayOfRouteStops = async function (
     requestNearByBus = BusApi.getRealTimeNearByBus(city, routeName);
     requestRouteShape = BusApi.getBusRouteShape(city, routeName);
   }
-  if(type === 'intercityBus') {
-    requestRouteStops = InterCityBusApi.getIntercitybusDisplayOfRouteStops(routeName);
-    requestEstimateTime = InterCityBusApi.getIntercitybusEstimatedTimeOfArrival(routeName);
-    requestRouteBusPosition = InterCityBusApi.getIntercitybusCurrentRouteBusPosition(routeName);
-    requestNearByBus  = InterCityBusApi.getIntercitybusRealTimeNearByBus(routeName);
-    requestRouteShape  = InterCityBusApi.getIntercitybusRouteShape(routeName);
+  if (type === 'intercityBus') {
+    requestRouteStops =
+      InterCityBusApi.getIntercitybusDisplayOfRouteStops(routeName);
+    requestEstimateTime =
+      InterCityBusApi.getIntercitybusEstimatedTimeOfArrival(routeName);
+    requestRouteBusPosition =
+      InterCityBusApi.getIntercitybusCurrentRouteBusPosition(routeName);
+    requestNearByBus =
+      InterCityBusApi.getIntercitybusRealTimeNearByBus(routeName);
+    requestRouteShape = InterCityBusApi.getIntercitybusRouteShape(routeName);
   }
 
   const start = Date.now();
@@ -141,7 +145,7 @@ export const getBusDisplayOfRouteStops = async function (
   if (nearByBusData.length) {
     const plateNumb = [];
     nearByBusData.forEach((bus) => plateNumb.push(bus.PlateNumb));
-    if(type === 'bus') {
+    if (type === 'bus') {
       BusApi.getBusVehicleType(city, plateNumb).then((res) => {
         if (res.status === 200) {
           if (res.data.length) {
@@ -163,11 +167,12 @@ export const getBusDisplayOfRouteStops = async function (
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+          commit(types.TOGGLE_LOADING_STATUS);
         }
       });
     }
 
-    if(type === 'intercityBus') {
+    if (type === 'intercityBus') {
       InterCityBusApi.getIntercitybusVehicleType(plateNumb).then((res) => {
         if (res.status === 200) {
           if (res.data.length) {
@@ -189,10 +194,10 @@ export const getBusDisplayOfRouteStops = async function (
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+          commit(types.TOGGLE_LOADING_STATUS);
         }
       });
     }
-
   } else {
     const mappingData = mappingRouteStopsAndEstimatedTimeData(
       routeStopsData,
@@ -200,6 +205,7 @@ export const getBusDisplayOfRouteStops = async function (
       nearByBusData,
     );
     commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
+    commit(types.TOGGLE_LOADING_STATUS);
   }
 
   console.log('end', Date.now() - start);
@@ -221,7 +227,10 @@ export const getIntercityBusByKeyword = async function (
 
     const { data: searchResult, status: status2 } =
       await InterCityBusApi.getIntercitybusByRouteUIDs(routUIDs);
-    if (status2 === 200) commit(types.GET_BUS_BY_KEYWORD, searchResult);
+    if (status2 === 200) {
+      commit(types.GET_BUS_BY_KEYWORD, searchResult);
+      commit(types.TOGGLE_LOADING_STATUS);
+    }
   }
 };
 
@@ -229,34 +238,50 @@ export const getIntercityBusByKeyword = async function (
 // search by keyword
 
 // search nearby station
-export const getNearByBikeStation = async function({ commit, state }, position) {
+export const getNearByBikeStation = async function (
+  { commit, state },
+  position,
+) {
   const requestNearByBikeStation = BikeApi.getNearByBikeStation(position);
-  const requestNearByBikeAvailability = BikeApi.getNearBikeAvailability(position);
+  const requestNearByBikeAvailability =
+    BikeApi.getNearBikeAvailability(position);
 
-  Promise.all([requestNearByBikeStation, requestNearByBikeAvailability]).then(values => {
-    const nearbyStationData = values[0].data;
-    const nearbyAvailabilityData = values[1].data;
+  Promise.all([requestNearByBikeStation, requestNearByBikeAvailability]).then(
+    (values) => {
+      const nearbyStationData = values[0].data;
+      const nearbyAvailabilityData = values[1].data;
 
-    const resultData = mappingBikeStationAndAvailabilityData(nearbyStationData, nearbyAvailabilityData);
-    commit(types.GET_NEARBY_CITY_BIKE, resultData);
-  })
-}
+      const resultData = mappingBikeStationAndAvailabilityData(
+        nearbyStationData,
+        nearbyAvailabilityData,
+      );
+      commit(types.GET_NEARBY_CITY_BIKE, resultData);
+      commit(types.TOGGLE_LOADING_STATUS);
+    },
+  );
+};
 
-export const getBikeStationByKeyword = async function({ commit, state }, { city='Taichung', keyword }) {
-
-  const { status: stationStatus, data: stationData } = await BikeApi.getBikeStationByKeyword(city, keyword);
-  if(stationStatus === 200 && stationData.length) {
+export const getBikeStationByKeyword = async function (
+  { commit, state },
+  { city = 'Taichung', keyword },
+) {
+  const { status: stationStatus, data: stationData } =
+    await BikeApi.getBikeStationByKeyword(city, keyword);
+  if (stationStatus === 200 && stationData.length) {
     const stationUIDs = [];
-    for(let i = 0, len = stationData.length;i < len;i ++) {
+    for (let i = 0, len = stationData.length; i < len; i++) {
       stationUIDs.push(stationData[i].StationUID);
     }
-    const { status: availbilityStatus, data: availbilityData } = await BikeApi.getBikeAvailabilityByStationUID(city, stationUIDs);
+    const { status: availbilityStatus, data: availbilityData } =
+      await BikeApi.getBikeAvailabilityByStationUID(city, stationUIDs);
 
-    if(availbilityStatus === 200 && availbilityData.length) {
-      const resultData = mappingBikeStationAndAvailabilityData(stationData, availbilityData);
-      commit(types.GET_BIKE_STATION_BY_KEYWORD, resultData);
+    if (availbilityStatus === 200 && availbilityData.length) {
+      const resultData = mappingBikeStationAndAvailabilityData(
+        stationData,
+        availbilityData,
+      );
+      commit(types.GET_BIKE_STATION_BY_KEYWORD, resultData);   
     }
   }
-}
-
-
+  commit(types.TOGGLE_LOADING_STATUS);
+};

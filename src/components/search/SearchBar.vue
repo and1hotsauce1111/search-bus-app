@@ -313,6 +313,7 @@ export default {
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
       store.commit("TOGGLE_GOTO_FIRST_STOP", true);
+      store.commit("TOGGLE_LOADING_STATUS");
     }
 
     function onCompositionStart() {
@@ -326,6 +327,7 @@ export default {
 
     function searchData() {
       if (searchInputValue.value === "") return;
+      store.commit("TOGGLE_LOADING_STATUS");
 
       const currentCity = store.getters.currentDistrict;
       if (searchType.value === "bus") {

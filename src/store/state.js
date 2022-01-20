@@ -10,6 +10,7 @@ const state = {
   goToFirstStop: true,
   isSearching: true,
   isChangeSideMenuHeight: false,
+  isLoading: true,
   searchInputValue: '',
   showBusStopDirection: 0,
   userPosition: { lat: 24.136944, lng: 120.684722 },

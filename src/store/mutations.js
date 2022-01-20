@@ -58,6 +58,9 @@ const mutations = {
   [types.TOGGLE_GOTO_USER_POSITION](state) {
     state.goToUserPosition = !state.goToUserPosition;
   },
+  [types.TOGGLE_LOADING_STATUS](state) {
+    state.isLoading = !state.isLoading;
+  },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;
   }

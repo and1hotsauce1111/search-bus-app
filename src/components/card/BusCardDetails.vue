@@ -1,6 +1,6 @@
 <template>
-  <Loading v-if="!goRouteStops.length" />
-  <div v-else class="detail-container overflow-scroll no-scrollbar relative">
+  <Loading v-if="isLoading" />
+  <div class="detail-container overflow-scroll no-scrollbar relative">
     <div class="change-direction sticky top-0 left-0 w-full">
       <div
         class="
@@ -379,6 +379,8 @@ export default {
       store.dispatch("getBusDisplayOfRouteStops", searchInfo);
     }
 
+    const isLoading = computed(() => store.getters.isLoading);
+
     const goRouteStops = computed(() =>
       store.getters.busStopOfRoute[0]
         ? store.getters.busStopOfRoute[0].Stops
@@ -405,6 +407,7 @@ export default {
       currentBus,
       goRouteStops,
       isNearStop,
+      isLoading,
       msg,
       stopStatus,
       showGoRoute,
