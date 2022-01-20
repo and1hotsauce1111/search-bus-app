@@ -16,6 +16,7 @@ module.exports = {
       'alert-400': '#DD3E64',
       'alert-600': '#A31C3D',
       'grey-100': '#FFFFFF',
+      'grey-200': '#F1F1F1',
       'grey-300': '#C5C5C5',
       'grey-400': '#9A9A9A',
       'grey-500': '#767676',

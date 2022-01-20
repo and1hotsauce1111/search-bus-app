@@ -4,6 +4,9 @@ const mutations = {
   [types.CLEAR_BUSLIST](state) {
     state.busCardList = [];
   },
+  [types.CLEAR_BIKELIST](state) {
+    state.bikeCardList = [];
+  },
   [types.CLEAR_BUS_STOP_ROUTE](state) {
     state.busStopOfRoute = [];
   },
@@ -24,6 +27,9 @@ const mutations = {
   },
   [types.GET_BUS_BY_KEYWORD](state, busListByKeyword) {
     state.busCardList = busListByKeyword;
+  },
+  [types.GET_BIKE_STATION_BY_KEYWORD](state, bikeStations) {
+    state.bikeCardList = bikeStations;
   },
   [types.GET_ALL_CITY_BUS](state, allCityBus) {
     state.busCardList = allCityBus;

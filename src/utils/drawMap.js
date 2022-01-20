@@ -10,6 +10,7 @@ import mBikeIconGreen from '../assets/mark/bike-position-M-green.png';
 import mBikeIconRed from '../assets/mark/bike-position-M-red.png';
 import mBikeIconGrey from '../assets/mark/bike-position-M-grey.png';
 import { wktToGeoJSON } from '@terraformer/wkt';
+import { genBikeIconPopup } from '@/utils/genBikeIconPopup.js';
 
 const defaultPosition = [24.136944, 120.684722];
 
@@ -145,6 +146,13 @@ class DrawMap {
     this.removeLayer();
 
     let iconType = null;
+    let html = '';
+    let popUpContent = '';
+    const popUpOptions = {
+      closeButton: false,
+      closeOnClick: true,
+      className: 'm-bike-popup',
+    };
 
     for (let i = 0, len = bikeInfo.length; i < len; i++) {
       if (bikeInfo[i].Availability.AvailableRentBikes > 5) {
@@ -152,6 +160,7 @@ class DrawMap {
           iconType = this.bikeIconGreen;
         } else {
           iconType = this.mBikeIconGreen;
+          html = `<span class="m-custom-div-icon green">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
       if (bikeInfo[i].Availability.AvailableRentBikes <= 5) {
@@ -159,6 +168,7 @@ class DrawMap {
           iconType = this.bikeIconRed;
         } else {
           iconType = this.mBikeIconRed;
+          html = `<span class="m-custom-div-icon red">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
       if (bikeInfo[i].Availability.AvailableRentBikes === 0) {
@@ -166,8 +176,19 @@ class DrawMap {
           iconType = this.bikeIconGrey;
         } else {
           iconType = this.mBikeIconGrey;
+          html = `<span class="m-custom-div-icon grey">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         }
       }
+
+      popUpContent = genBikeIconPopup(
+        bikeInfo[i].Availability.AvailableRentBikes,
+        bikeInfo[i].Availability.AvailableReturnBikes,
+      );
+
+      const divIcon = L.divIcon({
+        iconSize: null,
+        html,
+      });
 
       const marker = new L.marker(
         {
@@ -176,6 +197,18 @@ class DrawMap {
         },
         {
           icon: iconType,
+        },
+      )
+      .bindPopup(popUpContent, popUpOptions)
+      .addTo(this.map);
+
+      const divIconMarker = new L.marker(
+        {
+          lat: bikeInfo[i].StationPosition.PositionLat,
+          lng: bikeInfo[i].StationPosition.PositionLon,
+        },
+        {
+          icon: divIcon,
         },
       ).addTo(this.map);
     }

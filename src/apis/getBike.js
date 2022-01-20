@@ -21,4 +21,19 @@ export default {
 
     return axios.get(url, { headers: getAuthorizationHeader() });
   },
+  getBikeStationByKeyword(city, keyword) {
+    const url = queryString(`Bike/Station/${city}`, {
+      filter: { type: 'bike/stop', keyword },
+      top: true,
+    });
+
+    return axios.get(url, { headers: getAuthorizationHeader() });
+  },
+  getBikeAvailabilityByStationUID(city, stationUIDs) {
+    const url = queryString(`Bike/Availability/${city}`, {
+      filter: { type: 'bike/availbility', StationUID: stationUIDs},
+    })
+
+    return axios.get(url, { headers: getAuthorizationHeader() });
+  }
 };

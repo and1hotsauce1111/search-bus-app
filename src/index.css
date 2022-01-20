@@ -43,8 +43,56 @@ html {
   line-height: 14px;
 }
 
+.m-bike-popup {
+  max-width: 16.81rem;
+  border: 2px solid #88c6a5;
+  border-radius: 8px;
+  box-shadow: 3px 3px 8px rgba(154, 154, 154, 0.25);
+}
+
+.m-bike-popup .popup-title {
+  color: #408560;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.m-bike-popup .popup-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .leaflet-popup-tip-container {
   display: none;
+}
+
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.m-custom-div-icon {
+  font-weight: bold;
+  font-size: 15px;
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
+.m-custom-div-icon.green {
+  color: #4ea476;
+}
+
+.m-custom-div-icon.red {
+  color: #dd3e64;
+}
+
+.m-custom-div-icon.grey {
+  color: #9a9a9a;
 }
 
 /* RWD settings */

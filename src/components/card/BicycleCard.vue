@@ -193,7 +193,7 @@ export default {
       if (count > 5) {
         return ["bg-primary-200", "text-primary-500"];
       }
-      if (count <= 5) {
+      if (count <= 5 && count !== 0) {
         return ["bg-alert-200", "text-alert-600"];
       }
       if (count === 0) {

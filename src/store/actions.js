@@ -230,7 +230,6 @@ export const getIntercityBusByKeyword = async function (
 
 // search nearby station
 export const getNearByBikeStation = async function({ commit, state }, position) {
-  console.log('get nearby bike');
   const requestNearByBikeStation = BikeApi.getNearByBikeStation(position);
   const requestNearByBikeAvailability = BikeApi.getNearBikeAvailability(position);
 
@@ -241,6 +240,23 @@ export const getNearByBikeStation = async function({ commit, state }, position) 
     const resultData = mappingBikeStationAndAvailabilityData(nearbyStationData, nearbyAvailabilityData);
     commit(types.GET_NEARBY_CITY_BIKE, resultData);
   })
+}
+
+export const getBikeStationByKeyword = async function({ commit, state }, { city='Taichung', keyword }) {
+
+  const { status: stationStatus, data: stationData } = await BikeApi.getBikeStationByKeyword(city, keyword);
+  if(stationStatus === 200 && stationData.length) {
+    const stationUIDs = [];
+    for(let i = 0, len = stationData.length;i < len;i ++) {
+      stationUIDs.push(stationData[i].StationUID);
+    }
+    const { status: availbilityStatus, data: availbilityData } = await BikeApi.getBikeAvailabilityByStationUID(city, stationUIDs);
+
+    if(availbilityStatus === 200 && availbilityData.length) {
+      const resultData = mappingBikeStationAndAvailabilityData(stationData, availbilityData);
+      commit(types.GET_BIKE_STATION_BY_KEYWORD, resultData);
+    }
+  }
 }
 
 

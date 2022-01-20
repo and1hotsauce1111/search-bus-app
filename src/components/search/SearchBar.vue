@@ -339,8 +339,12 @@ export default {
       if (searchType.value === "intercityBus")
         store.dispatch("getIntercityBusByKeyword", searchInputValue.value);
 
-      // if (searchType.value === "bike")
-      //   store.dispatch("getCurrentCityBikeStation", currentCity);
+      if (searchType.value === "bicycle") {
+        store.dispatch("getBikeStationByKeyword", {
+          city: currentCity,
+          keyword: searchInputValue.value,
+        });
+      }
     }
 
     function searchBusByCity(city) {
@@ -370,7 +374,7 @@ export default {
       if (typingCh.value) return;
       if (e.inputType === "insertText" || e.type === "compositionend") {
         searchInputValue.value += e.data;
-      } else {
+      } else if (e.inputType === "deleteContentBackward") {
         searchInputValue.value = searchInputValue.value.slice(0, -1);
       }
       store.commit("UPDATE_SEARCH_INPUT_VALUE", searchInputValue.value);
@@ -380,7 +384,8 @@ export default {
       () => store.getters.searchInputValue,
       (newVal) => {
         if (newVal === "") {
-          store.commit("CLEAR_BUSLIST");
+          if (searchType.value === "bus") store.commit("CLEAR_BUSLIST");
+          if (searchType.value === "bicycle") store.commit("CLEAR_BIKELIST");
         }
         searchInputValue.value = newVal;
         searchData();
