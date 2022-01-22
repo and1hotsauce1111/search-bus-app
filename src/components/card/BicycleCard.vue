@@ -1,5 +1,4 @@
 <template>
-  <Loading v-if="isLoading" />
   <div
     v-if="!renderList.length"
     class="no-search-result flex justify-center items-center flex-wrap pt-20"
@@ -157,14 +156,12 @@
 <script>
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import Loading from "@/components/loading/Loading.vue";
 import ProgressBar from "@/components/loading/ProgressBar.vue";
 import { getDistance } from "@/utils/getDistance.js";
 
 export default {
   name: "BicycleCard",
   components: {
-    Loading,
     ProgressBar,
   },
   setup() {

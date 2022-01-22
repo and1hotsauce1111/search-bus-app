@@ -5,7 +5,6 @@
       sideMenu-container
       fixed
       w-screen
-      z-50
       transition-all
       duration-300
       md:rounded-lg md:bg-grey-100 md:left-8
@@ -15,7 +14,6 @@
     <SearchBar
       :isSearching="isSearching"
       :isSlideUp="isSlideUp"
-      :searchType="searchType"
       :toggleKeyBoard="sideMenuState.toggleKeyBoard"
       :currentBus="sideMenuState.currentBus"
       @toggle-slide-menu="toggleSlideMenu"
@@ -25,22 +23,17 @@
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
-        :searchType="searchType"
         @go-to-route-stops="goToRouteStops"
       />
       <KeyBoard
         class="md:hidden"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
-        :searchType="searchType"
         @change-max-height="changeMaxHeight"
       />
     </div>
     <!-- show search bus details -->
     <div v-if="showSearchBusDetails" class="show-bus-carddetail">
-      <BusCardDetails
-        :currentBus="sideMenuState.currentBus"
-        :searchType="searchType"
-      />
+      <BusCardDetails :currentBus="sideMenuState.currentBus" />
     </div>
     <div
       v-if="showSearchBusDetails"
@@ -110,13 +103,6 @@ import { useStore } from "vuex";
 
 export default {
   name: "SideMenu",
-  props: {
-    searchType: {
-      type: String,
-      required: true,
-      default: "bus",
-    },
-  },
   components: {
     KeyBoard,
     BusCardList,
@@ -130,7 +116,6 @@ export default {
       inputValue: "",
       toggleKeyBoard: true,
     });
-    const { searchType } = toRefs(props);
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
     let isSlideUp = ref(false);
@@ -139,11 +124,16 @@ export default {
     // key functions
 
     function backToSearch() {
+      console.log("back to search");
       store.commit("CHANGE_SEARCHING_STATUS");
       store.commit("CLEAR_BUS_STOP_ROUTE");
-      store.commit("TOGGLE_LOADING_STATUS");
+      store.commit("TOGGLE_LOADING_STATUS", true);
       // change sideMenu top 3.06rem
-      resetSideMenuContainerHeight("3.06rem");
+      if (searchType.value !== "bicycle") {
+        resetSideMenuContainerHeight("3.06rem");
+      } else {
+        resetSideMenuContainerHeight("75%");
+      }
     }
 
     function goToRouteStops(bus) {
@@ -203,8 +193,25 @@ export default {
       [
         () => sideMenuState.toggleKeyBoard,
         () => store.getters.isChangeSideMenuHeight,
+        () => store.getters.mobileNavSearchType,
+        () => store.getters.goBackToMobileSearch,
       ],
       (newVals, oldVals) => {
+        if (newVals[2] !== oldVals[2]) {
+          // go back to mobile search
+          console.log("change search type", newVals[2]);
+          store.commit("UPDATE_SEARCH_TYPE", newVals[2]);
+          if (newVals[2] !== "bicycle") {
+            resetSideMenuContainerHeight("3.06rem");
+          }
+
+          return;
+        }
+        if (newVals[3] !== oldVals[3]) {
+          // go back to mobile search
+          backToSearch();
+          return;
+        }
         // change cardlist maxheight when toggle keyboard
         const container = cardListContainer.value.$refs.cardContainer;
         if (!newVals[0]) {
@@ -252,6 +259,8 @@ export default {
 
     const searchInputValue = computed(() => store.getters.searchInputValue);
 
+    const searchType = computed(() => store.getters.searchType);
+
     onUnmounted(() => {
       window.removeEventListener("resize", resizeSideMenu);
     });
@@ -278,6 +287,9 @@ export default {
 </script>
 
 <style scoped>
+.sideMenu-container {
+  z-index: 1;
+}
 .sideMenu-container.search-bus {
   height: calc(100vh - 3.06rem);
   top: 3.06rem;

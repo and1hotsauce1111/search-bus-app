@@ -123,15 +123,10 @@ export default {
       type: Boolean,
       required: true,
     },
-    searchType: {
-      type: String,
-      required: true,
-      default: "bus",
-    },
   },
   setup(props, { emit }) {
     const cardContainer = ref(null);
-    const { toggleKeyBoard, searchType } = toRefs(props);
+    const { toggleKeyBoard } = toRefs(props);
     const store = useStore();
 
     const renderBusList = computed(() => {
@@ -181,6 +176,8 @@ export default {
       const city = store.state.currentDistrict;
       return getCityNameZh(city) || "";
     });
+
+    const searchType = computed(() => store.getters.searchType);
 
     window.addEventListener("resize", adjustMaxHeight);
 

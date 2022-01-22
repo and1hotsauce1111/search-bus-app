@@ -4,17 +4,15 @@
       <keep-alive include="Map">
         <component
           :is="activeComponent"
-          @search-type="toggleSearchType"
+          @toggle-mobile-home="toggleMobileHome"
           @get-map-location="getMapLocation"
           @toggle-agree-location="toggleAgreeLocation"
           :isArgreeGeoLocation="homeState.isArgreeGeoLocation"
-          :searchType="homeState.searchType"
           :mapLocation="mapLocation"
         ></component>
       </keep-alive>
       <SideMenu
         v-if="activeComponent === 'Map'"
-        :searchType="homeState.searchType"
         @close-mobile-home="closeMobileHome"
       />
     </main>
@@ -30,6 +28,7 @@ import {
   reactive,
 } from "vue";
 import SideMenu from "@/components/SideMenu.vue";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -43,9 +42,10 @@ export default {
     const homeState = reactive({
       isMobileHome: true,
       isArgreeGeoLocation: false,
-      searchType: "bus",
       toggleMobileHome: true,
     });
+
+    const store = useStore();
 
     let mapLocation = shallowRef({});
     const currentInnerWidth = window.innerWidth;
@@ -61,8 +61,7 @@ export default {
       mapLocation.value = position;
     }
 
-    function toggleSearchType(type) {
-      homeState.searchType = type;
+    function toggleMobileHome() {
       homeState.isMobileHome = false;
     }
 
@@ -85,19 +84,23 @@ export default {
       return "Map";
     });
 
+    const searchType = computed(() => store.getters.searchType);
+
     window.addEventListener("resize", toggleMobileHomeWidth);
 
     onUnmounted(() =>
       window.removeEventListener("resize", toggleMobileHomeWidth)
     );
+
     return {
       activeComponent,
       closeMobileHome,
       getMapLocation,
       homeState,
       mapLocation,
+      searchType,
       toggleAgreeLocation,
-      toggleSearchType,
+      toggleMobileHome,
     };
   },
 };

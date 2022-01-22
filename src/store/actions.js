@@ -167,7 +167,7 @@ export const getBusDisplayOfRouteStops = async function (
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-          commit(types.TOGGLE_LOADING_STATUS);
+          commit(types.TOGGLE_LOADING_STATUS, false);
         }
       });
     }
@@ -194,7 +194,7 @@ export const getBusDisplayOfRouteStops = async function (
             nearByBusData,
           );
           commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-          commit(types.TOGGLE_LOADING_STATUS);
+          commit(types.TOGGLE_LOADING_STATUS, false);
         }
       });
     }
@@ -205,7 +205,7 @@ export const getBusDisplayOfRouteStops = async function (
       nearByBusData,
     );
     commit(types.GET_BUS_STOPS_BY_ROUTE, mappingData);
-    commit(types.TOGGLE_LOADING_STATUS);
+    commit(types.TOGGLE_LOADING_STATUS, false);
   }
 
   console.log('end', Date.now() - start);
@@ -229,7 +229,7 @@ export const getIntercityBusByKeyword = async function (
       await InterCityBusApi.getIntercitybusByRouteUIDs(routUIDs);
     if (status2 === 200) {
       commit(types.GET_BUS_BY_KEYWORD, searchResult);
-      commit(types.TOGGLE_LOADING_STATUS);
+      commit(types.TOGGLE_LOADING_STATUS, false);
     }
   }
 };
@@ -256,7 +256,6 @@ export const getNearByBikeStation = async function (
         nearbyAvailabilityData,
       );
       commit(types.GET_NEARBY_CITY_BIKE, resultData);
-      commit(types.TOGGLE_LOADING_STATUS);
     },
   );
 };
@@ -283,5 +282,4 @@ export const getBikeStationByKeyword = async function (
       commit(types.GET_BIKE_STATION_BY_KEYWORD, resultData);   
     }
   }
-  commit(types.TOGGLE_LOADING_STATUS);
 };

@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import { toRefs } from "vue";
+import { toRefs, watch } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -232,12 +232,14 @@ export default {
       // if agree geo location, search nearby station
       const userPosition = store.getters.userPosition;
       if (type === "bus") store.dispatch("getNearByBus", userPosition);
-      emit("searchType", type);
+      store.commit("UPDATE_SEARCH_TYPE", type);
+      emit("toggleMobileHome");
     }
 
     function rejectLocation() {
       // jump to search page
-      emit("searchType", "bus");
+      store.commit("UPDATE_SEARCH_TYPE", "bus");
+      emit("toggleMobileHome");
     }
 
     function getMapLocation() {
@@ -264,6 +266,14 @@ export default {
         alert("不支援GPS定位");
       }
     }
+
+    watch(
+      () => store.getters.mobileNavSearchType,
+      (newVal) => {
+        console.log("mobile home watch");
+        searchType(newVal);
+      }
+    );
 
     return {
       searchType,

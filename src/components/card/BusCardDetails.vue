@@ -297,17 +297,12 @@ export default {
       required: true,
       default: {},
     },
-    searchType: {
-      type: String,
-      required: true,
-      default: "bus",
-    },
   },
   setup(props) {
     let msg = ref("Hello");
     let showGoRoute = ref(0);
     const store = useStore();
-    const { currentBus, searchType } = toRefs(props);
+    const { currentBus } = toRefs(props);
 
     function isNearStop(status, estimateTime) {
       if (estimateTime === undefined || status !== 0) return "grey";
@@ -400,6 +395,7 @@ export default {
         store.getters.fareBufferZoneDescriptionZh(currentBus.value.RouteUID) ||
         []
     );
+    const searchType = computed(() => store.getters.searchType);
 
     return {
       bufferZone,

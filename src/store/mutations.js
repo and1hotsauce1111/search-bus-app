@@ -49,6 +49,9 @@ const mutations = {
   [types.GET_USER_POSITON](state, position) {
     state.userPosition = position;
   },
+  [types.GET_MOBILE_SEARCH_TYPE](state, type) {
+    state.mobileNavSearchType = type;
+  },
   [types.TOGGLE_SHOW_BUS_STOP_DIRECTION](state, direction) {
     state.showBusStopDirection = direction;
   },
@@ -58,11 +61,17 @@ const mutations = {
   [types.TOGGLE_GOTO_USER_POSITION](state) {
     state.goToUserPosition = !state.goToUserPosition;
   },
-  [types.TOGGLE_LOADING_STATUS](state) {
-    state.isLoading = !state.isLoading;
+  [types.TOGGLE_LOADING_STATUS](state, status) {
+    state.isLoading = status;
+  },
+  [types.TOGGLE_GOBACK_MOBILE_SEARCH](state) {
+    state.goBackToMobileSearch = !state.goBackToMobileSearch;
   },
   [types.UPDATE_SEARCH_INPUT_VALUE](state, inputValue) {
     state.searchInputValue = inputValue;
+  },
+  [types.UPDATE_SEARCH_TYPE](state, type) {
+    state.searchType = type;
   }
 };
 

@@ -146,11 +146,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    searchType: {
-      type: String,
-      required: true,
-      default: "bus",
-    },
   },
   setup(props, { emit }) {
     let cityData = ref();
@@ -163,7 +158,7 @@ export default {
     let searchInputValue = ref("");
     const store = useStore();
 
-    const { toggleKeyBoard, searchType } = toRefs(props);
+    const { toggleKeyBoard } = toRefs(props);
 
     const keyClassObject = {
       red: "bg-alert-100 border-alert-300 text-alert-300",
@@ -235,6 +230,8 @@ export default {
     const keyboardType = computed(() => {
       return searchType.value === "bus" ? busKey : intercityBusKey;
     });
+
+    const searchType = computed(() => store.getters.searchType);
 
     return {
       cityData,

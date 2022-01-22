@@ -289,11 +289,6 @@ export default {
       required: true,
       default: false,
     },
-    searchType: {
-      type: String,
-      required: true,
-      default: "bus",
-    },
     toggleKeyBoard: {
       type: Boolean,
       required: true,
@@ -301,7 +296,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const { isSearching, isSlideUp, searchType, toggleKeyBoard, currentBus } =
+    const { isSearching, isSlideUp, toggleKeyBoard, currentBus } =
       toRefs(props);
 
     let isInputDisable = ref(true);
@@ -313,7 +308,7 @@ export default {
     function backToSearch() {
       store.commit("CHANGE_SEARCHING_STATUS");
       store.commit("TOGGLE_GOTO_FIRST_STOP", true);
-      store.commit("TOGGLE_LOADING_STATUS");
+      store.commit("TOGGLE_LOADING_STATUS", true);
     }
 
     function onCompositionStart() {
@@ -327,7 +322,6 @@ export default {
 
     function searchData() {
       if (searchInputValue.value === "") return;
-      store.commit("TOGGLE_LOADING_STATUS");
 
       const currentCity = store.getters.currentDistrict;
       if (searchType.value === "bus") {
@@ -420,6 +414,8 @@ export default {
         : "尋找公路或國道路線或目的地..."
     );
 
+    const searchType = computed(() => store.getters.searchType);
+
     axios
       .get("../../static/dropDownCity.json")
       .then((res) => (dropdownCity.value = res.data));
@@ -446,6 +442,7 @@ export default {
       searchBusInputPlaceholder,
       searchData,
       searchBusByCity,
+      searchType,
       toggleSlideMenu,
       toggleKeyBoard,
       toggleInputDisable,

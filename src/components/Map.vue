@@ -3,7 +3,14 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, toRefs, watch, watchEffect } from "vue";
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  toRefs,
+  watch,
+  watchEffect,
+} from "vue";
 import { useStore } from "vuex";
 import DrawMap from "@/utils/drawMap";
 import { filterRouteStopData } from "@/utils/mappingData.js";
@@ -15,10 +22,6 @@ export default {
       type: Object,
       required: true,
       default: {},
-    },
-    searchType: {
-      type: String,
-      required: true,
     },
   },
   setup(props, { emit }) {
@@ -50,7 +53,7 @@ export default {
 
       const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
-        if (props.searchType === "bicycle") {
+        if (searchType.value === "bicycle") {
           const userPosition = store.getters.userPosition;
           store.dispatch("getNearByBikeStation", userPosition);
         }
@@ -66,7 +69,7 @@ export default {
               store.commit("GET_USER_POSITON", userPosition);
               map.updateUserPosition(userPosition);
               store.dispatch("getCurrentDistrict", userPosition);
-              if (props.searchType === "bicycle")
+              if (searchType.value === "bicycle")
                 store.dispatch("getNearByBikeStation", userPosition);
               emit("toggleAgreeLocation");
             })
@@ -79,11 +82,13 @@ export default {
           lat: mapLocation.value.coords.latitude,
           lng: mapLocation.value.coords.longitude,
         };
-        if (props.searchType === "bicycle")
+        if (searchType.value === "bicycle")
           store.dispatch("getNearByBikeStation", userPosition);
         map.updateUserPosition(userPosition);
       }
     });
+
+    const searchType = computed(() => store.getters.searchType);
 
     onUnmounted(() => {
       document.removeEventListener("touchstart", touchHandler);
@@ -96,11 +101,20 @@ export default {
         () => store.state.showBusStopDirection,
         () => store.state.goToUserPosition,
         () => store.getters.bikeCardList,
+        () => store.getters.goBackToMobileSearch,
       ],
       (newVals, oldVals) => {
-        const userPositon = store.getters.userPosition;
+        const userPosition = store.getters.userPosition;
 
-        if (props.searchType === "bus" || props.searchType === "intercityBus") {
+        if (newVals[4] !== oldVals[4]) {
+          // use mobile nav
+          // update nearby bike station
+          console.log("update nearby bike");
+          store.dispatch("getNearByBikeStation", userPosition);
+          return;
+        }
+
+        if (searchType.value === "bus" || searchType.value === "intercityBus") {
           const shapeData = newVals[0];
 
           const newDirection = newVals[1];
@@ -110,7 +124,7 @@ export default {
           const oldUserPosition = oldVals[2];
 
           if (newUserPosition !== oldUserPosition) {
-            map.updateUserPosition(userPositon);
+            map.updateUserPosition(userPosition);
             return;
           }
 
@@ -131,7 +145,7 @@ export default {
           if (shapeData[newDirection]) {
             map.drawLine(shapeData[newDirection].Geometry);
           } else {
-            map.drawLine(shapeData[0].Geometry);
+            if (shapeData[0]) map.drawLine(shapeData[0].Geometry);
           }
 
           map.drawStopIcon(routeStopData, isMoveToStart);
@@ -139,21 +153,24 @@ export default {
           store.commit("TOGGLE_GOTO_FIRST_STOP", false);
         }
 
-        if (props.searchType === "bicycle") {
+        if (searchType.value === "bicycle") {
           const innerWidth = window.innerWidth;
           const bikeData = newVals[3];
-          map.drawBikeIcon(bikeData, innerWidth, userPositon);
+          map.drawBikeIcon(bikeData, innerWidth, userPosition);
         }
       }
     );
 
-    return {};
+    return {
+      searchType,
+    };
   },
 };
 </script>
 
 <style scoped>
 #map {
+  z-index: 0;
   height: calc(100vh - 5.56rem);
   margin-top: 3.06rem;
 }

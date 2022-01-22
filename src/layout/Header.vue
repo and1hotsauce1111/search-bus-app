@@ -106,6 +106,7 @@
             border-b border-primary-300
             pb-7
           "
+          @click.stop="search('bus')"
         >
           <i class="fas fa-bus-alt basis-2/12 mr-3"></i>
           <h2 class="font-bold basis-10/12">找公車</h2>
@@ -121,6 +122,7 @@
             pt-7
             pb-7
           "
+          @click.stop="search('intercityBus')"
         >
           <i class="fas fa-road basis-2/12 mr-3"></i>
           <h2 class="font-bold basis-10/12">找客運</h2>
@@ -136,6 +138,7 @@
             pb-7
             pt-7
           "
+          @click.stop="search('bicycle')"
         >
           <i class="fas fa-bicycle basis-2/12 mr-3"></i>
           <h2 class="font-bold basis-10/12">找單車</h2>
@@ -162,11 +165,31 @@
 
 <script>
 import { ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
     let showHamburger = ref(true);
     const mobileNav = ref(null);
+    const store = useStore();
+
+    function search(type) {
+      const isSearch = store.getters.isSearching;
+      if (isSearch) {
+        store.commit("GET_MOBILE_SEARCH_TYPE", type);
+      } else {
+        store.commit("TOGGLE_GOBACK_MOBILE_SEARCH");
+        store.commit("UPDATE_SEARCH_TYPE", type);
+        if (type === "bicycle") store.commit("CLEAR_BIKELIST");
+      }
+      if (type === "bus" || type === "intercityBus") {
+        store.commit("CLEAR_BUSLIST");
+        store.commit("CLEAR_BUS_STOP_ROUTE");
+      }
+      store.commit("UPDATE_SEARCH_INPUT_VALUE", "");
+
+      toggleMobileNav();
+    }
 
     function toggleMobileNav() {
       if (mobileNav.value) {
@@ -178,6 +201,7 @@ export default {
     return {
       mobileNav,
       showHamburger,
+      search,
       toggleMobileNav,
     };
   },

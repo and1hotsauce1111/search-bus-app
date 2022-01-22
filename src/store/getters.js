@@ -12,9 +12,12 @@ export const fareBufferZoneDescriptionZh = (state) => (RouteUID) => {
 };
 export const goToFirstStop = (state) => state.goToFirstStop;
 export const goToUserPosition = (state) => state.goToUserPosition;
+export const goBackToMobileSearch = (state) => state.goBackToMobileSearch;
 export const isSearching = (state) => state.isSearching;
 export const isChangeSideMenuHeight = (state) => state.isChangeSideMenuHeight;
 export const isLoading = (state) => state.isLoading;
+export const mobileNavSearchType = (state) => state.mobileNavSearchType;
 export const searchInputValue = (state) => state.searchInputValue;
 export const showBusStopDirection = (state) => state.showBusStopDirection;
+export const searchType = (state) => state.searchType;
 export const userPosition = (state) => state.userPosition;
