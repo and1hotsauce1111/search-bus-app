@@ -104,4 +104,15 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  height: calc(100vh - 5.56rem);
+  margin-top: 3.06rem;
+}
+
+@media (min-width: 768px) {
+  .main {
+    height: calc(100vh - 8.125rem);
+    margin-top: 0;
+  }
+}
 </style>

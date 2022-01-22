@@ -278,7 +278,6 @@ export default {
 <style scoped>
 .mobile_container {
   height: calc(100vh - 5.56rem);
-  margin-top: 3.06rem;
 }
 .main_block {
   margin-top: 2.31rem;

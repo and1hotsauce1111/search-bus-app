@@ -17,8 +17,19 @@
       bg-grey-100
     "
   >
-    <div class="hamberger absolute left-3 text-grey-500">
+    <div
+      v-if="showHamburger"
+      class="hamberger absolute left-3 text-grey-500 cursor-pointer"
+      @click="toggleMobileNav"
+    >
       <i class="fas fa-bars hamburger-icon"></i>
+    </div>
+    <div
+      v-else
+      class="close absolute left-3 text-grey-500 cursor-pointer"
+      @click="toggleMobileNav"
+    >
+      <img src="@/assets/Close.png" alt="close" />
     </div>
     <div class="logo">
       <img
@@ -79,10 +90,98 @@
         <i class="fas fa-subway nav-icon-size text-grey-300"></i>
       </button>
     </div>
+    <!-- mobile nav -->
+    <div
+      ref="mobileNav"
+      class="mobile-nav-container fixed top-0 w-screen h-screen bg-primary-200"
+    >
+      <ul class="mobile-nav-list px-11 pt-28 text-primary-500 text-lg">
+        <li
+          class="
+            item
+            flex
+            justify-between
+            items-center
+            cursor-pointer
+            border-b border-primary-300
+            pb-7
+          "
+        >
+          <i class="fas fa-bus-alt basis-2/12 mr-3"></i>
+          <h2 class="font-bold basis-10/12">找公車</h2>
+        </li>
+        <li
+          class="
+            item
+            flex
+            justify-between
+            items-center
+            cursor-pointer
+            border-b border-primary-300
+            pt-7
+            pb-7
+          "
+        >
+          <i class="fas fa-road basis-2/12 mr-3"></i>
+          <h2 class="font-bold basis-10/12">找客運</h2>
+        </li>
+        <li
+          class="
+            item
+            flex
+            justify-between
+            items-center
+            cursor-pointer
+            border-b border-primary-300
+            pb-7
+            pt-7
+          "
+        >
+          <i class="fas fa-bicycle basis-2/12 mr-3"></i>
+          <h2 class="font-bold basis-10/12">找單車</h2>
+        </li>
+        <li
+          class="
+            item
+            flex
+            justify-between
+            items-center
+            cursor-pointer
+            text-primary-300
+            pt-7
+            pb-7
+          "
+        >
+          <i class="fas fa-subway basis-2/12 mr-3"></i>
+          <h2 class="font-bold basis-10/12">轉乘資訊</h2>
+        </li>
+      </ul>
+    </div>
   </header>
 </template>
 
-<script setup>
+<script>
+import { ref } from "vue";
+
+export default {
+  setup() {
+    let showHamburger = ref(true);
+    const mobileNav = ref(null);
+
+    function toggleMobileNav() {
+      if (mobileNav.value) {
+        mobileNav.value.classList.toggle("active");
+        showHamburger.value = !showHamburger.value;
+      }
+    }
+
+    return {
+      mobileNav,
+      showHamburger,
+      toggleMobileNav,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -91,6 +190,18 @@
 }
 .hamburger-icon {
   font-size: 1.5rem;
+}
+.close {
+  z-index: 999;
+}
+.mobile-nav-container {
+  z-index: 99;
+  transform: translateX(-150%);
+  transition: all 0.5s linear;
+  transform-origin: left;
+}
+.mobile-nav-container.active {
+  transform: translateX(0);
 }
 .nav {
   display: none;
