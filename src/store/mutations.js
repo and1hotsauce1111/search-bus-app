@@ -52,6 +52,9 @@ const mutations = {
   [types.GET_MOBILE_SEARCH_TYPE](state, type) {
     state.mobileNavSearchType = type;
   },
+  [types.GET_DESKTOP_SEARCH_TYPE](state, type) {
+    state.desktopNavSearchType = type;
+  },
   [types.TOGGLE_SHOW_BUS_STOP_DIRECTION](state, direction) {
     state.showBusStopDirection = direction;
   },

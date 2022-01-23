@@ -17,6 +17,7 @@ export const isSearching = (state) => state.isSearching;
 export const isChangeSideMenuHeight = (state) => state.isChangeSideMenuHeight;
 export const isLoading = (state) => state.isLoading;
 export const mobileNavSearchType = (state) => state.mobileNavSearchType;
+export const desktopNavSearchType = (state) => state.desktopNavSearchType;
 export const searchInputValue = (state) => state.searchInputValue;
 export const showBusStopDirection = (state) => state.showBusStopDirection;
 export const searchType = (state) => state.searchType;

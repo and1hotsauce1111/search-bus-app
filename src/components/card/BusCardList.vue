@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { computed, onUnmounted, ref, toRefs } from "vue";
+import { computed, onUnmounted, ref, toRefs, watch } from "vue";
 import { useStore } from "vuex";
 import getCityNameZh from "@/utils/getCityNameZh";
 
@@ -120,6 +120,10 @@ export default {
   name: "BusCardList",
   props: {
     toggleKeyBoard: {
+      type: Boolean,
+      required: true,
+    },
+    adjustCardListHeight: {
       type: Boolean,
       required: true,
     },
@@ -178,6 +182,16 @@ export default {
     });
 
     const searchType = computed(() => store.getters.searchType);
+
+    watch(
+      [
+        () => props.adjustCardListHeight,
+        () => store.getters.desktopNavSearchType,
+      ],
+      () => {
+        adjustMaxHeight();
+      }
+    );
 
     window.addEventListener("resize", adjustMaxHeight);
 

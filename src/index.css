@@ -63,6 +63,17 @@ html {
   border: none !important;
 }
 
+.custom-div-icon {
+  font-weight: bold;
+  font-size: 22px;
+  position: absolute;
+  top: 36px;
+  left: 36px;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
 .m-custom-div-icon {
   font-weight: bold;
   font-size: 15px;

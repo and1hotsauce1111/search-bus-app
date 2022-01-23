@@ -169,6 +169,7 @@ class DrawMap {
       if (bikeInfo[i].Availability.AvailableRentBikes > 5) {
         if (innerWidth >= 640) {
           iconType = this.bikeIconGreen;
+          html = `<span class="custom-div-icon text-primary-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         } else {
           iconType = this.mBikeIconGreen;
           html = `<span class="m-custom-div-icon text-primary-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
@@ -177,6 +178,7 @@ class DrawMap {
       if (bikeInfo[i].Availability.AvailableRentBikes <= 5) {
         if (innerWidth >= 640) {
           iconType = this.bikeIconRed;
+          html = `<span class="custom-div-icon text-alert-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         } else {
           iconType = this.mBikeIconRed;
           html = `<span class="m-custom-div-icon text-alert-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
@@ -185,6 +187,7 @@ class DrawMap {
       if (bikeInfo[i].Availability.AvailableRentBikes === 0) {
         if (innerWidth >= 640) {
           iconType = this.bikeIconGrey;
+          html = `<span class="custom-div-icon text-grey-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;
         } else {
           iconType = this.mBikeIconGrey;
           html = `<span class="m-custom-div-icon text-grey-400">${bikeInfo[i].Availability.AvailableRentBikes}</span>`;

@@ -309,6 +309,7 @@ export default {
       store.commit("CHANGE_SEARCHING_STATUS");
       store.commit("TOGGLE_GOTO_FIRST_STOP", true);
       store.commit("TOGGLE_LOADING_STATUS", true);
+      emit("adjustCardListHeight");
     }
 
     function onCompositionStart() {

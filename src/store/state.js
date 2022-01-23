@@ -12,9 +12,10 @@ const state = {
   isChangeSideMenuHeight: false,
   isLoading: true,
   mobileNavSearchType: '',
+  desktopNavSearchType: '',
   goBackToMobileSearch: false,
   searchInputValue: '',
-  searchType: '',
+  searchType: 'bus',
   showBusStopDirection: 0,
   userPosition: { lat: 24.136944, lng: 120.684722 },
 };

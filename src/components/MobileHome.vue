@@ -232,6 +232,10 @@ export default {
       // if agree geo location, search nearby station
       const userPosition = store.getters.userPosition;
       if (type === "bus") store.dispatch("getNearByBus", userPosition);
+      if (type === "bicycle") {
+        store.dispatch("getNearByBikeStation", userPosition);
+      }
+
       store.commit("UPDATE_SEARCH_TYPE", type);
       emit("toggleMobileHome");
     }

@@ -17,12 +17,14 @@
       :toggleKeyBoard="sideMenuState.toggleKeyBoard"
       :currentBus="sideMenuState.currentBus"
       @toggle-slide-menu="toggleSlideMenu"
+      @adjust-card-list-height="adjustCardListHeight"
     />
     <!-- show search bus result -->
     <div v-show="showSearchBusList" class="show-bus-cardlist">
       <BusCardList
         ref="cardListContainer"
         :toggleKeyBoard="sideMenuState.toggleKeyBoard"
+        :adjustCardListHeight="sideMenuState.adjustCardListHeight"
         @go-to-route-stops="goToRouteStops"
       />
       <KeyBoard
@@ -115,6 +117,7 @@ export default {
       currentBus: {},
       inputValue: "",
       toggleKeyBoard: true,
+      adjustCardListHeight: false,
     });
     const cardListContainer = ref(null);
     const sideMenuContainer = ref(null);
@@ -122,6 +125,10 @@ export default {
     const store = useStore();
 
     // key functions
+
+    function adjustCardListHeight() {
+      sideMenuState.adjustCardListHeight = !sideMenuState.adjustCardListHeight;
+    }
 
     function backToSearch() {
       console.log("back to search");
@@ -199,10 +206,14 @@ export default {
       (newVals, oldVals) => {
         if (newVals[2] !== oldVals[2]) {
           // go back to mobile search
-          console.log("change search type", newVals[2]);
+          const userPosition = store.getters.userPosition;
           store.commit("UPDATE_SEARCH_TYPE", newVals[2]);
+          isSlideUp.value = false;
           if (newVals[2] !== "bicycle") {
             resetSideMenuContainerHeight("3.06rem");
+          } else {
+            resetSideMenuContainerHeight("75%");
+            store.dispatch("getNearByBikeStation", userPosition);
           }
 
           return;
@@ -266,6 +277,7 @@ export default {
     });
 
     return {
+      adjustCardListHeight,
       backToSearch,
       changeMaxHeight,
       cardListContainer,

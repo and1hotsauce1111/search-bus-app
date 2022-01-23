@@ -53,15 +53,16 @@ export default {
 
       const innerWidth = window.innerWidth;
       if (!mapLocation.value.coords) {
+        // prevent not update get bike station before map mounted
+        const userPosition = store.getters.userPosition;
+
         if (searchType.value === "bicycle") {
-          const userPosition = store.getters.userPosition;
           store.dispatch("getNearByBikeStation", userPosition);
         }
         if (innerWidth >= 640) {
           map
             .getGeoInfo()
             .then((position) => {
-              console.log("get geo info");
               const userPosition = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
@@ -69,12 +70,14 @@ export default {
               store.commit("GET_USER_POSITON", userPosition);
               map.updateUserPosition(userPosition);
               store.dispatch("getCurrentDistrict", userPosition);
-              if (searchType.value === "bicycle")
-                store.dispatch("getNearByBikeStation", userPosition);
+              // default get bus nearby station
+              store.dispatch("getNearByBus", userPosition);
               emit("toggleAgreeLocation");
             })
             .catch((err) => {
               map.map.setView(defaultPosition, 18);
+              map.updateUserPosition(userPosition);
+              store.dispatch("getNearByBus", userPosition);
             });
         }
       } else {
@@ -82,8 +85,6 @@ export default {
           lat: mapLocation.value.coords.latitude,
           lng: mapLocation.value.coords.longitude,
         };
-        if (searchType.value === "bicycle")
-          store.dispatch("getNearByBikeStation", userPosition);
         map.updateUserPosition(userPosition);
       }
     });
@@ -109,7 +110,6 @@ export default {
         if (newVals[4] !== oldVals[4]) {
           // use mobile nav
           // update nearby bike station
-          console.log("update nearby bike");
           store.dispatch("getNearByBikeStation", userPosition);
           return;
         }
@@ -154,12 +154,24 @@ export default {
         }
 
         if (searchType.value === "bicycle") {
+          console.log("draw bike marker");
           const innerWidth = window.innerWidth;
           const bikeData = newVals[3];
           map.drawBikeIcon(bikeData, innerWidth, userPosition);
         }
       }
     );
+
+    watchEffect(() => {
+      const searchType = store.getters.desktopNavSearchType;
+      if (searchType === "bus" || searchType === "intercityBus") {
+        const userPosition = store.getters.userPosition;
+        if (map) {
+          map.removeLayer();
+          map.updateUserPosition(userPosition);
+        }
+      }
+    });
 
     return {
       searchType,
